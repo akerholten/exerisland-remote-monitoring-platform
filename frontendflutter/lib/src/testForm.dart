@@ -26,7 +26,7 @@ class _FormWidgetsDemoState extends State<FormWidgetsDemo> {
         key: _formKey,
         child: Scrollbar(
           child: Align(
-            alignment: Alignment.topCenter,
+            alignment: Alignment.center,
             child: Card(
               child: SingleChildScrollView(
                 padding: EdgeInsets.all(16),
