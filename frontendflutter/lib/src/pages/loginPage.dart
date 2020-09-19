@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'handlers/loginHandler.dart';
-import 'components/alerts.dart';
-import 'constants/route_names.dart';
+import '../handlers/loginHandler.dart';
+import '../components/alerts.dart';
+import '../constants/route_names.dart';
 
 class LoginWidget extends StatefulWidget {
   @override

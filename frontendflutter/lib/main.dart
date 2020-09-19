@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'src/constants/constants.dart';
 import 'src/testForm.dart';
 import 'src/handlers/loginHandler.dart';
-import 'src/loginWidget.dart';
+import 'src/pages/loginPage.dart';
 
 void main() {
   // Can potentially do verification of login / cookie stuff here, and show correct screen accordingly
@@ -91,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     _tryCookieLogin();
 
-    if(!loggedIn){
+    if (!loggedIn) {
       bodyWidget = LoginWidget();
     }
 
@@ -106,12 +106,12 @@ class _MyHomePageState extends State<MyHomePage> {
     //             Column is also a layout widget. It takes a list of children and
     //             arranges them vertically. By default, it sizes itself to fit its
     //             children horizontally, and tries to be as tall as its parent.
-                
+
     //             Invoke "debug painting" (press "p" in the console, choose the
     //             "Toggle Debug Paint" action from the Flutter Inspector in Android
     //             Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
     //             to see the wireframe for each widget.
-                
+
     //             Column has various properties to control how it sizes itself and
     //             how it positions its children. Here we use mainAxisAlignment to
     //             center the children vertically; the main axis here is the vertical
@@ -131,17 +131,17 @@ class _MyHomePageState extends State<MyHomePage> {
     //         );
     // }
     return Scaffold(
-            appBar: AppBar(
-              // Here we take the value from the MyHomePage object that was created by
-              // the App.build method, and use it to set our appbar title.
-              title: Text(widget.title),
-            ),
-            body: bodyWidget,
-            // floatingActionButton: FloatingActionButton(
-            //   onPressed: _incrementCounter,
-            //   tooltip: 'Increment',
-            //   child: Icon(Icons.add),
-            // ), // This trailing comma makes auto-formatting nicer for build methods.
-          );
+      appBar: AppBar(
+        // Here we take the value from the MyHomePage object that was created by
+        // the App.build method, and use it to set our appbar title.
+        title: Text(widget.title),
+      ),
+      body: bodyWidget,
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: _incrementCounter,
+      //   tooltip: 'Increment',
+      //   child: Icon(Icons.add),
+      // ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
   }
 }
