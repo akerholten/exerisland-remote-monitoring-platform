@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import '../handlers/loginHandler.dart';
 import '../components/alerts.dart';
 import '../constants/route_names.dart';
+import '../constants/constants.dart';
 
-class LoginWidget extends StatefulWidget {
+class LoginPage extends StatefulWidget {
   @override
-  _LoginWidgetState createState() => _LoginWidgetState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginWidgetState extends State<LoginWidget> {
+class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>(); // is this needed?
   String email, password = '';
   bool loggedIn = false;
@@ -25,7 +26,7 @@ class _LoginWidgetState extends State<LoginWidget> {
 
       if (loggedIn) {
         Alerts.showInfo(context, "Logged in was successfull");
-        Navigator.of(context).pushNamed(TestRoute);
+        Navigator.of(context).pushNamed(Routes.Test);
         // TODO: Navigate to overview page
       }
     });
@@ -34,6 +35,9 @@ class _LoginWidgetState extends State<LoginWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(Constants.applicationName),
+      ),
       body: Form(
         key: _formKey,
         child: Scrollbar(
@@ -54,7 +58,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                             alignment: Alignment.centerLeft,
                             child: SelectableText(
                               'Login',
-                              style: Theme.of(context).textTheme.title,
+                              style: Theme.of(context).textTheme.headline4,
                               textAlign: TextAlign.left,
                             ),
                           ),
@@ -108,11 +112,17 @@ class _LoginWidgetState extends State<LoginWidget> {
                             alignment: Alignment.centerRight,
                             child: FlatButton(
                                 padding: EdgeInsets.only(
-                                    left: 64, right: 64, bottom: 16, top: 16),
+                                    left: 64, right: 64, bottom: 20, top: 20),
                                 color: Theme.of(context).primaryColor,
                                 textColor: Colors.white,
                                 onPressed: _tryLogin,
-                                child: Text('Log in')),
+                                child: Text(
+                                  'Log in',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .button
+                                      .copyWith(fontSize: 16),
+                                )),
                           ),
                         ].expand(
                           (widget) => [

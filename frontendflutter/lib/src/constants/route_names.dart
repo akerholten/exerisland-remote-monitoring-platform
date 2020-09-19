@@ -1,6 +1,8 @@
-const String HomeRoute = '/home';
-const String LoginRoute = '/login';
-const String SignupRoute = '/signup';
-const String OverviewRoute = '/dashboard';
-const String SpecificPersonOverviewRoute = '/id/';
-const String TestRoute = '/test';
+class Routes {
+  static const String Home = '/home';
+  static const String Login = '/login';
+  static const String Signup = '/signup';
+  static const String Overview = '/dashboard';
+  static const String SpecificPersonOverview = '/id/';
+  static const String Test = '/test';
+}

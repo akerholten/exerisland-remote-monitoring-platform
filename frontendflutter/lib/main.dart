@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: Constants.applicationName,
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -27,6 +27,18 @@ class MyApp extends StatelessWidget {
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
         primarySwatch: Colors.blue,
+        fontFamily: 'Poppins',
+        textTheme: TextTheme(
+          button: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: Colors.white,
+          ),
+          headline4: TextStyle(
+            fontWeight: FontWeight.w500,
+            color: Colors.blueGrey[300],
+          ),
+        ),
         // This makes the visual density adapt to the platform that you run
         // the app on. For desktop platforms, the controls will be smaller and
         // closer together (more dense) than on mobile platforms.
@@ -34,6 +46,7 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         '/': (context) => MyHomePage(title: Constants.applicationName),
+        '/login': (context) => LoginPage(),
         '/test': (context) => FormWidgetsDemo(),
       },
     );
@@ -60,7 +73,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-  Widget bodyWidget;
+  Widget currentPage;
   bool loggedIn = false;
 
   void _incrementCounter() {
@@ -92,7 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _tryCookieLogin();
 
     if (!loggedIn) {
-      bodyWidget = LoginWidget();
+      currentPage = LoginPage();
     }
 
     // if(_counter % 2 == 1){
@@ -130,18 +143,6 @@ class _MyHomePageState extends State<MyHomePage> {
     //           ),
     //         );
     // }
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: bodyWidget,
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: _incrementCounter,
-      //   tooltip: 'Increment',
-      //   child: Icon(Icons.add),
-      // ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+    return currentPage;
   }
 }
