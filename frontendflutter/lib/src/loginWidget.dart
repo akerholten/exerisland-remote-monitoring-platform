@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'handlers/loginHandler.dart';
-
+import 'components/alerts.dart';
+import 'constants/route_names.dart';
 
 class LoginWidget extends StatefulWidget {
   @override
@@ -22,7 +23,9 @@ class _LoginWidgetState extends State<LoginWidget> {
     setState(() {
       loggedIn = LoginHandler.login(email, password);
 
-      if(loggedIn){
+      if (loggedIn) {
+        Alerts.showInfo(context, "Logged in was successfull");
+        Navigator.of(context).pushNamed(TestRoute);
         // TODO: Navigate to overview page
       }
     });
@@ -48,12 +51,12 @@ class _LoginWidgetState extends State<LoginWidget> {
                       children: [
                         ...[
                           Align(
-                              alignment: Alignment.centerLeft, 
-                              child: Text(
+                            alignment: Alignment.centerLeft,
+                            child: SelectableText(
                               'Login',
                               style: Theme.of(context).textTheme.title,
                               textAlign: TextAlign.left,
-                              ),
+                            ),
                           ),
                           TextFormField(
                             decoration: InputDecoration(
@@ -80,25 +83,46 @@ class _LoginWidgetState extends State<LoginWidget> {
                               });
                             },
                           ),
+                          Flex(
+                              direction: Axis.horizontal,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                FlatButton(
+                                  child: Text("Forgot your password?"),
+                                  onPressed: () {
+                                    Alerts.showWarning(context,
+                                        "Method not implemented yet"); // TODO: Go to forgot password page here
+                                  },
+                                  textColor: Theme.of(context).primaryColor,
+                                ),
+                                FlatButton(
+                                  child: Text("Sign Up"),
+                                  onPressed: () {
+                                    Alerts.showWarning(context,
+                                        "Method not implemented yet"); // TODO: Go to sign up page here
+                                  },
+                                  textColor: Theme.of(context).primaryColor,
+                                ),
+                              ]),
                           Align(
                             alignment: Alignment.centerRight,
                             child: FlatButton(
-                              padding: EdgeInsets.only(left: 64, right: 64, bottom: 16, top: 16),
-                              color: Theme.of(context).primaryColor,
-                              textColor: Colors.white,
-                              onPressed: _tryLogin,
-                              child: Text('Log in')
-                            ),
+                                padding: EdgeInsets.only(
+                                    left: 64, right: 64, bottom: 16, top: 16),
+                                color: Theme.of(context).primaryColor,
+                                textColor: Colors.white,
+                                onPressed: _tryLogin,
+                                child: Text('Log in')),
                           ),
-                            ].expand(
-                              (widget) => [
-                                widget,
-                                SizedBox(
-                                  height: 24,
-                                )
-                              ],
+                        ].expand(
+                          (widget) => [
+                            widget,
+                            SizedBox(
+                              height: 24,
+                            )
+                          ],
                         )
-                    ],
+                      ],
                     ),
                   ),
                 ),
