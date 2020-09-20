@@ -26,7 +26,7 @@ class _LoginPageState extends State<LoginPage> {
 
       if (loggedIn) {
         Alerts.showInfo(context, "Logged in was successfull");
-        Navigator.of(context).pushNamed(Routes.Test);
+        Navigator.of(context).pushNamed(Routes.Dashboard);
         // TODO: Navigate to overview page
       }
     });
@@ -110,18 +110,19 @@ class _LoginPageState extends State<LoginPage> {
                           Align(
                             alignment: Alignment.centerRight,
                             child: FlatButton(
-                                padding: EdgeInsets.only(
-                                    left: 64, right: 64, bottom: 20, top: 20),
-                                color: Theme.of(context).primaryColor,
-                                textColor: Colors.white,
-                                onPressed: _tryLogin,
-                                child: Text(
-                                  'Log in',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .button
-                                      .copyWith(fontSize: 16),
-                                )),
+                              padding: EdgeInsets.only(
+                                  left: 64, right: 64, bottom: 20, top: 20),
+                              color: Theme.of(context).primaryColor,
+                              textColor: Colors.white,
+                              onPressed: _tryLogin,
+                              child: Text(
+                                'Log in',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .button
+                                    .copyWith(fontSize: 16),
+                              ),
+                            ),
                           ),
                         ].expand(
                           (widget) => [

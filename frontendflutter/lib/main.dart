@@ -4,6 +4,7 @@ import 'src/testForm.dart';
 import 'src/handlers/loginHandler.dart';
 import 'src/pages/loginPage.dart';
 import 'src/pages/signupPage.dart';
+import 'src/pages/therapistDashboard.dart';
 import 'src/pages/forgotPasswordPage.dart';
 import 'src/constants/route_names.dart';
 
@@ -53,6 +54,8 @@ class MyApp extends StatelessWidget {
         Routes.Test: (context) => FormWidgetsDemo(), // TODO: remove
         Routes.Signup: (context) => SignupPage(),
         Routes.ForgotPassword: (context) => ForgotPasswordPage(),
+        Routes.Dashboard: (context) =>
+            TherapistDashboard(), // TODO: Solve difference between showing therapist and patient dashboard when going here
       },
     );
   }
@@ -111,6 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (!loggedIn) {
       currentPage = LoginPage();
+      // currentPage = TherapistDashboard();
     }
 
     // if(_counter % 2 == 1){
