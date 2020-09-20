@@ -3,6 +3,9 @@ import 'src/constants/constants.dart';
 import 'src/testForm.dart';
 import 'src/handlers/loginHandler.dart';
 import 'src/pages/loginPage.dart';
+import 'src/pages/signupPage.dart';
+import 'src/pages/forgotPasswordPage.dart';
+import 'src/constants/route_names.dart';
 
 void main() {
   // Can potentially do verification of login / cookie stuff here, and show correct screen accordingly
@@ -46,8 +49,10 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         '/': (context) => MyHomePage(title: Constants.applicationName),
-        '/login': (context) => LoginPage(),
-        '/test': (context) => FormWidgetsDemo(),
+        Routes.Login: (context) => LoginPage(),
+        Routes.Test: (context) => FormWidgetsDemo(), // TODO: remove
+        Routes.Signup: (context) => SignupPage(),
+        Routes.ForgotPassword: (context) => ForgotPasswordPage(),
       },
     );
   }

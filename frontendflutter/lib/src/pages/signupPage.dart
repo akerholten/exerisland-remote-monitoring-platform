@@ -4,31 +4,20 @@ import '../components/alerts.dart';
 import '../constants/route_names.dart';
 import '../constants/constants.dart';
 
-class LoginPage extends StatefulWidget {
+class SignupPage extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _SignupPageState createState() => _SignupPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  final _formKey = GlobalKey<FormState>(); // is this needed?
-  String email, password = '';
-  bool loggedIn = false;
+class _SignupPageState extends State<SignupPage> {
+  // final _formKey = GlobalKey<FormState>(); // is this needed?
+  String email, password, repeatPassword, organizationID = '';
 
-  void _tryCookieLogin() {
+  void _trySignup() {
     setState(() {
-      loggedIn = LoginHandler.isLoggedInWithCookie();
-    });
-  }
-
-  void _tryLogin() {
-    setState(() {
-      loggedIn = LoginHandler.login(email, password);
-
-      if (loggedIn) {
-        Alerts.showInfo(context, "Logged in was successfull");
-        Navigator.of(context).pushNamed(Routes.Test);
-        // TODO: Navigate to overview page
-      }
+      // Do verification of input, password == repeatPassword, valid email etc, possibly salt and hash password here?
+      // Do signup - then login / cookie and session creating
+      Alerts.showWarning(context, "Method not implemented yet");
     });
   }
 
@@ -36,11 +25,10 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // automaticallyImplyLeading: false, // remove this if we want back button on app bar
+        // automaticallyImplyLeading: false,
         title: Text(Constants.applicationName),
       ),
       body: Form(
-        key: _formKey,
         child: Scrollbar(
           child: Align(
             alignment: Alignment.center,
@@ -58,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: SelectableText(
-                              'Login',
+                              'Sign up',
                               style: Theme.of(context).textTheme.headline4,
                               textAlign: TextAlign.left,
                             ),
@@ -86,23 +74,37 @@ class _LoginPageState extends State<LoginPage> {
                               });
                             },
                           ),
+                          TextFormField(
+                            obscureText: true, // hides text as this is password
+                            decoration: InputDecoration(
+                              hintText: 'Repeat password',
+                              labelText: 'Repeat password',
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                repeatPassword = value;
+                              });
+                            },
+                          ),
+                          TextFormField(
+                            decoration: InputDecoration(
+                              hintText: 'Organization ID',
+                              labelText: 'Organization ID',
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                organizationID = value;
+                              });
+                            },
+                          ),
                           Flex(
                               direction: Axis.horizontal,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 FlatButton(
-                                  child: Text("Forgot your password?"),
+                                  child: Text("Back to login"),
                                   onPressed: () {
-                                    Navigator.of(context)
-                                        .pushNamed(Routes.ForgotPassword);
-                                  },
-                                  textColor: Theme.of(context).primaryColor,
-                                ),
-                                FlatButton(
-                                  child: Text("Sign up"),
-                                  onPressed: () {
-                                    Navigator.of(context)
-                                        .pushNamed(Routes.Signup);
+                                    Navigator.of(context).pop();
                                   },
                                   textColor: Theme.of(context).primaryColor,
                                 ),
@@ -110,18 +112,19 @@ class _LoginPageState extends State<LoginPage> {
                           Align(
                             alignment: Alignment.centerRight,
                             child: FlatButton(
-                                padding: EdgeInsets.only(
-                                    left: 64, right: 64, bottom: 20, top: 20),
-                                color: Theme.of(context).primaryColor,
-                                textColor: Colors.white,
-                                onPressed: _tryLogin,
-                                child: Text(
-                                  'Log in',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .button
-                                      .copyWith(fontSize: 16),
-                                )),
+                              child: Text(
+                                'Register',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .button
+                                    .copyWith(fontSize: 16),
+                              ),
+                              padding: EdgeInsets.only(
+                                  left: 64, right: 64, bottom: 20, top: 20),
+                              color: Theme.of(context).primaryColor,
+                              textColor: Colors.white,
+                              onPressed: _trySignup,
+                            ),
                           ),
                         ].expand(
                           (widget) => [

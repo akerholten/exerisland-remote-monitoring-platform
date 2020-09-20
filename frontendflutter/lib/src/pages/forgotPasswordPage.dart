@@ -4,31 +4,20 @@ import '../components/alerts.dart';
 import '../constants/route_names.dart';
 import '../constants/constants.dart';
 
-class LoginPage extends StatefulWidget {
+class ForgotPasswordPage extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _ForgotPasswordPageState createState() => _ForgotPasswordPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  final _formKey = GlobalKey<FormState>(); // is this needed?
-  String email, password = '';
-  bool loggedIn = false;
+class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
+  // final _formKey = GlobalKey<FormState>(); // is this needed?
+  String email = '';
 
-  void _tryCookieLogin() {
+  void _tryResetPassword() {
     setState(() {
-      loggedIn = LoginHandler.isLoggedInWithCookie();
-    });
-  }
-
-  void _tryLogin() {
-    setState(() {
-      loggedIn = LoginHandler.login(email, password);
-
-      if (loggedIn) {
-        Alerts.showInfo(context, "Logged in was successfull");
-        Navigator.of(context).pushNamed(Routes.Test);
-        // TODO: Navigate to overview page
-      }
+      // Do verification of input email
+      // Do a call to send a new password mail
+      Alerts.showWarning(context, "Method not implemented yet");
     });
   }
 
@@ -36,11 +25,9 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // automaticallyImplyLeading: false, // remove this if we want back button on app bar
         title: Text(Constants.applicationName),
       ),
       body: Form(
-        key: _formKey,
         child: Scrollbar(
           child: Align(
             alignment: Alignment.center,
@@ -58,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: SelectableText(
-                              'Login',
+                              'Forgot password',
                               style: Theme.of(context).textTheme.headline4,
                               textAlign: TextAlign.left,
                             ),
@@ -74,35 +61,14 @@ class _LoginPageState extends State<LoginPage> {
                               });
                             },
                           ),
-                          TextFormField(
-                            obscureText: true, // hides text as this is password
-                            decoration: InputDecoration(
-                              hintText: 'Enter password',
-                              labelText: 'Password',
-                            ),
-                            onChanged: (value) {
-                              setState(() {
-                                password = value;
-                              });
-                            },
-                          ),
                           Flex(
                               direction: Axis.horizontal,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 FlatButton(
-                                  child: Text("Forgot your password?"),
+                                  child: Text("Back to login"),
                                   onPressed: () {
-                                    Navigator.of(context)
-                                        .pushNamed(Routes.ForgotPassword);
-                                  },
-                                  textColor: Theme.of(context).primaryColor,
-                                ),
-                                FlatButton(
-                                  child: Text("Sign up"),
-                                  onPressed: () {
-                                    Navigator.of(context)
-                                        .pushNamed(Routes.Signup);
+                                    Navigator.of(context).pop();
                                   },
                                   textColor: Theme.of(context).primaryColor,
                                 ),
@@ -110,18 +76,19 @@ class _LoginPageState extends State<LoginPage> {
                           Align(
                             alignment: Alignment.centerRight,
                             child: FlatButton(
-                                padding: EdgeInsets.only(
-                                    left: 64, right: 64, bottom: 20, top: 20),
-                                color: Theme.of(context).primaryColor,
-                                textColor: Colors.white,
-                                onPressed: _tryLogin,
-                                child: Text(
-                                  'Log in',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .button
-                                      .copyWith(fontSize: 16),
-                                )),
+                              child: Text(
+                                'Reset Password',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .button
+                                    .copyWith(fontSize: 16),
+                              ),
+                              padding: EdgeInsets.only(
+                                  left: 32, right: 32, bottom: 20, top: 20),
+                              color: Theme.of(context).primaryColor,
+                              textColor: Colors.white,
+                              onPressed: _tryResetPassword,
+                            ),
                           ),
                         ].expand(
                           (widget) => [
