@@ -149,52 +149,54 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
         child: ConstrainedBox(
           constraints:
               BoxConstraints(maxWidth: dataTableMaxWidth, maxHeight: 900),
-          child: Column(
-            // mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                padding: EdgeInsets.all(16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Patients',
-                      style: Theme.of(context).textTheme.headline4,
-                    ),
-                    FlatButton(
-                      padding: EdgeInsets.only(
-                          left: 54, right: 54, bottom: 20, top: 20),
-                      color: Theme.of(context).primaryColor,
-                      textColor: Colors.white,
-                      onPressed: _debugFillwithData,
-                      // Alerts.showWarning(context, "method not implemented yet"),
-                      child: Text(
-                        'Add patient',
-                        style: Theme.of(context)
-                            .textTheme
-                            .button
-                            .copyWith(fontSize: 16),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              patients.length == 0
-                  ? Container(
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.only(top: 250),
-                      child: Text(
-                        'You have no patients yet',
+          child: SingleChildScrollView(
+            child: Column(
+              // mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Patients',
                         style: Theme.of(context).textTheme.headline4,
                       ),
-                    )
-                  : Card(
-                      child: Column(children: [
-                        tableHeader(),
-                        tableRows(),
-                      ]),
-                    ),
-            ],
+                      FlatButton(
+                        padding: EdgeInsets.only(
+                            left: 54, right: 54, bottom: 20, top: 20),
+                        color: Theme.of(context).primaryColor,
+                        textColor: Colors.white,
+                        onPressed: _debugFillwithData,
+                        // Alerts.showWarning(context, "method not implemented yet"),
+                        child: Text(
+                          'Add patient',
+                          style: Theme.of(context)
+                              .textTheme
+                              .button
+                              .copyWith(fontSize: 16),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                patients.length == 0
+                    ? Container(
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.only(top: 250),
+                        child: Text(
+                          'You have no patients yet',
+                          style: Theme.of(context).textTheme.headline4,
+                        ),
+                      )
+                    : Card(
+                        child: Column(children: [
+                          tableHeader(),
+                          tableRows(),
+                        ]),
+                      ),
+              ],
+            ),
           ),
         ),
       ),
