@@ -3,7 +3,6 @@ import '../handlers/loginHandler.dart';
 import '../components/alerts.dart';
 import '../constants/route_names.dart';
 import '../constants/constants.dart';
-import 'package:sticky_infinite_list/sticky_infinite_list.dart';
 
 class TherapistDashboard extends StatefulWidget {
   @override
