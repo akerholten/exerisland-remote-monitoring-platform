@@ -3,6 +3,7 @@ import '../handlers/loginHandler.dart';
 import '../components/alerts.dart';
 import '../constants/route_names.dart';
 import '../constants/constants.dart';
+import 'package:sticky_infinite_list/sticky_infinite_list.dart';
 
 class TherapistDashboard extends StatefulWidget {
   @override
@@ -21,6 +22,8 @@ class Patient {
 class _TherapistDashboardState extends State<TherapistDashboard> {
   // final _formKey = GlobalKey<FormState>(); // is this needed?
   int patientCount = 0;
+  double dataTableMaxWidth = 1600;
+
   List<Patient> patients = new List<Patient>();
   List<String> columnTitles = [
     'Name',
@@ -51,81 +54,149 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
 
   @override
   Widget build(BuildContext context) {
+    double tableItemWidth = (dataTableMaxWidth * 0.75) / columnTitles.length;
+    double tableItemHeight = 50;
+
+    ScrollController _controller = new ScrollController();
+
+    Widget tableHeader() {
+      return Container(
+        padding: EdgeInsets.all(16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: (columnTitles.map(
+            (item) => Container(
+              alignment: Alignment.center,
+              height: tableItemHeight,
+              width: tableItemWidth,
+              child: Text(
+                item,
+                style: Theme.of(context).textTheme.headline6,
+              ),
+            ),
+          )).toList(),
+        ),
+      );
+    }
+
+    Widget tableRows() {
+      return Container(
+        padding: EdgeInsets.all(16),
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          controller: _controller,
+          shrinkWrap: true,
+          children: (patients
+              .map((patient) => Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          alignment: Alignment.center,
+                          height: tableItemHeight,
+                          width: tableItemWidth,
+                          child:
+                              Text(patient.firstName + " " + patient.lastName),
+                        ),
+                        Container(
+                          alignment: Alignment.center,
+                          height: tableItemHeight,
+                          width: tableItemWidth,
+                          child: Text(patient.email),
+                        ),
+                        Container(
+                          alignment: Alignment.center,
+                          height: tableItemHeight,
+                          width: tableItemWidth,
+                          child: Text(patient.issue),
+                        ),
+                        Container(
+                          alignment: Alignment.center,
+                          height: tableItemHeight,
+                          width: tableItemWidth,
+                          child: Text(patient.age.toString()),
+                        ),
+                        Container(
+                          alignment: Alignment.center,
+                          height: tableItemHeight,
+                          width: tableItemWidth,
+                          child: Text(
+                              patient.recommendationsCompleted.toString() +
+                                  "/" +
+                                  patient.recommendations.toString()),
+                        ),
+                        Container(
+                          alignment: Alignment.center,
+                          height: tableItemHeight,
+                          width: tableItemWidth,
+                          child: Text(patient.recentActivity),
+                        ),
+                      ],
+                    ),
+                  ))
+              .toList()),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         // automaticallyImplyLeading: false,
         title: Text(Constants.applicationName),
       ),
       body: Container(
+        alignment: Alignment.topCenter,
         padding: EdgeInsets.only(left: 130, right: 130, top: 30, bottom: 30),
-        child: Flex(
-          direction: Axis.vertical,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Flex(
-              direction: Axis.horizontal,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Patients',
-                  style: Theme.of(context).textTheme.headline4,
-                ),
-                FlatButton(
-                  padding:
-                      EdgeInsets.only(left: 54, right: 54, bottom: 20, top: 20),
-                  color: Theme.of(context).primaryColor,
-                  textColor: Colors.white,
-                  onPressed: _debugFillwithData,
-                  // Alerts.showWarning(context, "method not implemented yet"),
-                  child: Text(
-                    'Add patient',
-                    style: Theme.of(context)
-                        .textTheme
-                        .button
-                        .copyWith(fontSize: 16),
-                  ),
-                ),
-              ],
-            ),
-            patients.length == 0
-                ? Container(
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.only(top: 250),
-                    child: Text(
-                      'You have no patients yet',
+        child: ConstrainedBox(
+          constraints:
+              BoxConstraints(maxWidth: dataTableMaxWidth, maxHeight: 900),
+          child: Column(
+            // mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                padding: EdgeInsets.all(16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Patients',
                       style: Theme.of(context).textTheme.headline4,
                     ),
-                  )
-                : Container(
-                    alignment: Alignment.center,
-                    child: DataTable(
-                      columns: (columnTitles.map(
-                        (item) => DataColumn(
-                          label: Text(
-                            item,
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                        ),
-                      )).toList(),
-                      rows: (patients.map(
-                        (patient) => DataRow(
-                          cells: <DataCell>[
-                            DataCell(Text(
-                                patient.firstName + " " + patient.lastName)),
-                            DataCell(Text(patient.email)),
-                            DataCell(Text(patient.issue)),
-                            DataCell(Text(patient.age.toString())),
-                            DataCell(Text(
-                                patient.recommendationsCompleted.toString() +
-                                    "/" +
-                                    patient.recommendations.toString())),
-                            DataCell(Text(patient.recentActivity)),
-                          ],
-                        ),
-                      )).toList(),
+                    FlatButton(
+                      padding: EdgeInsets.only(
+                          left: 54, right: 54, bottom: 20, top: 20),
+                      color: Theme.of(context).primaryColor,
+                      textColor: Colors.white,
+                      onPressed: _debugFillwithData,
+                      // Alerts.showWarning(context, "method not implemented yet"),
+                      child: Text(
+                        'Add patient',
+                        style: Theme.of(context)
+                            .textTheme
+                            .button
+                            .copyWith(fontSize: 16),
+                      ),
                     ),
-                  )
-          ],
+                  ],
+                ),
+              ),
+              patients.length == 0
+                  ? Container(
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.only(top: 250),
+                      child: Text(
+                        'You have no patients yet',
+                        style: Theme.of(context).textTheme.headline4,
+                      ),
+                    )
+                  : Card(
+                      child: Column(children: [
+                        tableHeader(),
+                        tableRows(),
+                      ]),
+                    ),
+            ],
+          ),
         ),
       ),
     );
