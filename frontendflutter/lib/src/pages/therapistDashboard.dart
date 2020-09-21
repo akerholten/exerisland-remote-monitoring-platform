@@ -187,8 +187,7 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
                               color: Theme.of(context).primaryColor,
                               textColor: Colors.white,
                               onPressed: _debugFillwithData,
-                              // Alerts.showWarning(context, "method not implemented yet"),
-                              child: SelectableText(
+                              child: Text(
                                 'Add patient',
                                 style: Theme.of(context)
                                     .textTheme
