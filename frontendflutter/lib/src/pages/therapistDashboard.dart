@@ -19,7 +19,7 @@ class Patient {
 }
 
 class _TherapistDashboardState extends State<TherapistDashboard> {
-  // final _formKey = GlobalKey<FormState>(); // is this needed?
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   int patientCount = 0;
   double dataTableMaxWidth = 1600;
   double dataTableMaxHeight = 900;
@@ -69,7 +69,7 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
               alignment: Alignment.center,
               height: tableItemHeight,
               width: tableItemWidth,
-              child: Text(
+              child: SelectableText(
                 item,
                 style: Theme.of(context).textTheme.headline6,
               ),
@@ -95,7 +95,7 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
               children: (patients
                   .map((patient) => FlatButton(
                         onPressed: () => Alerts.showWarning(
-                            context, "method not implemented yet"),
+                            context, scaffoldKey, "method not implemented yet"),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -103,32 +103,32 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
                               alignment: Alignment.center,
                               height: tableItemHeight,
                               width: tableItemWidth,
-                              child: Text(
+                              child: SelectableText(
                                   patient.firstName + " " + patient.lastName),
                             ),
                             Container(
                               alignment: Alignment.center,
                               height: tableItemHeight,
                               width: tableItemWidth,
-                              child: Text(patient.email),
+                              child: SelectableText(patient.email),
                             ),
                             Container(
                               alignment: Alignment.center,
                               height: tableItemHeight,
                               width: tableItemWidth,
-                              child: Text(patient.issue),
+                              child: SelectableText(patient.issue),
                             ),
                             Container(
                               alignment: Alignment.center,
                               height: tableItemHeight,
                               width: tableItemWidth,
-                              child: Text(patient.age.toString()),
+                              child: SelectableText(patient.age.toString()),
                             ),
                             Container(
                               alignment: Alignment.center,
                               height: tableItemHeight,
                               width: tableItemWidth,
-                              child: Text(
+                              child: SelectableText(
                                   patient.recommendationsCompleted.toString() +
                                       "/" +
                                       patient.recommendations.toString()),
@@ -137,7 +137,7 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
                               alignment: Alignment.center,
                               height: tableItemHeight,
                               width: tableItemWidth,
-                              child: Text(patient.recentActivity),
+                              child: SelectableText(patient.recentActivity),
                             ),
                           ],
                         ),
@@ -150,6 +150,7 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
     }
 
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
         // automaticallyImplyLeading: false,
         title: Text(Constants.applicationName),
@@ -176,7 +177,7 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
+                            SelectableText(
                               'Patients',
                               style: Theme.of(context).textTheme.headline4,
                             ),
@@ -187,7 +188,7 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
                               textColor: Colors.white,
                               onPressed: _debugFillwithData,
                               // Alerts.showWarning(context, "method not implemented yet"),
-                              child: Text(
+                              child: SelectableText(
                                 'Add patient',
                                 style: Theme.of(context)
                                     .textTheme
@@ -202,7 +203,7 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
                           ? Container(
                               alignment: Alignment.center,
                               padding: EdgeInsets.only(top: 250),
-                              child: Text(
+                              child: SelectableText(
                                 'You have no patients yet',
                                 style: Theme.of(context).textTheme.headline4,
                               ),

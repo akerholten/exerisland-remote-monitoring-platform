@@ -1,40 +1,40 @@
 import 'package:flutter/material.dart';
 
 class Alerts {
-  static void showAlertDialog(
-      BuildContext context, String title, String message) {
-    Widget okButton = FlatButton(
-      child: Text("OK"),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
+  static void showAlertSnackbar(GlobalKey<ScaffoldState> scaffoldKey,
+      String title, Color color, String message) {
+    // Widget okButton = FlatButton(
+    //   child: Text("OK"),
+    //   onPressed: () {
+    //     Navigator.of(context).pop();
+    //   },
+    // );
+
+    SnackBar snackBar = SnackBar(
+      backgroundColor: color,
+      content: SelectableText(title + ": " + message),
+      // actions: [
+      //   okButton,
+      // ],
     );
 
-    AlertDialog alert = AlertDialog(
-      title: SelectableText(title),
-      content: SelectableText(message),
-      actions: [
-        okButton,
-      ],
-    );
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
+    scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
-  static void showInfo(BuildContext context, String message) {
-    showAlertDialog(context, "Info", message);
+  static void showInfo(BuildContext context,
+      GlobalKey<ScaffoldState> scaffoldKey, String message) {
+    showAlertSnackbar(
+        scaffoldKey, "Info", Theme.of(context).primaryColor, message);
   }
 
-  static void showWarning(BuildContext context, String message) {
-    showAlertDialog(context, "Warning", message);
+  static void showWarning(BuildContext context,
+      GlobalKey<ScaffoldState> scaffoldKey, String message) {
+    showAlertSnackbar(scaffoldKey, "Warning", Colors.orange[500], message);
   }
 
-  static void showError(BuildContext context, String message) {
-    showAlertDialog(context, "Error", message);
+  static void showError(BuildContext context,
+      GlobalKey<ScaffoldState> scaffoldKey, String message) {
+    showAlertSnackbar(
+        scaffoldKey, "Error", Theme.of(context).errorColor, message);
   }
 }

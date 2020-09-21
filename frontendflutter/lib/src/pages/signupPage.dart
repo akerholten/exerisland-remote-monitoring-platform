@@ -10,20 +10,21 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
-  // final _formKey = GlobalKey<FormState>(); // is this needed?
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   String email, password, repeatPassword, organizationID = '';
 
   void _trySignup() {
     setState(() {
       // Do verification of input, password == repeatPassword, valid email etc, possibly salt and hash password here?
       // Do signup - then login / cookie and session creating
-      Alerts.showWarning(context, "Method not implemented yet");
+      Alerts.showWarning(context, scaffoldKey, "Method not implemented yet");
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
         // automaticallyImplyLeading: false,
         title: Text(Constants.applicationName),

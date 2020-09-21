@@ -10,20 +10,21 @@ class ForgotPasswordPage extends StatefulWidget {
 }
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
-  // final _formKey = GlobalKey<FormState>(); // is this needed?
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   String email = '';
 
   void _tryResetPassword() {
     setState(() {
       // Do verification of input email
       // Do a call to send a new password mail
-      Alerts.showWarning(context, "Method not implemented yet");
+      Alerts.showWarning(context, scaffoldKey, "Method not implemented yet");
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
         title: Text(Constants.applicationName),
       ),
