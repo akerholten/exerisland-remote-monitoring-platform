@@ -154,61 +154,68 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
         // automaticallyImplyLeading: false,
         title: Text(Constants.applicationName),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          alignment: Alignment.topCenter,
-          padding: EdgeInsets.only(left: 130, right: 130, top: 30, bottom: 30),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-                maxWidth: dataTableMaxWidth,
-                maxHeight: dataTableMaxHeight * 1.3),
-            child: Flexible(
-              child: Column(
-                // mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Patients',
-                          style: Theme.of(context).textTheme.headline4,
+      body: Center(
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Container(
+              alignment: Alignment.topCenter,
+              padding:
+                  EdgeInsets.only(left: 130, right: 130, top: 30, bottom: 30),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxWidth: dataTableMaxWidth,
+                    maxHeight: dataTableMaxHeight * 1.3),
+                child: Flexible(
+                  child: Column(
+                    // mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Patients',
+                              style: Theme.of(context).textTheme.headline4,
+                            ),
+                            FlatButton(
+                              padding: EdgeInsets.only(
+                                  left: 54, right: 54, bottom: 20, top: 20),
+                              color: Theme.of(context).primaryColor,
+                              textColor: Colors.white,
+                              onPressed: _debugFillwithData,
+                              // Alerts.showWarning(context, "method not implemented yet"),
+                              child: Text(
+                                'Add patient',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .button
+                                    .copyWith(fontSize: 16),
+                              ),
+                            ),
+                          ],
                         ),
-                        FlatButton(
-                          padding: EdgeInsets.only(
-                              left: 54, right: 54, bottom: 20, top: 20),
-                          color: Theme.of(context).primaryColor,
-                          textColor: Colors.white,
-                          onPressed: _debugFillwithData,
-                          // Alerts.showWarning(context, "method not implemented yet"),
-                          child: Text(
-                            'Add patient',
-                            style: Theme.of(context)
-                                .textTheme
-                                .button
-                                .copyWith(fontSize: 16),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                      patients.length == 0
+                          ? Container(
+                              alignment: Alignment.center,
+                              padding: EdgeInsets.only(top: 250),
+                              child: Text(
+                                'You have no patients yet',
+                                style: Theme.of(context).textTheme.headline4,
+                              ),
+                            )
+                          : Card(
+                              child: Column(children: [
+                                tableHeader(),
+                                tableRows(),
+                              ]),
+                            ),
+                    ],
                   ),
-                  patients.length == 0
-                      ? Container(
-                          alignment: Alignment.center,
-                          padding: EdgeInsets.only(top: 250),
-                          child: Text(
-                            'You have no patients yet',
-                            style: Theme.of(context).textTheme.headline4,
-                          ),
-                        )
-                      : Card(
-                          child: Column(children: [
-                            tableHeader(),
-                            tableRows(),
-                          ]),
-                        ),
-                ],
+                ),
               ),
             ),
           ),
