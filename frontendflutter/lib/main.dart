@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'src/constants/constants.dart';
-import 'src/testForm.dart';
+import 'src/components/testForm.dart';
 import 'src/handlers/loginHandler.dart';
 import 'src/pages/loginPage.dart';
 import 'src/pages/signupPage.dart';

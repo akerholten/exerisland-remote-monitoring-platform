@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../handlers/loginHandler.dart';
 import '../components/alerts.dart';
+import '../components/testForm.dart';
+import '../components/modal_AddNewPatient.dart';
 import '../constants/route_names.dart';
 import '../constants/constants.dart';
 
@@ -9,20 +11,13 @@ class TherapistDashboard extends StatefulWidget {
   _TherapistDashboardState createState() => _TherapistDashboardState();
 }
 
-class Patient {
-  String firstName,
-      lastName,
-      email,
-      issue,
-      recentActivity; // TODO: change recent activity to be date
-  int age, recommendations, recommendationsCompleted;
-}
-
 class _TherapistDashboardState extends State<TherapistDashboard> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   int patientCount = 0;
   double dataTableMaxWidth = 1600;
   double dataTableMaxHeight = 900;
+
+  Patient newPatient = new Patient();
 
   List<Patient> patients = new List<Patient>();
   List<String> columnTitles = [
@@ -50,6 +45,42 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
 
       patients.add(temp);
     });
+  }
+
+  _addPatientToDatabase() {
+    setState(() {
+      patientCount++;
+
+      Patient temp = new Patient();
+      temp.firstName = newPatient.firstName;
+      temp.lastName = newPatient.lastName;
+      temp.email = newPatient.email;
+      temp.issue = newPatient.issue;
+      temp.age = DateTime.now().difference(newPatient.dateOfBirth).inDays ~/
+          365; // TODO: Rework as this is dumb and not accurate/correct
+      temp.recommendations = patientCount;
+      temp.recommendationsCompleted = patientCount - 1;
+      temp.recentActivity = patientCount.toString() + " hours ago";
+
+      patients.add(temp);
+    });
+  }
+
+  void _showAddNewPatientModal() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: AddNewPatientModal(
+              onChanged: (value) {
+                setState(() {
+                  newPatient = value;
+                  _addPatientToDatabase();
+                });
+              },
+            ),
+          );
+        });
   }
 
   @override
@@ -92,7 +123,6 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
     Widget tableRows() {
       return Container(
         padding: EdgeInsets.only(bottom: 16, left: 16, right: 16),
-        // padding: EdgeInsets.all(16),
         child: SizedBox(
           height: dataTableMaxHeight,
           width: dataTableMaxWidth,
@@ -209,7 +239,7 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
                                   left: 54, right: 54, bottom: 20, top: 20),
                               color: Theme.of(context).primaryColor,
                               textColor: Colors.white,
-                              onPressed: _debugFillwithData,
+                              onPressed: _showAddNewPatientModal,
                               child: Text(
                                 'Add patient',
                                 style: Theme.of(context)

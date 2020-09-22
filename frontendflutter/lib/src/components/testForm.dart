@@ -61,7 +61,7 @@ class _FormWidgetsDemoState extends State<FormWidgetsDemo> {
                           },
                           maxLines: 5,
                         ),
-                        _FormDatePicker(
+                        FormDatePicker(
                           date: date,
                           onChanged: (value) {
                             setState(() {
@@ -153,20 +153,22 @@ class _FormWidgetsDemoState extends State<FormWidgetsDemo> {
   }
 }
 
-class _FormDatePicker extends StatefulWidget {
+class FormDatePicker extends StatefulWidget {
   final DateTime date;
+  final String title;
   final ValueChanged onChanged;
 
-  _FormDatePicker({
+  FormDatePicker({
     this.date,
+    this.title = "Date",
     this.onChanged,
   });
 
   @override
-  _FormDatePickerState createState() => _FormDatePickerState();
+  FormDatePickerState createState() => FormDatePickerState();
 }
 
-class _FormDatePickerState extends State<_FormDatePicker> {
+class FormDatePickerState extends State<FormDatePicker> {
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -178,7 +180,7 @@ class _FormDatePickerState extends State<_FormDatePicker> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Text(
-              'Date',
+              widget.title,
               style: Theme.of(context).textTheme.bodyText1,
             ),
             Text(
