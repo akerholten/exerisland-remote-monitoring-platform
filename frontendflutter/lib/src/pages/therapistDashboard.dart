@@ -39,7 +39,7 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
       temp.email = "email" + patientCount.toString() + "@emailer.com";
       temp.issue = "Knee pain";
       temp.age = patientCount;
-      temp.recommendations = patientCount;
+      temp.recommendationsCount = patientCount;
       temp.recommendationsCompleted = patientCount - 1;
       temp.recentActivity = patientCount.toString() + " hours ago";
 
@@ -58,7 +58,7 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
       temp.issue = newPatient.issue;
       temp.age = DateTime.now().difference(newPatient.dateOfBirth).inDays ~/
           365; // TODO: Rework as this is dumb and not accurate/correct
-      temp.recommendations = patientCount;
+      temp.recommendationsCount = patientCount;
       temp.recommendationsCompleted = patientCount - 1;
       temp.recentActivity = patientCount.toString() + " hours ago";
 
@@ -135,8 +135,8 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
               shrinkWrap: true,
               children: (patients
                   .map((patient) => FlatButton(
-                        onPressed: () => Alerts.showWarning(
-                            context, scaffoldKey, "method not implemented yet"),
+                        onPressed: () => Navigator.of(context).pushNamed(Routes
+                            .SpecificPersonDashboard), // TODO: make this actually go to the id of the person
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -177,7 +177,7 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
                                           .recommendationsCompleted
                                           .toString() +
                                       "/" +
-                                      patient.recommendations.toString()),
+                                      patient.recommendationsCount.toString()),
                                 ),
                                 Container(
                                   alignment: Alignment.center,

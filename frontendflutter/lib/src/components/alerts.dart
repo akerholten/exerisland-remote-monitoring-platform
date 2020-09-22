@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Alerts {
-  static void showAlertSnackbar(GlobalKey<ScaffoldState> scaffoldKey,
+  static void _showAlertSnackbar(GlobalKey<ScaffoldState> scaffoldKey,
       String title, Color color, String message) {
     // Widget okButton = FlatButton(
     //   child: Text("OK"),
@@ -23,18 +23,18 @@ class Alerts {
 
   static void showInfo(BuildContext context,
       GlobalKey<ScaffoldState> scaffoldKey, String message) {
-    showAlertSnackbar(
+    _showAlertSnackbar(
         scaffoldKey, "Info", Theme.of(context).primaryColor, message);
   }
 
   static void showWarning(BuildContext context,
       GlobalKey<ScaffoldState> scaffoldKey, String message) {
-    showAlertSnackbar(scaffoldKey, "Warning", Colors.orange[500], message);
+    _showAlertSnackbar(scaffoldKey, "Warning", Colors.orange[500], message);
   }
 
   static void showError(BuildContext context,
       GlobalKey<ScaffoldState> scaffoldKey, String message) {
-    showAlertSnackbar(
+    _showAlertSnackbar(
         scaffoldKey, "Error", Theme.of(context).errorColor, message);
   }
 }

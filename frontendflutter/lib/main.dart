@@ -5,6 +5,7 @@ import 'src/handlers/loginHandler.dart';
 import 'src/pages/loginPage.dart';
 import 'src/pages/signupPage.dart';
 import 'src/pages/therapistDashboard.dart';
+import 'src/pages/patientDashboard.dart';
 import 'src/pages/forgotPasswordPage.dart';
 import 'src/constants/route_names.dart';
 
@@ -56,6 +57,8 @@ class MyApp extends StatelessWidget {
         Routes.ForgotPassword: (context) => ForgotPasswordPage(),
         Routes.Dashboard: (context) =>
             TherapistDashboard(), // TODO: Solve difference between showing therapist and patient dashboard when going here
+        Routes.SpecificPersonDashboard: (context) =>
+            PatientDashboard(), // TODO: Solve handling ID to retrieve correct person
       },
     );
   }
@@ -113,8 +116,8 @@ class _MyHomePageState extends State<MyHomePage> {
     _tryCookieLogin();
 
     if (!loggedIn) {
-      // currentPage = LoginPage();
-      currentPage = TherapistDashboard();
+      currentPage = LoginPage();
+      // currentPage = PatientDashboard();
     }
 
     // if(_counter % 2 == 1){
