@@ -55,33 +55,44 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
   @override
   Widget build(BuildContext context) {
     double tableItemWidth = (dataTableMaxWidth * 0.75) / columnTitles.length;
-    double tableItemHeight = 50;
+    double tableItemHeight = 70;
 
     ScrollController _controller = new ScrollController();
 
     Widget tableHeader() {
       return Container(
-        padding: EdgeInsets.all(16),
-        child: Row(
+        padding: EdgeInsets.only(left: 16, right: 16),
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: (columnTitles.map(
-            (item) => Container(
-              alignment: Alignment.center,
-              height: tableItemHeight,
-              width: tableItemWidth,
-              child: SelectableText(
-                item,
-                style: Theme.of(context).textTheme.headline6,
-              ),
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: (columnTitles.map(
+                (item) => Container(
+                  alignment: Alignment.center,
+                  height: tableItemHeight,
+                  width: tableItemWidth,
+                  child: SelectableText(
+                    item,
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                ),
+              )).toList(),
             ),
-          )).toList(),
+            Container(
+              height: 1,
+              width: double.maxFinite,
+              color: Theme.of(context).dividerColor,
+            ),
+          ],
         ),
       );
     }
 
     Widget tableRows() {
       return Container(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.only(bottom: 16, left: 16, right: 16),
+        // padding: EdgeInsets.all(16),
         child: SizedBox(
           height: dataTableMaxHeight,
           width: dataTableMaxWidth,
@@ -96,48 +107,60 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
                   .map((patient) => FlatButton(
                         onPressed: () => Alerts.showWarning(
                             context, scaffoldKey, "method not implemented yet"),
-                        child: Row(
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Container(
-                              alignment: Alignment.center,
-                              height: tableItemHeight,
-                              width: tableItemWidth,
-                              child: SelectableText(
-                                  patient.firstName + " " + patient.lastName),
-                            ),
-                            Container(
-                              alignment: Alignment.center,
-                              height: tableItemHeight,
-                              width: tableItemWidth,
-                              child: SelectableText(patient.email),
-                            ),
-                            Container(
-                              alignment: Alignment.center,
-                              height: tableItemHeight,
-                              width: tableItemWidth,
-                              child: SelectableText(patient.issue),
-                            ),
-                            Container(
-                              alignment: Alignment.center,
-                              height: tableItemHeight,
-                              width: tableItemWidth,
-                              child: SelectableText(patient.age.toString()),
-                            ),
-                            Container(
-                              alignment: Alignment.center,
-                              height: tableItemHeight,
-                              width: tableItemWidth,
-                              child: SelectableText(
-                                  patient.recommendationsCompleted.toString() +
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  alignment: Alignment.center,
+                                  height: tableItemHeight,
+                                  width: tableItemWidth,
+                                  child: SelectableText(patient.firstName +
+                                      " " +
+                                      patient.lastName),
+                                ),
+                                Container(
+                                  alignment: Alignment.center,
+                                  height: tableItemHeight,
+                                  width: tableItemWidth,
+                                  child: SelectableText(patient.email),
+                                ),
+                                Container(
+                                  alignment: Alignment.center,
+                                  height: tableItemHeight,
+                                  width: tableItemWidth,
+                                  child: SelectableText(patient.issue),
+                                ),
+                                Container(
+                                  alignment: Alignment.center,
+                                  height: tableItemHeight,
+                                  width: tableItemWidth,
+                                  child: SelectableText(patient.age.toString()),
+                                ),
+                                Container(
+                                  alignment: Alignment.center,
+                                  height: tableItemHeight,
+                                  width: tableItemWidth,
+                                  child: SelectableText(patient
+                                          .recommendationsCompleted
+                                          .toString() +
                                       "/" +
                                       patient.recommendations.toString()),
+                                ),
+                                Container(
+                                  alignment: Alignment.center,
+                                  height: tableItemHeight,
+                                  width: tableItemWidth,
+                                  child: SelectableText(patient.recentActivity),
+                                ),
+                              ],
                             ),
                             Container(
-                              alignment: Alignment.center,
-                              height: tableItemHeight,
-                              width: tableItemWidth,
-                              child: SelectableText(patient.recentActivity),
+                              height: 1,
+                              width: double.maxFinite,
+                              color: Theme.of(context).dividerColor,
                             ),
                           ],
                         ),

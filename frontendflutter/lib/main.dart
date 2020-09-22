@@ -113,8 +113,8 @@ class _MyHomePageState extends State<MyHomePage> {
     _tryCookieLogin();
 
     if (!loggedIn) {
-      currentPage = LoginPage();
-      // currentPage = TherapistDashboard();
+      // currentPage = LoginPage();
+      currentPage = TherapistDashboard();
     }
 
     // if(_counter % 2 == 1){
