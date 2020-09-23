@@ -30,7 +30,61 @@ class _TaskCompletionListState extends State<TaskCompletionList> {
           // Header
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
-            children: [],
+            children: [
+              Container(
+                  padding:
+                      EdgeInsets.only(left: 18, right: 10, top: 10, bottom: 10),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Row of information
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              // x tasks completed out of y text
+                              SelectableText(
+                                widget.patient
+                                        .getTotalTaskCompleted()
+                                        .toString() +
+                                    " tasks completed out of " +
+                                    widget.patient.recommendations.length
+                                        .toString(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline6
+                                    .copyWith(fontSize: 16),
+                              ),
+                              // Show ["all", "completed", "in progress", "expired"] tasks
+                              // Sort by ["Due date", "Completed date", "Progress", "Minigame"]
+                            ]),
+                        // Add new task/recommendation button
+                        Container(
+                          child: SizedBox(
+                            height: 36,
+                            width: 36,
+                            child: FlatButton(
+                              onPressed: () => Alerts.showWarning(
+                                  context,
+                                  widget.scaffoldKey,
+                                  "method not implemented yet"),
+                              child: Container(
+                                child: Icon(
+                                  Icons.add,
+                                  color: Colors.white,
+                                  size: 16,
+                                ),
+                              ),
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                        ),
+                      ])
+
+                  // Add second item which should be progress bar
+
+                  // Add third item which should be divider
+                  )
+            ],
           ),
           // Rows of tasks and their info
           Expanded(
@@ -94,7 +148,7 @@ class _TaskCompletionListState extends State<TaskCompletionList> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Container(
-                                  padding: EdgeInsets.only(bottom: 16, left: 4),
+                                  padding: EdgeInsets.only(bottom: 14, left: 4),
                                   child: SelectableText(
                                     "Task",
                                     style: Theme.of(context).textTheme.caption,
@@ -102,25 +156,33 @@ class _TaskCompletionListState extends State<TaskCompletionList> {
                                 ),
                                 Container(
                                   padding: EdgeInsets.only(
-                                      bottom: 4, left: 4, top: 16),
+                                      bottom: 4, left: 4, top: 14),
                                   child: Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
+                                        // TODO: Edit button
+                                        // TODO: Delete button
+                                        // Card displaying ["Completed", "Not Started", "Expired", "In Progress"]
                                         Card(
                                           color: (recommendation.completedAt !=
                                                   null
                                               ? Colors.green
                                               : Colors.grey),
                                           child: Container(
-                                            padding: EdgeInsets.all(4),
+                                            padding: EdgeInsets.only(
+                                                top: 4,
+                                                bottom: 4,
+                                                right: 8,
+                                                left: 8),
                                             child: Text(
                                               (recommendation.completedAt !=
                                                       null
                                                   ? "Completed"
-                                                  : "Not started"),
+                                                  : "Not Started"),
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .button,
+                                                  .button
+                                                  .copyWith(fontSize: 12),
                                             ),
                                           ),
                                         )

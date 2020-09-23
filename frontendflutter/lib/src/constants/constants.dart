@@ -14,6 +14,17 @@ class Patient {
   List<Session> sessions;
   List<Recommendation> recommendations;
   DateTime dateOfBirth;
+
+  int getTotalTaskCompleted() {
+    int count = 0;
+    recommendations.forEach((rec) {
+      if (rec.completedAt != null) {
+        count++;
+      }
+    });
+
+    return count;
+  }
 }
 
 class Session {
