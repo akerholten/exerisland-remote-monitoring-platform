@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import '../constants/constants.dart';
 import 'testForm.dart';
+import '../components/alerts.dart';
 
 class AddNewPatientModal extends StatefulWidget {
   // final Patient newPatient;
   // final DateTime newPatientDateOfBirth;
   final ValueChanged onChanged;
+  final GlobalKey<ScaffoldState> scaffoldKey;
 
-  AddNewPatientModal({this.onChanged});
+  AddNewPatientModal({this.onChanged, this.scaffoldKey});
 
   @override
   AddNewPatientModalState createState() => AddNewPatientModalState();
@@ -15,6 +17,31 @@ class AddNewPatientModal extends StatefulWidget {
 
 class AddNewPatientModalState extends State<AddNewPatientModal> {
   Patient newPatient = new Patient();
+
+  bool _isDataFilled() {
+    if (newPatient.firstName == null || newPatient.firstName == "") {
+      Alerts.showError(
+          context, widget.scaffoldKey, "First name field must be entered");
+      return false;
+    }
+    if (newPatient.lastName == null || newPatient.lastName == "") {
+      Alerts.showError(
+          context, widget.scaffoldKey, "Last name field must be entered");
+      return false;
+    }
+    if (newPatient.email == null || newPatient.email == "") {
+      Alerts.showError(
+          context, widget.scaffoldKey, "Email field must be entered");
+      return false;
+    }
+    if (newPatient.issue == null || newPatient.issue == "") {
+      Alerts.showError(
+          context, widget.scaffoldKey, "Email field must be entered");
+      return false;
+    }
+
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -156,8 +183,10 @@ class AddNewPatientModalState extends State<AddNewPatientModal> {
                                       color: Theme.of(context).primaryColor,
                                       textColor: Colors.white,
                                       onPressed: (() {
-                                        widget.onChanged(newPatient);
-                                        Navigator.of(context).pop();
+                                        if (_isDataFilled()) {
+                                          widget.onChanged(newPatient);
+                                          Navigator.of(context).pop();
+                                        }
                                       }),
                                     ),
                                   ),

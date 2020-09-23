@@ -4,6 +4,7 @@ import '../components/alerts.dart';
 import '../constants/route_names.dart';
 import '../constants/constants.dart';
 import '../handlers/debugTools.dart';
+import 'package:intl/intl.dart' as intl;
 
 class TaskCompletionList extends StatefulWidget {
   @required
@@ -32,7 +33,8 @@ class _TaskCompletionListState extends State<TaskCompletionList> {
             children: [],
           ),
           // Rows of tasks and their info
-          Scrollbar(
+          Expanded(
+            child: Scrollbar(
               controller: _controller,
               isAlwaysShown: true,
               child: ListView(
@@ -40,76 +42,101 @@ class _TaskCompletionListState extends State<TaskCompletionList> {
                 controller: _controller,
                 shrinkWrap: true,
                 children: (widget.patient.recommendations.map(
-                  (recommendation) => Card(
-                    child: FlatButton(
-                      onPressed: (() => Alerts.showWarning(
-                          context,
-                          widget.scaffoldKey,
-                          "Method not implemented yet")), // TODO: Open specific session here
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Column(
+                  (recommendation) => Container(
+                    padding: EdgeInsets.all(8),
+                    child: Card(
+                      child: FlatButton(
+                        onPressed: (() => Alerts.showWarning(
+                            context,
+                            widget.scaffoldKey,
+                            "Method not implemented yet")), // TODO: Open specific session here
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                SelectableText(
-                                  DebugTools.getListOfMinigames()[
-                                          recommendation.minigameId]
-                                      .name,
-                                  style: Theme.of(context).textTheme.headline5,
+                                Container(
+                                  padding: EdgeInsets.all(4),
+                                  child: SelectableText(
+                                    DebugTools.getListOfMinigames()[
+                                            recommendation.minigameId]
+                                        .name, // TODO: Replace with correct function
+                                    style:
+                                        Theme.of(context).textTheme.headline6,
+                                  ),
                                 ),
-                                SelectableText(
-                                  "Due date: " +
-                                      recommendation.deadline.toString(),
-                                  style: Theme.of(context).textTheme.headline5,
+                                Container(
+                                  padding: EdgeInsets.all(4),
+                                  child: SelectableText(
+                                    "Due date: " +
+                                        intl.DateFormat.yMd()
+                                            .format(recommendation.deadline),
+                                    style:
+                                        Theme.of(context).textTheme.bodyText2,
+                                  ),
                                 ),
-                                SelectableText(
-                                  "Progress: " + "60%",
-                                  // TODO: This progress needs to be retrieved from data backend,
-                                  // or do some magic with the data we have goals vs. results
-                                  style: Theme.of(context).textTheme.headline5,
+                                Container(
+                                  padding: EdgeInsets.all(4),
+                                  child: SelectableText(
+                                    "Progress: " + "60%",
+                                    // TODO: This progress needs to be retrieved from data backend,
+                                    // or do some magic with the data we have goals vs. results
+                                    style:
+                                        Theme.of(context).textTheme.bodyText2,
+                                  ),
                                 ),
                               ],
                             ),
-                          ),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: Column(
+                            Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                SelectableText(
-                                  "Task",
-                                  style: Theme.of(context).textTheme.subtitle1,
+                                Container(
+                                  padding: EdgeInsets.only(bottom: 16, left: 4),
+                                  child: SelectableText(
+                                    "Task",
+                                    style: Theme.of(context).textTheme.caption,
+                                  ),
                                 ),
-                                Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Card(
-                                        color:
-                                            (recommendation.completedAt != null
-                                                ? Colors.green
-                                                : Colors.grey),
-                                        child: Text(
-                                          (recommendation.completedAt != null
-                                              ? "Completed"
-                                              : "Not started"),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .button,
-                                        ),
-                                      )
-                                    ]),
+                                Container(
+                                  padding: EdgeInsets.only(
+                                      bottom: 4, left: 4, top: 16),
+                                  child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Card(
+                                          color: (recommendation.completedAt !=
+                                                  null
+                                              ? Colors.green
+                                              : Colors.grey),
+                                          child: Container(
+                                            padding: EdgeInsets.all(4),
+                                            child: Text(
+                                              (recommendation.completedAt !=
+                                                      null
+                                                  ? "Completed"
+                                                  : "Not started"),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .button,
+                                            ),
+                                          ),
+                                        )
+                                      ]),
+                                ),
                               ],
-                            ),
-                          )
-                        ],
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 )).toList(),
-              ))
+              ),
+            ),
+          )
         ],
       ),
     );

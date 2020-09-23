@@ -66,34 +66,41 @@ class _PatientDashboardState extends State<PatientDashboard> {
             scrollDirection: Axis.horizontal,
             child: Container(
               alignment: Alignment.topCenter,
-              padding:
-                  EdgeInsets.only(left: 130, right: 130, top: 30, bottom: 30),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                     maxWidth: pageMaxWidth, maxHeight: pageMaxHeight * 1.3),
                 child: Flexible(
                   child: Row(
-                      // mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        SizedBox(
-                          height: pageMaxHeight * 0.9,
-                          width: (pageMaxWidth * 0.9) / 2,
-                          child: TaskCompletionList(
-                            scaffoldKey: scaffoldKey,
-                            patient: currentPatient,
-                          ),
-                        ),
+                        // Task completion list
                         Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              SizedBox(
+                              Container(
+                                padding: EdgeInsets.all(8),
+                                alignment: Alignment.topCenter,
+                                height: pageMaxHeight * 0.9,
+                                width: (pageMaxWidth * 0.9) / 2,
+                                child: TaskCompletionList(
+                                  scaffoldKey: scaffoldKey,
+                                  patient: currentPatient,
+                                ),
+                              ),
+                            ]),
+                        Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
                                 // SessionList
+                                padding: EdgeInsets.all(8),
                                 height: (pageMaxHeight * 0.9) / 2,
                                 width: (pageMaxWidth * 0.9) / 2,
                                 child: Card(),
                               ),
-                              SizedBox(
+                              Container(
                                 // TotalActivityGraph
+                                padding: EdgeInsets.all(8),
                                 height: (pageMaxHeight * 0.9) / 2,
                                 width: (pageMaxWidth * 0.9) / 2,
                                 child: Card(),

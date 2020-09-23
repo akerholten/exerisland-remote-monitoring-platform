@@ -72,6 +72,7 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
         builder: (BuildContext context) {
           return AlertDialog(
             content: AddNewPatientModal(
+              scaffoldKey: scaffoldKey,
               onChanged: (value) {
                 setState(() {
                   newPatient = value;

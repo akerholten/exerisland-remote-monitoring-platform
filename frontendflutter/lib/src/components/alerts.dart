@@ -11,6 +11,7 @@ class Alerts {
     // );
 
     SnackBar snackBar = SnackBar(
+      duration: new Duration(seconds: 2),
       backgroundColor: color,
       content: SelectableText(title + ": " + message),
       // actions: [
