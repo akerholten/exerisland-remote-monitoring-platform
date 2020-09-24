@@ -1,41 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Alerts {
-  static void _showAlertSnackbar(GlobalKey<ScaffoldState> scaffoldKey,
-      String title, Color color, String message) {
-    // Widget okButton = FlatButton(
-    //   child: Text("OK"),
-    //   onPressed: () {
-    //     Navigator.of(context).pop();
-    //   },
-    // );
-
-    SnackBar snackBar = SnackBar(
-      duration: new Duration(seconds: 2),
-      backgroundColor: color,
-      content: SelectableText(title + ": " + message),
-      // actions: [
-      //   okButton,
-      // ],
+  static void _showAlertToast(String title, String color, String message) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_LONG,
+      gravity: ToastGravity.BOTTOM_RIGHT,
+      timeInSecForIosWeb: 5,
+      backgroundColor: Colors.orange[500],
+      textColor: Colors.white,
+      webBgColor: color,
+      webShowClose: true,
     );
-
-    scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
-  static void showInfo(BuildContext context,
-      GlobalKey<ScaffoldState> scaffoldKey, String message) {
-    _showAlertSnackbar(
-        scaffoldKey, "Info", Theme.of(context).primaryColor, message);
+  static void showInfo(String message) {
+    _showAlertToast(
+        "Info", "linear-gradient(to right, #2AABFF, #53BAFD)", message);
   }
 
-  static void showWarning(BuildContext context,
-      GlobalKey<ScaffoldState> scaffoldKey, String message) {
-    _showAlertSnackbar(scaffoldKey, "Warning", Colors.orange[500], message);
+  static void showWarning(String message) {
+    _showAlertToast(
+        "Warning", "linear-gradient(to right, #FF8920, #FF9D46)", message);
   }
 
-  static void showError(BuildContext context,
-      GlobalKey<ScaffoldState> scaffoldKey, String message) {
-    _showAlertSnackbar(
-        scaffoldKey, "Error", Theme.of(context).errorColor, message);
+  static void showError(String message) {
+    _showAlertToast(
+        "Error", "linear-gradient(to right, #FF2A2A, #FF4A4A)", message);
   }
 }

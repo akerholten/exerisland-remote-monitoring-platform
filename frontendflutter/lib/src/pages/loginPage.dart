@@ -25,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
       loggedIn = LoginHandler.login(email, password);
 
       if (loggedIn) {
-        // Alerts.showInfo(context, "Logged in was successfull");
+        Alerts.showInfo("Logged in was successfull");
         Navigator.of(context).pushNamed(Routes.Dashboard);
         // TODO: Navigate to overview page
       }

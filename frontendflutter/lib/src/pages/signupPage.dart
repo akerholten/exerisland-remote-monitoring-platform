@@ -17,7 +17,7 @@ class _SignupPageState extends State<SignupPage> {
     setState(() {
       // Do verification of input, password == repeatPassword, valid email etc, possibly salt and hash password here?
       // Do signup - then login / cookie and session creating
-      Alerts.showWarning(context, scaffoldKey, "Method not implemented yet");
+      Alerts.showWarning("Method not implemented yet");
     });
   }
 

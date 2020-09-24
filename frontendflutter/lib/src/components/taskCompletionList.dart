@@ -65,8 +65,6 @@ class _TaskCompletionListState extends State<TaskCompletionList> {
                           width: 36,
                           child: FlatButton(
                             onPressed: () => Alerts.showWarning(
-                                context,
-                                widget.scaffoldKey,
                                 "method not implemented yet"),
                             child: Container(
                               child: Icon(
@@ -117,8 +115,6 @@ class _TaskCompletionListState extends State<TaskCompletionList> {
                     child: Card(
                       child: FlatButton(
                         onPressed: (() => Alerts.showWarning(
-                            context,
-                            widget.scaffoldKey,
                             "Method not implemented yet")), // TODO: Open specific session here
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

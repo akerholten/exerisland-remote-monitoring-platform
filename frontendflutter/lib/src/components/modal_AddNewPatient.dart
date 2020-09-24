@@ -20,23 +20,19 @@ class AddNewPatientModalState extends State<AddNewPatientModal> {
 
   bool _isDataFilled() {
     if (newPatient.firstName == null || newPatient.firstName == "") {
-      Alerts.showError(
-          context, widget.scaffoldKey, "First name field must be entered");
+      Alerts.showError("First name field must be entered");
       return false;
     }
     if (newPatient.lastName == null || newPatient.lastName == "") {
-      Alerts.showError(
-          context, widget.scaffoldKey, "Last name field must be entered");
+      Alerts.showError("Last name field must be entered");
       return false;
     }
     if (newPatient.email == null || newPatient.email == "") {
-      Alerts.showError(
-          context, widget.scaffoldKey, "Email field must be entered");
+      Alerts.showError("Email field must be entered");
       return false;
     }
     if (newPatient.issue == null || newPatient.issue == "") {
-      Alerts.showError(
-          context, widget.scaffoldKey, "Email field must be entered");
+      Alerts.showError("Email field must be entered");
       return false;
     }
 
@@ -186,6 +182,8 @@ class AddNewPatientModalState extends State<AddNewPatientModal> {
                                         if (_isDataFilled()) {
                                           widget.onChanged(newPatient);
                                           Navigator.of(context).pop();
+                                          Alerts.showInfo(
+                                              "Patient added succesfully");
                                         }
                                       }),
                                     ),

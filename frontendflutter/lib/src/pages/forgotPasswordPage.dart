@@ -17,7 +17,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     setState(() {
       // Do verification of input email
       // Do a call to send a new password mail
-      Alerts.showWarning(context, scaffoldKey, "Method not implemented yet");
+      Alerts.showWarning("Method not implemented yet");
     });
   }
 
