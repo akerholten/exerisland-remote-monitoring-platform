@@ -5,6 +5,7 @@ import '../constants/route_names.dart';
 import '../constants/constants.dart';
 import '../handlers/debugTools.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:getwidget/getwidget.dart';
 
 class TaskCompletionList extends StatefulWidget {
   @required
@@ -32,58 +33,73 @@ class _TaskCompletionListState extends State<TaskCompletionList> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
-                  padding:
-                      EdgeInsets.only(left: 18, right: 10, top: 10, bottom: 10),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Row of information
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              // x tasks completed out of y text
-                              SelectableText(
-                                widget.patient
-                                        .getTotalTaskCompleted()
-                                        .toString() +
-                                    " tasks completed out of " +
-                                    widget.patient.recommendations.length
-                                        .toString(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline6
-                                    .copyWith(fontSize: 16),
-                              ),
-                              // Show ["all", "completed", "in progress", "expired"] tasks
-                              // Sort by ["Due date", "Completed date", "Progress", "Minigame"]
-                            ]),
-                        // Add new task/recommendation button
-                        Container(
-                          child: SizedBox(
-                            height: 36,
-                            width: 36,
-                            child: FlatButton(
-                              onPressed: () => Alerts.showWarning(
-                                  context,
-                                  widget.scaffoldKey,
-                                  "method not implemented yet"),
-                              child: Container(
-                                child: Icon(
-                                  Icons.add,
-                                  color: Colors.white,
-                                  size: 16,
-                                ),
-                              ),
-                              color: Theme.of(context).primaryColor,
+                padding:
+                    EdgeInsets.only(left: 18, right: 10, top: 10, bottom: 10),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Row of information
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // x tasks completed out of y text
+                            SelectableText(
+                              widget.patient
+                                      .getTotalTaskCompleted()
+                                      .toString() +
+                                  " tasks completed out of " +
+                                  widget.patient.recommendations.length
+                                      .toString(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline6
+                                  .copyWith(fontSize: 16),
                             ),
+                            // Show ["all", "completed", "in progress", "expired"] tasks
+                            // Sort by ["Due date", "Completed date", "Progress", "Minigame"]
+                          ]),
+                      // Add new task/recommendation button
+                      Container(
+                        child: SizedBox(
+                          height: 36,
+                          width: 36,
+                          child: FlatButton(
+                            onPressed: () => Alerts.showWarning(
+                                context,
+                                widget.scaffoldKey,
+                                "method not implemented yet"),
+                            child: Container(
+                              child: Icon(
+                                Icons.add,
+                                color: Colors.white,
+                                size: 16,
+                              ),
+                            ),
+                            color: Theme.of(context).primaryColor,
                           ),
                         ),
-                      ])
-
-                  // Add second item which should be progress bar
-
-                  // Add third item which should be divider
-                  )
+                      ),
+                    ]),
+              ),
+              // Progress bar
+              Container(
+                padding:
+                    EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 4),
+                child: GFProgressBar(
+                  percentage: widget.patient.getTotalTaskCompleted() /
+                      widget.patient.recommendations.length,
+                  progressBarColor: Colors.green,
+                ),
+              ),
+              // Diviver
+              Container(
+                padding: EdgeInsets.only(top: 12, bottom: 12),
+                child: Container(
+                  height: 1,
+                  width: double.maxFinite,
+                  color: Theme.of(context).dividerColor,
+                ),
+              ),
             ],
           ),
           // Rows of tasks and their info
