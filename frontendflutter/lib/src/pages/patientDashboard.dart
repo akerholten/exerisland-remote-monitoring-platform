@@ -3,6 +3,7 @@ import '../handlers/loginHandler.dart';
 import '../components/alerts.dart';
 import '../components/testForm.dart';
 import '../components/taskCompletionList.dart';
+import '../components/sessionInformationList.dart';
 import '../components/modal_AddNewPatient.dart';
 import '../constants/route_names.dart';
 import '../constants/constants.dart';
@@ -31,7 +32,9 @@ class _PatientDashboardState extends State<PatientDashboard> {
     currentPatient.recommendationsCompleted = patientCount - 1;
     currentPatient.recentActivity = patientCount.toString() + " hours ago";
     currentPatient.recommendations = new List<Recommendation>();
+    currentPatient.sessions = new List<Session>();
 
+    // Add debug recommendations list
     for (int i = 0; i <= 10; i++) {
       Recommendation newRec = new Recommendation();
       newRec.minigameId = i;
@@ -42,6 +45,38 @@ class _PatientDashboardState extends State<PatientDashboard> {
         newRec.completedAt = DateTime.now().subtract(new Duration(days: i * 2));
       }
       currentPatient.recommendations.add(newRec);
+    }
+
+    // Add debug sessions list
+    for (int i = 0; i <= 10; i++) {
+      Session newSession = new Session();
+      newSession.id = i;
+      newSession.createdAt = DateTime.now().subtract(new Duration(days: i));
+      newSession.duration =
+          new Duration(hours: i, minutes: i + 1, seconds: i + 2);
+
+      newSession.activities = new List<Activity>();
+      for (int j = 0; j <= i; j++) {
+        Activity debugActivity = new Activity();
+        debugActivity.id = j;
+        debugActivity.createdAt =
+            DateTime.now().subtract(new Duration(days: i, hours: j));
+        debugActivity.minigameId = j;
+        debugActivity.metrics = new List<Metric>();
+
+        for (int k = 0; k <= 5; k++) {
+          Metric debugMetric = new Metric();
+          debugMetric.id = k;
+          debugMetric.name = "Metric " + k.toString();
+          debugMetric.unit = "Unit " + k.toString();
+          debugMetric.value = k * 17;
+          debugActivity.metrics.add(debugMetric);
+        }
+
+        newSession.activities.add(debugActivity);
+      }
+
+      currentPatient.sessions.add(newSession);
     }
   }
 
@@ -83,7 +118,6 @@ class _PatientDashboardState extends State<PatientDashboard> {
                                 height: pageMaxHeight * 0.9,
                                 width: (pageMaxWidth * 0.9) / 2,
                                 child: TaskCompletionList(
-                                  scaffoldKey: scaffoldKey,
                                   patient: currentPatient,
                                 ),
                               ),
@@ -96,7 +130,12 @@ class _PatientDashboardState extends State<PatientDashboard> {
                                 padding: EdgeInsets.all(8),
                                 height: (pageMaxHeight * 0.9) / 2,
                                 width: (pageMaxWidth * 0.9) / 2,
-                                child: Card(),
+                                child: Card(
+                                  child: SessionInformationList(
+                                    patient: currentPatient,
+                                    dataTableMaxWidth: (pageMaxWidth * 0.9) / 2,
+                                  ),
+                                ),
                               ),
                               Container(
                                 // TotalActivityGraph

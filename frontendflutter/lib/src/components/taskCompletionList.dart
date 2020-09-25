@@ -10,10 +10,8 @@ import 'package:getwidget/getwidget.dart';
 class TaskCompletionList extends StatefulWidget {
   @required
   final Patient patient;
-  @required
-  final GlobalKey<ScaffoldState> scaffoldKey;
 
-  TaskCompletionList({this.patient, this.scaffoldKey});
+  TaskCompletionList({this.patient});
 
   @override
   _TaskCompletionListState createState() => _TaskCompletionListState();
@@ -137,7 +135,7 @@ class _TaskCompletionListState extends State<TaskCompletionList> {
                                   padding: EdgeInsets.all(4),
                                   child: SelectableText(
                                     "Due date: " +
-                                        intl.DateFormat.yMd()
+                                        intl.DateFormat(Constants.dateFormat)
                                             .format(recommendation.deadline),
                                     style:
                                         Theme.of(context).textTheme.bodyText2,

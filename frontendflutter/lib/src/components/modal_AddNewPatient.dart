@@ -7,9 +7,8 @@ class AddNewPatientModal extends StatefulWidget {
   // final Patient newPatient;
   // final DateTime newPatientDateOfBirth;
   final ValueChanged onChanged;
-  final GlobalKey<ScaffoldState> scaffoldKey;
 
-  AddNewPatientModal({this.onChanged, this.scaffoldKey});
+  AddNewPatientModal({this.onChanged});
 
   @override
   AddNewPatientModalState createState() => AddNewPatientModalState();

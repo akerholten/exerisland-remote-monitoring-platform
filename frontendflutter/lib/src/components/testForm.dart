@@ -184,7 +184,7 @@ class FormDatePickerState extends State<FormDatePicker> {
               style: Theme.of(context).textTheme.bodyText1,
             ),
             Text(
-              intl.DateFormat.yMd().format(widget.date),
+              intl.DateFormat("dd/MM/yyyy").format(widget.date),
               style: Theme.of(context).textTheme.subtitle1,
             ),
           ],

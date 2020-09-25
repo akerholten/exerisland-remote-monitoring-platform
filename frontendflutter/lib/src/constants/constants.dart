@@ -1,6 +1,7 @@
 class Constants {
   static const String applicationName = "VR Health and Wellness Monitoring";
   static const String backendURL = "http://localhost:8080";
+  static const String dateFormat = "dd/MM/yyyy";
 }
 
 class Patient {
@@ -29,7 +30,7 @@ class Patient {
 
 class Session {
   int id; // TODO: Possibly string (hash or something for ID)
-  int duration;
+  Duration duration;
   DateTime createdAt;
   List<Activity> activities;
 }
