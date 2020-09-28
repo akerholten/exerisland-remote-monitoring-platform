@@ -48,6 +48,7 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
   }
 
   _addPatientToDatabase() {
+    // TODO: Actually implement this
     setState(() {
       patientCount++;
 
@@ -72,7 +73,7 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
         builder: (BuildContext context) {
           return AlertDialog(
             content: AddNewPatientModal(
-              onChanged: (value) {
+              onPatientAdded: (value) {
                 setState(() {
                   newPatient = value;
                   _addPatientToDatabase();

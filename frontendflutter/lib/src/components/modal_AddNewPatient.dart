@@ -6,9 +6,9 @@ import '../components/alerts.dart';
 class AddNewPatientModal extends StatefulWidget {
   // final Patient newPatient;
   // final DateTime newPatientDateOfBirth;
-  final ValueChanged onChanged;
+  final ValueChanged onPatientAdded;
 
-  AddNewPatientModal({this.onChanged});
+  AddNewPatientModal({this.onPatientAdded});
 
   @override
   AddNewPatientModalState createState() => AddNewPatientModalState();
@@ -31,7 +31,7 @@ class AddNewPatientModalState extends State<AddNewPatientModal> {
       return false;
     }
     if (newPatient.issue == null || newPatient.issue == "") {
-      Alerts.showError("Email field must be entered");
+      Alerts.showError("Issue field must be entered");
       return false;
     }
 
@@ -179,7 +179,7 @@ class AddNewPatientModalState extends State<AddNewPatientModal> {
                                       textColor: Colors.white,
                                       onPressed: (() {
                                         if (_isDataFilled()) {
-                                          widget.onChanged(newPatient);
+                                          widget.onPatientAdded(newPatient);
                                           Navigator.of(context).pop();
                                           Alerts.showInfo(
                                               "Patient added succesfully");

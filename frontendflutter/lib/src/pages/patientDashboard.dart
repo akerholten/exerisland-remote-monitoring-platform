@@ -23,6 +23,15 @@ class _PatientDashboardState extends State<PatientDashboard> {
 
   Patient currentPatient = new Patient();
 
+  void _addRecommendationToDatabase(Recommendation newRec) {
+    setState(() {
+      // TODO: actually implement
+      // Upload recommendation to db
+      // Refresh recommendation list after that is done
+      currentPatient.recommendations.add(newRec);
+    });
+  }
+
   void _debugFillData() {
     currentPatient.firstName = "FirstName" + patientCount.toString();
     currentPatient.lastName = "LastName" + patientCount.toString();
@@ -120,6 +129,8 @@ class _PatientDashboardState extends State<PatientDashboard> {
                                 width: (pageMaxWidth * 0.9) / 2,
                                 child: TaskCompletionList(
                                   patient: currentPatient,
+                                  onRecommendationAdded: (value) =>
+                                      _addRecommendationToDatabase(value),
                                 ),
                               ),
                             ]),

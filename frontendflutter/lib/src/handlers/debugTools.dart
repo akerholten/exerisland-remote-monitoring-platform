@@ -8,7 +8,21 @@ class DebugTools {
       Minigame newMinigame = new Minigame();
       newMinigame.id = i;
       newMinigame.name = "Minigame Name " + i.toString();
+      newMinigame.description = "Minigame description " +
+          newMinigame.id.toString() +
+          ", well thats nice";
       newMinigame.tags = ["Physical", "Reactions", "Cognitive"];
+
+      newMinigame.availableMetrics = new List<Metric>();
+      for (int j = 0; j <= 10; j++) {
+        Metric newMetric = new Metric();
+        newMetric.id = j;
+        newMetric.name = "Metric " + j.toString();
+        newMetric.unit = "meters";
+        newMetric.value = 0;
+        newMinigame.availableMetrics.add(newMetric);
+      }
+
       minigames.add(newMinigame);
     }
 

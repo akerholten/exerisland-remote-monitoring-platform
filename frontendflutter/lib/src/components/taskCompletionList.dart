@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../handlers/loginHandler.dart';
 import '../components/alerts.dart';
 import '../constants/route_names.dart';
+import 'modal_AddNewRecommendation.dart';
 import '../constants/constants.dart';
 import '../handlers/debugTools.dart';
 import 'package:intl/intl.dart' as intl;
@@ -11,13 +12,35 @@ class TaskCompletionList extends StatefulWidget {
   @required
   final Patient patient;
 
-  TaskCompletionList({this.patient});
+  @required
+  final ValueChanged onRecommendationAdded;
+
+  TaskCompletionList({this.patient, this.onRecommendationAdded});
 
   @override
   _TaskCompletionListState createState() => _TaskCompletionListState();
 }
 
 class _TaskCompletionListState extends State<TaskCompletionList> {
+  Recommendation newRec = new Recommendation();
+
+  void _showAddNewRecommendationModal() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: AddNewRecommendationModal(
+              onRecommendationAdded: (value) {
+                setState(() {
+                  newRec = value;
+                  widget.onRecommendationAdded(newRec);
+                });
+              },
+            ),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     ScrollController _controller = new ScrollController();
@@ -62,8 +85,7 @@ class _TaskCompletionListState extends State<TaskCompletionList> {
                           height: 36,
                           width: 36,
                           child: FlatButton(
-                            onPressed: () => Alerts.showWarning(
-                                "method not implemented yet"),
+                            onPressed: _showAddNewRecommendationModal,
                             child: Container(
                               child: Icon(
                                 Icons.add,

@@ -25,7 +25,7 @@ class _ActivityGraphState extends State<ActivityGraph> {
     return Container(
       child: Center(
         child: SelectableText(
-            "WIP: Graph over different metrics might be possible to show here"),
+            "WIP: Graph over different metrics might be possible to show here in the future"),
       ),
     );
   }
