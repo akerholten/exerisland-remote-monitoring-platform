@@ -18,6 +18,7 @@ class AddNewRecommendationModal extends StatefulWidget {
 
 class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
   Recommendation newRec = new Recommendation();
+  Metric tempSelectedMetric = new Metric();
 
   bool miniGameSelected = false;
 
@@ -83,29 +84,53 @@ class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
           Container(
             padding: EdgeInsets.only(bottom: 8),
             child: Card(
-              child: miniGameSelected
-                  ? DropdownButtonFormField(
-                      items: availableMinigames
-                          .firstWhere((e) => e.id == newRec.minigameId)
-                          .availableMetrics
-                          .map(
-                            (metric) => DropdownMenuItem(
-                              child: Text(metric.name),
-                              value: metric.id,
-                            ),
-                          )
-                          .toList(),
-                      decoration: InputDecoration(
-                        hintText: 'Add metric',
-                        labelText: 'Metric',
+              child: SizedBox(
+                width: widgetWidth /
+                    2.2, // TODO: Improve this, and add scrolling list of all the metrics added
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Header saying goals
+                      Container(
+                        padding: EdgeInsets.only(
+                            top: 8, bottom: 8, left: 8, right: 8),
+                        child: SelectableText(
+                          "Goals",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline4
+                              .copyWith(fontSize: 18),
+                        ),
                       ),
-                      onChanged: (value) {
-                        setState(() {
-                          newRec.minigameId = value;
-                        });
-                      },
-                    )
-                  : Container(),
+                      // If minigame select, show dropdown of the different possible metrics that have not been added yet
+                      // Should be row with -> Dropdown(Metric) -> FieldInput(int value) -> + button to add
+                      (miniGameSelected
+                          ? DropdownButtonFormField(
+                              items: availableMinigames
+                                  .firstWhere((e) => e.id == newRec.minigameId)
+                                  .availableMetrics
+                                  .map(
+                                    (metric) => DropdownMenuItem(
+                                      child: Text(metric.name),
+                                      value: metric.id,
+                                    ),
+                                  )
+                                  .toList(),
+                              decoration: InputDecoration(
+                                hintText: 'Add goal',
+                                labelText: 'Goals',
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  tempSelectedMetric = value;
+                                });
+                              },
+                            )
+                          : Container()),
+                      // Show list of the selected metrics and with their selected values
+                    ]),
+              ),
             ),
           ),
           // DEADLINE
@@ -193,7 +218,7 @@ class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
                               alignment: Alignment.centerLeft,
                               child: SelectableText(
                                 'Add recommendation',
-                                style: Theme.of(context).textTheme.headline4,
+                                style: Theme.of(context).textTheme.headline5,
                                 textAlign: TextAlign.left,
                               ),
                             ),
