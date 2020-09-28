@@ -4,6 +4,7 @@ import '../components/alerts.dart';
 import '../components/testForm.dart';
 import '../components/taskCompletionList.dart';
 import '../components/sessionInformationList.dart';
+import '../components/activityGraph.dart';
 import '../components/modal_AddNewPatient.dart';
 import '../constants/route_names.dart';
 import '../constants/constants.dart';
@@ -138,11 +139,15 @@ class _PatientDashboardState extends State<PatientDashboard> {
                                 ),
                               ),
                               Container(
-                                // TotalActivityGraph
+                                // ActivityGraph
                                 padding: EdgeInsets.all(8),
                                 height: (pageMaxHeight * 0.9) / 2,
                                 width: (pageMaxWidth * 0.9) / 2,
-                                child: Card(),
+                                child: Card(
+                                  child: ActivityGraph(
+                                    patient: currentPatient,
+                                  ),
+                                ),
                               ),
                             ])
                       ]),
