@@ -94,7 +94,9 @@ class _PatientDashboardState extends State<PatientDashboard> {
   Widget build(BuildContext context) {
     // double tableItemWidth = (dataTableMaxWidth * 0.75) / columnTitles.length;
     // double tableItemHeight = 70;
-    _debugFillData();
+    if (currentPatient.recommendations == null) {
+      _debugFillData();
+    }
 
     ScrollController _controller = new ScrollController();
 

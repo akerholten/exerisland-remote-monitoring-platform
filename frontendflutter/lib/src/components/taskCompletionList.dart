@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../handlers/loginHandler.dart';
 import '../components/alerts.dart';
+import '../components/buttons/smallButtons.dart';
 import '../constants/route_names.dart';
 import 'modal_AddNewRecommendation.dart';
 import '../constants/constants.dart';
@@ -80,22 +81,8 @@ class _TaskCompletionListState extends State<TaskCompletionList> {
                             // Sort by ["Due date", "Completed date", "Progress", "Minigame"]
                           ]),
                       // Add new task/recommendation button
-                      Container(
-                        child: SizedBox(
-                          height: 36,
-                          width: 36,
-                          child: FlatButton(
-                            onPressed: _showAddNewRecommendationModal,
-                            child: Container(
-                              child: Icon(
-                                Icons.add,
-                                color: Colors.white,
-                                size: 16,
-                              ),
-                            ),
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
+                      PlusButton(
+                        onPressed: _showAddNewRecommendationModal,
                       ),
                     ]),
               ),

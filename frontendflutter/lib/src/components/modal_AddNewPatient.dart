@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+
+import '../components/alerts.dart';
 import '../constants/constants.dart';
 import 'testForm.dart';
-import '../components/alerts.dart';
 
 class AddNewPatientModal extends StatefulWidget {
   // final Patient newPatient;

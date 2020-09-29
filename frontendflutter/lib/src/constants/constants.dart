@@ -47,6 +47,10 @@ class Metric {
   String name;
   int value;
   String unit;
+
+  String nameAndUnit() {
+    return name + " (" + unit + ")";
+  }
 }
 
 class Recommendation {
