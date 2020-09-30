@@ -12,6 +12,8 @@ class AddNewRecommendationModal extends StatefulWidget {
   // final DateTime newPatientDateOfBirth;
   final ValueChanged onRecommendationAdded;
 
+  final GlobalKey<FormFieldState> _metricKey = GlobalKey();
+
   AddNewRecommendationModal({this.onRecommendationAdded});
 
   @override
@@ -23,7 +25,8 @@ class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
   Recommendation newRec = new Recommendation();
   Metric tempSelectedMetric = new Metric();
   int _tempMetricValue;
-  int _metricDropdownValue;
+  int _metricDropdownValue =
+      -1; // hack for now, could not make this value reset properly when choosing new minigame
 
   var _metricValueInputController = TextEditingController();
 
@@ -142,9 +145,23 @@ class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
               ),
               onChanged: (value) {
                 setState(() {
+                  if (value == newRec.minigameId) {
+                    // if we select the same as we already had before, don't do anything
+                    return;
+                  }
                   _resetTempData();
                   newRec.minigameId = value;
                   miniGameSelected = true;
+                  // ----- UGLY hack for now to make sure the selected metric type is available -----
+                  _metricDropdownValue = availableMinigames
+                      .firstWhere((e) => e.id == newRec.minigameId)
+                      .availableMetrics[0]
+                      .id;
+                  tempSelectedMetric = availableMinigames
+                      .firstWhere((e) => e.id == newRec.minigameId)
+                      .availableMetrics
+                      .firstWhere((m) => m.id == _metricDropdownValue);
+                  // ----- end of UGLY hack for now to make sure the selected metric type is available -----
                 });
               },
             ),
@@ -182,6 +199,7 @@ class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
                                   Container(
                                     width: formWidth / 2.1,
                                     child: DropdownButtonFormField(
+                                      key: widget._metricKey,
                                       value: _metricDropdownValue,
                                       items: availableMinigames
                                           .firstWhere(
