@@ -22,7 +22,10 @@ class AddNewRecommendationModal extends StatefulWidget {
 class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
   Recommendation newRec = new Recommendation();
   Metric tempSelectedMetric = new Metric();
-  int tempMetricValue = 0;
+  int _tempMetricValue;
+  int _metricDropdownValue;
+
+  var _metricValueInputController = TextEditingController();
 
   bool miniGameSelected = false;
 
@@ -50,11 +53,10 @@ class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
     // TODO: More has to be done? The forms has to be reset as well and stuff?
     newRec = new Recommendation();
     tempSelectedMetric = new Metric();
-    tempMetricValue = 0;
     newRec.goals = new List<Metric>();
-    miniGameSelected =
-        false; // TODO: Maybe redo so we keep the mini game selected as a variable, and maybe do set state here?
-    // TODO: could also arguably just not reset the minigameSelected variable, but all the others and call setState()
+    _metricDropdownValue = null;
+    _tempMetricValue = null;
+    _metricValueInputController.clear();
   }
 
   void _addMetric() {
@@ -68,15 +70,16 @@ class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
       return;
     }
 
-    if (tempMetricValue <= 0) {
+    if (_tempMetricValue <= 0) {
       Alerts.showWarning(
-          "Metric value must be above 0, was: " + tempMetricValue.toString());
+          "Metric value must be above 0, was: " + _tempMetricValue.toString());
       return;
     }
 
     setState(() {
-      tempSelectedMetric.value = tempMetricValue;
+      tempSelectedMetric.value = _tempMetricValue;
       newRec.goals.add(tempSelectedMetric);
+      _metricValueInputController.clear();
     });
   }
 
@@ -111,7 +114,7 @@ class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
     double widgetWidth = 900;
     double widgetHeight = 800;
 
-    double formWidth = widgetWidth / 2;
+    double formWidth = widgetWidth / 2.3;
     double formHeight = widgetHeight * 0.6;
 
     Widget _form() {
@@ -139,6 +142,7 @@ class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
               ),
               onChanged: (value) {
                 setState(() {
+                  _resetTempData();
                   newRec.minigameId = value;
                   miniGameSelected = true;
                 });
@@ -150,8 +154,7 @@ class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
             padding: EdgeInsets.only(bottom: 8),
             child: Card(
               child: SizedBox(
-                width:
-                    formWidth, // TODO: Improve this, and add scrolling list of all the metrics added
+                width: formWidth,
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,6 +182,7 @@ class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
                                   Container(
                                     width: formWidth / 2.1,
                                     child: DropdownButtonFormField(
+                                      value: _metricDropdownValue,
                                       items: availableMinigames
                                           .firstWhere(
                                               (e) => e.id == newRec.minigameId)
@@ -212,6 +216,7 @@ class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
                                   Container(
                                     width: formWidth / 4.1,
                                     child: TextFormField(
+                                        controller: _metricValueInputController,
                                         decoration: InputDecoration(
                                           hintText: 'Value',
                                           labelText: 'Value',
@@ -223,7 +228,7 @@ class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
                                         ],
                                         onChanged: (value) {
                                           setState(() {
-                                            tempMetricValue = int.parse(value);
+                                            _tempMetricValue = int.parse(value);
                                           });
                                         }),
                                   ),
@@ -342,6 +347,55 @@ class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
       );
     }
 
+    Widget _miniGameInformation() {
+      return Container(
+        width: formWidth,
+        height: formHeight,
+        // padding: EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // MINIGAME TITLE
+            miniGameSelected
+                ? Container(
+                    padding: EdgeInsets.only(top: 4, bottom: 4),
+                    child: SelectableText(
+                        availableMinigames
+                            .firstWhere((e) => e.id == newRec.minigameId)
+                            .name,
+                        style: Theme.of(context).textTheme.headline6),
+                  )
+                : Container(),
+            // DESCRIPTION
+            miniGameSelected
+                ? Container(
+                    padding: EdgeInsets.only(top: 4, bottom: 4),
+                    child: SelectableText(
+                        "Description: " +
+                            availableMinigames
+                                .firstWhere((e) => e.id == newRec.minigameId)
+                                .description,
+                        style: Theme.of(context).textTheme.bodyText1),
+                  )
+                : Container(),
+            // TAGS
+            miniGameSelected
+                ? Container(
+                    padding: EdgeInsets.only(top: 4, bottom: 4),
+                    child: SelectableText(
+                        "Tags: " +
+                            availableMinigames
+                                .firstWhere((e) => e.id == newRec.minigameId)
+                                .getTagsAsStringList(),
+                        style: Theme.of(context).textTheme.bodyText1),
+                  )
+                : Container(),
+          ],
+        ),
+      );
+    }
+
     return Container(
       padding: EdgeInsets.all(16),
       child: SizedBox(
@@ -377,8 +431,10 @@ class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              // Form to fill in about recommendation
                               _form(),
-                              Text("test2"),
+                              // Information about minigame
+                              _miniGameInformation(),
                             ],
                           ),
                           _buttons(),

@@ -10,11 +10,11 @@ class DebugTools {
       newMinigame.name = "Minigame Name " + i.toString();
       newMinigame.description = "Minigame description " +
           newMinigame.id.toString() +
-          ", well thats nice";
+          ", well thats nice and a really long text to add and see how it goes";
       newMinigame.tags = ["Physical", "Reactions", "Cognitive"];
 
       newMinigame.availableMetrics = new List<Metric>();
-      for (int j = 0; j <= 10; j++) {
+      for (int j = i; j <= 10; j++) {
         Metric newMetric = new Metric();
         newMetric.id = j;
         newMetric.name = "Metric " + j.toString();

@@ -73,4 +73,17 @@ class Minigame {
   String name, description;
   List<String> tags;
   List<Metric> availableMetrics;
+
+  String getTagsAsStringList() {
+    String rtrString = "";
+
+    for (int i = 0; i < tags.length; i++) {
+      rtrString += tags[i];
+      if (i != tags.length - 1) {
+        rtrString += ", ";
+      }
+    }
+
+    return rtrString;
+  }
 }
