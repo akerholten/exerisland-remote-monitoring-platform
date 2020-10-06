@@ -2,14 +2,18 @@ package main
 
 import (
 	"context"
-	firebase "firebase.google.com/go"
 	"fmt"
 	"log"
+	"strconv"
+	"time"
+
+	firebase "firebase.google.com/go"
 )
 
+// JSON-serializable test data
 type TestData struct {
-	Name    string
-	Balance int
+	Name    string `json:"name,omitempty"`
+	Balance int    `json:"balance,omitempty"`
 }
 
 func main() {
@@ -45,11 +49,11 @@ func main() {
 
 	testData := TestData{
 		Name:    "TODO-remove",
-		Balance: 1337,
+		Balance: 1235,
 	}
 
 	// UPLOAD DATA EXAMPLE
-	if err := dB.NewRef("testData/todo-remove").Set(ctx, testData); err != nil {
+	if err := dB.NewRef("testData/todo-remove"+strconv.Itoa(time.Now().Second())).Set(ctx, testData); err != nil {
 		log.Fatal(err)
 	}
 
@@ -59,6 +63,37 @@ func main() {
 		log.Fatal(err)
 	}
 	log.Printf("%s has a balance of %d\n", testDataRetrieve.Name, testDataRetrieve.Balance)
+
+	// Retrieve array data example
+	q := dB.NewRef("testData").OrderByKey()
+	result, err := q.GetOrdered(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, child := range result {
+		var dataRetrieved TestData
+
+		if err := child.Unmarshal(&dataRetrieved); err != nil {
+			log.Fatal(err)
+		}
+		log.Printf("key: %s name: %s has a balance of %d\n", child.Key(), dataRetrieved.Name, dataRetrieved.Balance)
+	}
+
+	// Second retrieve array example ordering by sub child data // this requires database rules to comply
+	// ref := dB.NewRef("testData")
+
+	// results, err := ref.OrderByChild("balance").GetOrdered(ctx)
+	// if err != nil {
+	// 	log.Fatalln("Error querying database:", err)
+	// }
+	// for _, r := range results {
+	// 	var testRetrievedData TestData
+	// 	if err := r.Unmarshal(&testRetrievedData); err != nil {
+	// 		log.Fatalln("Error unmarshaling result:", err)
+	// 	}
+	// 	fmt.Print("%s was %d balance and was named %s\n", r.Key(), testRetrievedData.Balance, testRetrievedData.Name)
+	// }
 
 	// Get a reference to the database service
 	// ctx := context.Background() https://vr-health-remotemonitoring.firebaseio.com/
