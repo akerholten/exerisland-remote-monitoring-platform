@@ -1,13 +1,12 @@
 package main
 
 import (
+	"HealthWellnessRemoteMonitoring/internal/db"
 	"context"
 	"fmt"
 	"log"
 	"strconv"
 	"time"
-
-	firebase "firebase.google.com/go"
 )
 
 // JSON-serializable test data
@@ -24,27 +23,40 @@ func main() {
 	// DEBUG STUFF - TODO: remove / move to db.go
 
 	// Set the configuration for your app
-	config := &firebase.Config{
-		DatabaseURL: "https://vr-health-remotemonitoring.firebaseio.com/",
-	}
 
-	app, err := firebase.NewApp(ctx, config)
+	// config := &firebase.Config{
+	// 	DatabaseURL: "https://vr-health-remotemonitoring.firebaseio.com/",
+	// }
+
+	// app, err := firebase.NewApp(ctx, config)
+	// if err != nil {
+	// 	log.Fatalf("error initializing app: %v\n", err)
+	// }
+
+	// client, err := app.Auth(ctx)
+	// if err != nil {
+	// 	log.Fatalf("error getting Auth client: %v\n", err)
+	// }
+
+	// if client != nil {
+	// 	fmt.Println("Client was not nil yay")
+	// }
+
+	// dB, err := app.Database(ctx)
+	// if err != nil {
+	// 	log.Fatalf("error getting dB session: %v\n", err)
+	// }
+
+	config := db.InitConfig()
+
+	app, err := db.CreateAppSession(ctx, config)
 	if err != nil {
-		log.Fatalf("error initializing app: %v\n", err)
+		log.Fatalf("Couldn't get app, error was %v\n", err)
 	}
 
-	client, err := app.Auth(ctx)
+	dB, err := db.CreateDatabaseSession(ctx, app)
 	if err != nil {
-		log.Fatalf("error getting Auth client: %v\n", err)
-	}
-
-	if client != nil {
-		fmt.Println("Client was not nil yay")
-	}
-
-	dB, err := app.Database(ctx)
-	if err != nil {
-		log.Fatalf("error getting dB session: %v\n", err)
+		log.Fatalf("Couldn't get databaseclient, error was %v\n", err)
 	}
 
 	testData := TestData{
