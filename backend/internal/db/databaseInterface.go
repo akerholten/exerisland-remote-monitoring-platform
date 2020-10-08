@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	firebase "firebase.google.com/go"
@@ -83,13 +84,17 @@ type Database interface {
 }
 
 func InitConfig() *firebase.Config {
+	fmt.Println("Setting up config for firebase...")
+
 	config := &firebase.Config{
-		DatabaseURL: "https://vr-health-remotemonitoring.firebaseio.com/",
+		DatabaseURL: "https://vr-health-remotemonitoring.firebaseio.com/", // TODO: move to static global variable?
 	}
 	return config
 }
 
 func CreateAppSession(ctx context.Context, config *firebase.Config) (*firebase.App, error) {
+	fmt.Println("Dialing firebase for app session...")
+
 	app, err := firebase.NewApp(ctx, config)
 	if err != nil {
 		return nil, err
@@ -99,6 +104,8 @@ func CreateAppSession(ctx context.Context, config *firebase.Config) (*firebase.A
 }
 
 func CreateDatabaseSession(ctx context.Context, app *firebase.App) (*firebaseDB.Client, error) {
+	fmt.Println("Dialing firebase for database client session...")
+
 	dB, err := app.Database(ctx)
 	if err != nil {
 		return nil, err
