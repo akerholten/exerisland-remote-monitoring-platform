@@ -1,16 +1,15 @@
 package tools
 
 import (
+	"HealthWellnessRemoteMonitoring/internal/db"
 	"context"
 	"fmt"
 	"log"
 	"strconv"
 	"time"
-
-	firebaseDB "firebase.google.com/go/db"
 )
 
-func DebugFunctionality(dBClient *firebaseDB.Client, ctx context.Context) {
+func DebugFunctionality(ctx context.Context) {
 	// JSON-serializable test data
 	type TestData struct {
 		Name    string `json:"name,omitempty"`
@@ -23,19 +22,19 @@ func DebugFunctionality(dBClient *firebaseDB.Client, ctx context.Context) {
 	}
 
 	// UPLOAD DATA EXAMPLE
-	if err := dBClient.NewRef("testData/todo-remove"+strconv.Itoa(time.Now().Second())).Set(ctx, testData); err != nil {
+	if err := db.DBClient().Database.NewRef("testData/todo-remove"+strconv.Itoa(time.Now().Second())).Set(ctx, testData); err != nil {
 		log.Fatal(err)
 	}
 
 	// RETRIEVE DATA EXAMPLE
 	var testDataRetrieve TestData
-	if err := dBClient.NewRef("testData/todo-remove").Get(ctx, &testDataRetrieve); err != nil {
+	if err := db.DBClient().Database.NewRef("testData/todo-remove").Get(ctx, &testDataRetrieve); err != nil {
 		log.Fatal(err)
 	}
 	log.Printf("%s has a balance of %d\n", testDataRetrieve.Name, testDataRetrieve.Balance)
 
 	// Retrieve array data example
-	q := dBClient.NewRef("testData").OrderByKey()
+	q := db.DBClient().Database.NewRef("testData").OrderByKey()
 	result, err := q.GetOrdered(ctx)
 	if err != nil {
 		log.Fatal(err)
@@ -51,7 +50,7 @@ func DebugFunctionality(dBClient *firebaseDB.Client, ctx context.Context) {
 	}
 
 	// Second retrieve array example ordering by sub child data // this requires database rules to comply
-	ref := dBClient.NewRef("testData")
+	ref := db.DBClient().Database.NewRef("testData")
 
 	results, err := ref.OrderByChild("balance").GetOrdered(ctx)
 	if err != nil {

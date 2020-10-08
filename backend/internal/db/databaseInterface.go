@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	firebase "firebase.google.com/go"
@@ -29,9 +28,9 @@ const (
 )
 
 type Database interface {
-	InitConfig()                                                  // Firebase config setup and return?
-	CreateAppSession(ctx context.Context, config firebase.Config) // Create the app session connection with firebase (might possibly also need firebaseconfig)
-	CreateDatabaseSession(ctx context.Context, app firebase.App)
+	InitConfig()                                                                          // Firebase config setup and return?
+	CreateAppSession(ctx context.Context, config *firebase.Config) (*firebase.App, error) // Create the app session connection with firebase (might possibly also need firebaseconfig)
+	CreateDatabaseSession(ctx context.Context, app *firebase.App) (*firebaseDB.Client, error)
 
 	// ----- Authentication API -----
 	AuthenticateUser(user interface{})  // Basically login
@@ -41,8 +40,8 @@ type Database interface {
 
 	// ----- Unity Game API ----- //@TODO: Replace interfaces with proper structs that is defined?
 	// need to identify the user through some ID that gets created on front-end when added as patient
-	GetRecommendation(id int)
-	GetRecommendations()
+	GetPersonalRecommendation(personalId string, recommendationId int)
+	GetPersonalRecommendations(personalId string)
 
 	PostSession(session interface{}) // The user ID also must be sent? (questionmark)
 	PostActivity(sessionId int, activity interface{})
@@ -64,8 +63,8 @@ type Database interface {
 	GetMetrics(patientId string, sessionId int, activityId int)
 	GetMinigame(minigameId int)
 	GetMinigames()
-	// GetRecommendation(patientId string, recommendationId int) // Duplicate method? wut
-	// GetRecommendations(patientId string) // Duplicate method? wut
+	GetRecommendation(patientId string, recommendationId int) // Duplicate method? wut
+	GetRecommendations(patientId string)                      // Duplicate method? wut
 
 	PostObserver(observer interface{})
 	PostPatient(patient interface{})
@@ -81,35 +80,4 @@ type Database interface {
 	PostMinigame(minigame interface{})
 	UpdateMinigame(minigameId int, minigame interface{})
 	RemoveMinigame(minigameId int) // remove == set a bool as not active (not actually remove)
-}
-
-func InitConfig() *firebase.Config {
-	fmt.Println("Setting up config for firebase...")
-
-	config := &firebase.Config{
-		DatabaseURL: "https://vr-health-remotemonitoring.firebaseio.com/", // TODO: move to static global variable?
-	}
-	return config
-}
-
-func CreateAppSession(ctx context.Context, config *firebase.Config) (*firebase.App, error) {
-	fmt.Println("Dialing firebase for app session...")
-
-	app, err := firebase.NewApp(ctx, config)
-	if err != nil {
-		return nil, err
-	}
-
-	return app, nil
-}
-
-func CreateDatabaseSession(ctx context.Context, app *firebase.App) (*firebaseDB.Client, error) {
-	fmt.Println("Dialing firebase for database client session...")
-
-	dB, err := app.Database(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return dB, nil
 }
