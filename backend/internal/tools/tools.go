@@ -31,8 +31,10 @@ func CreateHash(key string) string {
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
-func GetNewLongUniqueID() (string, error) {
-	kId, err := ksuid.NewRandomWithTime(time.Now())
+func GetNewLongUniqueID(safetyCount int) (string, error) {
+	timeSeed := time.Now()
+	timeSeed.Add(time.Duration(safetyCount) * time.Second)
+	kId, err := ksuid.NewRandomWithTime(timeSeed) // Weird hack to avoid collissions if sent at same time
 	if err != nil {
 		return "", err
 	}

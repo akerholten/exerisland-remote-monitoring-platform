@@ -6,7 +6,6 @@ import (
 	"HealthWellnessRemoteMonitoring/internal/tools"
 	"fmt"
 
-	"context"
 	"log"
 	"net/http"
 
@@ -56,11 +55,11 @@ func main() {
 
 func DebugHandler(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	ctx := context.Background()
-	tools.DebugFunctionality(ctx)
+	// ctx := context.Background()
+	// DebugFunctionality(ctx)
 	log.Printf("Unique short ID: %s", tools.GetNewShortUniqueID(constants.PatientShortIDLength))
 
-	longId, err := tools.GetNewLongUniqueID()
+	longId, err := tools.GetNewLongUniqueID(0)
 	if err != nil {
 		log.Panicf("Error: %v", err)
 	}
