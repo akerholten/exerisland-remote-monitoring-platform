@@ -32,10 +32,19 @@ func main() {
 
 	// fmt.Println("Database client successfully set up!")
 
+	// Booting up router
+	log.Printf("Setting up http mux router ...\n")
 	router := mux.NewRouter().StrictSlash(false)
+
+	//
 	router.HandleFunc("/debugFunc", DebugHandler).Methods(http.MethodGet)
 
-	// // Debug tools
+	// Authentication handlers
+	router.HandleFunc("/signup", SignUpHandler).Methods(http.MethodPost).Headers("Content-Type", "application/json")
+	router.HandleFunc("/manualLogin", NotImplementedHandler).Methods(http.MethodPost).Headers("Content-Type", "application/json")
+	router.HandleFunc("/cookieLogin", NotImplementedHandler).Methods(http.MethodPost).Headers("Content-Type", "application/json")
+
+	// Debug tools
 
 	log.Printf("\nListening through port %v...\n", RemoteMonitoring.Port)
 	// secure false: only when http, don't use in production
@@ -49,4 +58,11 @@ func DebugHandler(w http.ResponseWriter, r *http.Request) {
 	tools.DebugFunctionality(ctx)
 
 	w.Write([]byte("Hello from response writer"))
+}
+
+func NotImplementedHandler(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+
+	w.WriteHeader(http.StatusNoContent)
+	w.Write([]byte("Method not implemented yet"))
 }
