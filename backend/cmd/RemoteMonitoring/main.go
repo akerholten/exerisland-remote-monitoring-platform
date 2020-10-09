@@ -39,14 +39,16 @@ func main() {
 	//
 	router.HandleFunc("/debugFunc", DebugHandler).Methods(http.MethodGet)
 
-	// Authentication handlers
-	router.HandleFunc("/signup", SignUpHandler).Methods(http.MethodPost).Headers("Content-Type", "application/json")
+	// Authentication handlers //SignupHandler Below
+	router.HandleFunc("/signup", NotImplementedHandler).Methods(http.MethodPost).Headers("Content-Type", "application/json")
 	router.HandleFunc("/manualLogin", NotImplementedHandler).Methods(http.MethodPost).Headers("Content-Type", "application/json")
 	router.HandleFunc("/cookieLogin", NotImplementedHandler).Methods(http.MethodPost).Headers("Content-Type", "application/json")
 
 	// Debug tools
 
 	log.Printf("\nListening through port %v...\n", RemoteMonitoring.Port)
+
+	log.Printf("Unique short ID: %s", tools.GetNewShortUniqueID(6))
 	// secure false: only when http, don't use in production
 	//Csrf := csrf.Protect(securecookie.GenerateRandomKey(32),csrf.Secure(false))
 	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%d", RemoteMonitoring.ServerAddress, RemoteMonitoring.Port), router))
