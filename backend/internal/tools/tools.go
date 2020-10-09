@@ -3,9 +3,12 @@ package tools
 import (
 	"crypto/sha512"
 	"encoding/hex"
+	"fmt"
 	"log"
 	"math/rand"
 	"time"
+
+	"github.com/segmentio/ksuid"
 )
 
 var (
@@ -28,9 +31,20 @@ func CreateHash(key string) string {
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
-func GetNewLongUniqueID() string {
+func GetNewLongUniqueID() (string, error) {
+	kId, err := ksuid.NewRandomWithTime(time.Now())
+	if err != nil {
+		return "", err
+	}
+	fmt.Printf("\nID: %s, %s, %d\n", kId.String(), kId.Time().String(), kId.Timestamp())
 
-	return "Not implemented"
+	idParsed, err := ksuid.Parse(kId.String())
+	if err != nil {
+		return "", err
+	}
+
+	fmt.Printf("\nID parsed: %s, %s, %d\n", idParsed.String(), idParsed.Time().String(), idParsed.Timestamp())
+	return kId.String(), nil
 }
 
 // Base 62 ID implementation https://stackoverflow.com/questions/9543715/generating-human-readable-usable-short-but-unique-ids
@@ -41,7 +55,7 @@ func GetNewShortUniqueID(length int) string {
 
 	rand.Seed(seed)
 	for i := 0; i < length; i++ {
-		newId = newId + string([]rune(base62Chars)[rand.Int()%len(base62Chars)])
+		newId = newId + string([]rune(base62Chars)[rand.Int()%36]) // 36 for only upper-case
 	}
 
 	return newId

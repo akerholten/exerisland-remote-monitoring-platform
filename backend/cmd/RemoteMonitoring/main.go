@@ -2,6 +2,7 @@ package main
 
 import (
 	"HealthWellnessRemoteMonitoring/internal/RemoteMonitoring"
+	"HealthWellnessRemoteMonitoring/internal/constants"
 	"HealthWellnessRemoteMonitoring/internal/tools"
 	"fmt"
 
@@ -10,33 +11,22 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	// "HealthWellnessRemoteMonitoring/internal/tools"
+	// "golang.org/x/crypto/acme/autocert" // For HTTPS in production
 )
 
 func main() {
 	// Call main functionality, run app from here
 
-	// fmt.Println("Remote monitoring booting up...")
-
-	// config := db.InitConfig()
-
-	// app, err := db.CreateAppSession(ctx, config)
-	// if err != nil {
-	// 	log.Fatalf("Couldn't get app, error was %v\n", err)
+	// certManager := autocert.Manager{
+	// 	Prompt: autocert.AcceptTOS,
+	// 	Cache:  autocert.DirCache("./certs"),
 	// }
-
-	// dBClient, err := db.CreateDatabaseSession(ctx, app)
-	// if err != nil {
-	// 	log.Fatalf("Couldn't get databaseclient, error was %v\n", err)
-	// }
-
-	// fmt.Println("Database client successfully set up!")
 
 	// Booting up router
 	log.Printf("Setting up http mux router ...\n")
 	router := mux.NewRouter().StrictSlash(false)
 
-	//
+	// Debug func
 	router.HandleFunc("/debugFunc", DebugHandler).Methods(http.MethodGet)
 
 	// Authentication handlers //SignupHandler Below
@@ -48,16 +38,34 @@ func main() {
 
 	log.Printf("\nListening through port %v...\n", RemoteMonitoring.Port)
 
-	log.Printf("Unique short ID: %s", tools.GetNewShortUniqueID(6))
+	// server := &http.Server{
+	// 	Addr:    ":https",
+	// 	Handler: router,
+	// 	TLSConfig: &tls.Config{
+	// 		GetCertificate: certManager.GetCertificate,
+	// 	},
+	// }
+
 	// secure false: only when http, don't use in production
 	//Csrf := csrf.Protect(securecookie.GenerateRandomKey(32),csrf.Secure(false))
+
+	// go http.ListenAndServe(fmt.Sprintf(":http://%s:%d", RemoteMonitoring.ServerAddress, RemoteMonitoring.Port), certManager.HTTPHandler(nil))
 	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%d", RemoteMonitoring.ServerAddress, RemoteMonitoring.Port), router))
+	// log.Fatal(server.ListenAndServeTLS("", ""))
 }
 
 func DebugHandler(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	ctx := context.Background()
 	tools.DebugFunctionality(ctx)
+	log.Printf("Unique short ID: %s", tools.GetNewShortUniqueID(constants.PatientShortIDLength))
+
+	longId, err := tools.GetNewLongUniqueID()
+	if err != nil {
+		log.Panicf("Error: %v", err)
+	}
+
+	log.Printf("Unique short ID: %s", longId)
 
 	w.Write([]byte("Hello from response writer"))
 }
