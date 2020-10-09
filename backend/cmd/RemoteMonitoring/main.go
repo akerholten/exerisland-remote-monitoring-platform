@@ -3,6 +3,7 @@ package main
 import (
 	"HealthWellnessRemoteMonitoring/internal/RemoteMonitoring"
 	"HealthWellnessRemoteMonitoring/internal/constants"
+	"HealthWellnessRemoteMonitoring/internal/handlers"
 	"HealthWellnessRemoteMonitoring/internal/tools"
 	"fmt"
 
@@ -29,7 +30,7 @@ func main() {
 	router.HandleFunc("/debugFunc", DebugHandler).Methods(http.MethodGet)
 
 	// Authentication handlers //SignupHandler Below
-	router.HandleFunc("/signup", NotImplementedHandler).Methods(http.MethodPost).Headers("Content-Type", "application/json")
+	router.HandleFunc("/signup", handlers.SignupHandler).Methods(http.MethodPost).Headers("Content-Type", "application/json")
 	router.HandleFunc("/manualLogin", NotImplementedHandler).Methods(http.MethodPost).Headers("Content-Type", "application/json")
 	router.HandleFunc("/cookieLogin", NotImplementedHandler).Methods(http.MethodPost).Headers("Content-Type", "application/json")
 

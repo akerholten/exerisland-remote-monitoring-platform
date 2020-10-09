@@ -80,7 +80,14 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		signupData.UserID = longId
 
+		err = db.AddToUserTable(signupData, ctx)
+		if err != nil {
+			log.Panicf("User was not added to user table, error: %v", err)
+		}
 	}
+	// else if signupData.UserType == constants.PatientType {
+	// @TODO: Do same as above but with patient interface
+	// }
 
 	// tools.DebugFunctionality(ctx)
 	// log.Printf("Unique short ID: %s", tools.GetNewShortUniqueID(constants.PatientShortIDLength))
@@ -92,5 +99,5 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 
 	// log.Printf("Unique short ID: %s", longId)
 
-	w.Write([]byte("Hello from response writer"))
+	w.Write([]byte("User added!"))
 }

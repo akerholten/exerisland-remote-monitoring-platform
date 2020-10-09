@@ -1,6 +1,12 @@
 package db
 
-import "context"
+import (
+	"HealthWellnessRemoteMonitoring/internal/tools"
+	"context"
+	"fmt"
+	"log"
+	"strconv"
+)
 
 type SignupUser struct {
 	// ID       string `json:"_id,omitempty" valid:"-"`
@@ -25,43 +31,51 @@ type User_Logon struct {
 
 func AddToUserTable(user SignupUser, ctx context.Context) error {
 	userLogon := User_Logon{
-		Email: user.FirstName,
-		Password: user.LastName,
-		Patients: []string,
+		Email:          user.Email,
+		Password:       tools.ConvertPlainPassword(user.Email, user.Password),
+		UserType:       user.UserType,
+		OrganizationID: user.OrganizationID,
+		UserID:         user.UserID,
 	}
 
-	table := DBClient().Database.NewRef(TableObserver)
+	table := DBClient().Database.NewRef(TableUser)
 
 	i := 0
+	var newKey string
 	for {
-		newKey := i.ToString() // ,err := tools.GetNewLongUniqueID(i) // Comment out when done debugging
-		if err != nil {
-			log.Panicf("Error: %v", err)
-		}
+		newKey = strconv.Itoa(i) // ,err := tools.GetNewLongUniqueID(i) // Comment out when done debugging
+		// if err != nil {
+		// 	log.Panicf("Error: %v", err)
+		// }
 
 		// Check if the ID already exist in database
 		newTableEntry := table.Child(newKey)
 
-		var existObserver Observer
-		// If it doesn't exist, we can safely create it
-		err := checkObject.Get(ctx, &existObserver)
-		if err != nil || existObserver == nil {
-			fmt.Printf("Error, or inteded error?: %v", err)
+		var existsObject User_Logon
+
+		err := newTableEntry.Get(ctx, &existsObject)
+		if err != nil {
+			return err
+		}
+
+		// If it doesn't exist, we can safely create it so we break loop
+		if len(existsObject.Email) <= 1 {
 			break
 		}
-		
+
 		i++
 
 		if i == 5 {
-			return "", error.Error("Could not fill Observer DB with new object")
+			return fmt.Errorf("Could not fill user DB with new object, looped through %d times", i)
 		}
 	}
 
-	err := newTableEntry.Set(ctx, observer)
-	if err != nil{
+	err := table.Child(newKey).Set(ctx, userLogon)
+	if err != nil {
 		log.Panicf("Error when setting new data %v", err)
-		return nil, err
+		return err
 	}
 
-	return newKey, nil
+	// Everything went okay, so we return nil
+	return nil
 }
