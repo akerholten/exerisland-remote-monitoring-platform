@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"strconv"
 )
 
 type SignupUser struct {
@@ -42,18 +41,20 @@ func AddToUserTable(user SignupUser, ctx context.Context) error {
 
 	i := 0
 	var newKey string
+	var err error
 	for {
-		newKey = strconv.Itoa(i) // ,err := tools.GetNewLongUniqueID(i) // Comment out when done debugging
-		// if err != nil {
-		// 	log.Panicf("Error: %v", err)
-		// }
+		newKey, err = tools.GetNewLongUniqueID(i) // Comment out when done debugging
+		if err != nil {
+			log.Panicf("Error: %v", err)
+			return err
+		}
 
 		// Check if the ID already exist in database
 		newTableEntry := table.Child(newKey)
 
 		var existsObject User_Logon
 
-		err := newTableEntry.Get(ctx, &existsObject)
+		err = newTableEntry.Get(ctx, &existsObject)
 		if err != nil {
 			return err
 		}
@@ -66,16 +67,17 @@ func AddToUserTable(user SignupUser, ctx context.Context) error {
 		i++
 
 		if i == 5 {
-			return fmt.Errorf("Could not fill user DB with new object, looped through %d times", i)
+			return fmt.Errorf("\nCould not fill logon_user DB with new object, looped through %d times\n", i)
 		}
 	}
 
-	err := table.Child(newKey).Set(ctx, userLogon)
+	err = table.Child(newKey).Set(ctx, userLogon)
 	if err != nil {
 		log.Panicf("Error when setting new data %v", err)
 		return err
 	}
 
 	// Everything went okay, so we return nil
+	log.Printf("New logon_user added at key %s", newKey)
 	return nil
 }

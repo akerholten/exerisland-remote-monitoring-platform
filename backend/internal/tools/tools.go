@@ -3,7 +3,6 @@ package tools
 import (
 	"crypto/sha512"
 	"encoding/hex"
-	"fmt"
 	"log"
 	"math/rand"
 	"time"
@@ -38,14 +37,7 @@ func GetNewLongUniqueID(safetyCount int) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	fmt.Printf("\nID: %s, %s, %d\n", kId.String(), kId.Time().String(), kId.Timestamp())
 
-	idParsed, err := ksuid.Parse(kId.String())
-	if err != nil {
-		return "", err
-	}
-
-	fmt.Printf("\nID parsed: %s, %s, %d\n", idParsed.String(), idParsed.Time().String(), idParsed.Timestamp())
 	return kId.String(), nil
 }
 

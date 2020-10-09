@@ -1,10 +1,10 @@
 package db
 
 import (
+	"HealthWellnessRemoteMonitoring/internal/tools"
 	"context"
 	"fmt"
 	"log"
-	"strconv"
 )
 
 type Observer struct {
@@ -25,23 +25,24 @@ func AddToObserverTable(user SignupUser, ctx context.Context) (string, error) {
 
 	i := 0
 	var newKey string
+	var err error
 	for {
-		newKey = strconv.Itoa(i) // ,err := tools.GetNewLongUniqueID(i) // Comment out when done debugging
-		// if err != nil {
-		// 	log.Panicf("Error: %v", err)
-		// }
+		newKey, err = tools.GetNewLongUniqueID(i) // Comment out when done debugging
+		if err != nil {
+			log.Panicf("Error: %v", err)
+			return "", err
+		}
 
 		// Check if the ID already exist in database
 		newTableEntry := table.Child(newKey)
 
 		var existObserver Observer
 
-		err := newTableEntry.Get(ctx, &existObserver)
+		err = newTableEntry.Get(ctx, &existObserver)
 		if err != nil {
 			return "", err
 		}
 
-		fmt.Printf("%v", existObserver)
 		// If it doesn't exist, we can safely create it so we break loop
 		if len(existObserver.FirstName) <= 1 {
 			break
@@ -50,15 +51,17 @@ func AddToObserverTable(user SignupUser, ctx context.Context) (string, error) {
 		i++
 
 		if i == 5 {
-			return "", fmt.Errorf("Could not fill Observer DB with new object, looped through %d times", i)
+			return "", fmt.Errorf("\nCould not fill Observer DB with new object, looped through %d times\n", i)
 		}
 	}
 
-	err := table.Child(newKey).Set(ctx, observer)
+	err = table.Child(newKey).Set(ctx, observer)
 	if err != nil {
 		log.Panicf("Error when setting new data %v", err)
 		return "", err
 	}
 
+	// Everything went okay
+	log.Printf("New observer added at key %s", newKey)
 	return newKey, nil
 }

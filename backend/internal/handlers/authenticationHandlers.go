@@ -82,7 +82,7 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 
 		err = db.AddToUserTable(signupData, ctx)
 		if err != nil {
-			log.Panicf("User was not added to user table, error: %v", err)
+			log.Panicf("\nUser was not added to user table, error: %v\n", err)
 		}
 	}
 	// else if signupData.UserType == constants.PatientType {
