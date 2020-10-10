@@ -79,6 +79,7 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 		log.Panicf("Error: %v", err) // return should be called here and I think panic does so
 	}
 	if exists { // If the user actually already exists, it can't be created again
+		w.WriteHeader(http.StatusConflict)
 		w.Write([]byte("Account with that email already exist"))
 		return
 	}

@@ -3,7 +3,6 @@ package db
 import (
 	"HealthWellnessRemoteMonitoring/internal/tools"
 	"context"
-	"errors"
 	"fmt"
 	"log"
 )
@@ -114,7 +113,7 @@ func AuthenticateUser(form LoginForm, ctx context.Context) (bool, string, error)
 
 	// TODO: return this error here, or is that kind of wrong?
 	// As this will be sent many times when people type wrong password etc
-	return false, "", errors.New("User not found")
+	return false, "", nil
 }
 
 func IsExistingUser(email string, ctx context.Context) (bool, error) {
