@@ -3,6 +3,7 @@ package handlers
 import (
 	"HealthWellnessRemoteMonitoring/internal/constants"
 	"HealthWellnessRemoteMonitoring/internal/db"
+	"HealthWellnessRemoteMonitoring/internal/tools"
 	"context"
 	"encoding/json"
 	"io/ioutil"
@@ -73,6 +74,18 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 
 	ctx := context.Background()
 
+	exists, err := db.IsExistingUser(signupData.Email, ctx)
+	if err != nil {
+		log.Panicf("Error: %v", err) // return should be called here and I think panic does so
+	}
+	if exists { // If the user actually already exists, it can't be created again
+		w.Write([]byte("Account with that email already exist"))
+		return
+	}
+
+	// Salting and hashing password
+	signupData.Password = tools.ConvertPlainPassword(signupData.Email, signupData.Password)
+
 	if signupData.UserType == constants.ObserverType {
 		longId, err := db.AddToObserverTable(signupData, ctx)
 		if err != nil {
@@ -100,4 +113,91 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 	// log.Printf("Unique short ID: %s", longId)
 
 	w.Write([]byte("User added!"))
+}
+
+func ManualLoginHandler(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	if r.Header.Get("Content-Type") != "application/json" {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	var form db.LoginForm
+
+	respBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+
+	err = json.Unmarshal(respBody, &form)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Printf("Error unmarshaling: %s, error: %v", string(respBody), err)
+	}
+
+	if len(form.Password) < 8 {
+		_, err := w.Write([]byte("Wrong email or password"))
+		if err != nil {
+			log.Printf("Error when password was too short and writing bytes: %v", err)
+		}
+		return
+	}
+
+	if len(form.Password) > 100 {
+		_, err := w.Write([]byte("Wrong email or password"))
+		if err != nil {
+			log.Printf("Error when password was too long and writing bytes: %v", err)
+		}
+		return
+	}
+
+	if len(form.Email) < 8 {
+		_, err := w.Write([]byte("Wrong email or password"))
+		if err != nil {
+			log.Printf("Error when email was too short and writing bytes: %v", err)
+		}
+		return
+	}
+
+	if len(form.Email) > 100 {
+		_, err := w.Write([]byte("Wrong email or password"))
+		if err != nil {
+			log.Printf("Error when email was too long and writing bytes: %v", err)
+		}
+		return
+	}
+
+	valid, err := validator.ValidateStruct(form)
+	if err != nil || !valid {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	ctx := context.Background()
+
+	// Salting and hashing password
+	form.Password = tools.ConvertPlainPassword(form.Email, form.Password)
+
+	authenticated, id, err := db.AuthenticateUser(form, ctx)
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Failed"))
+		log.Panicf("Error logging in, err: %v", err)
+		return
+	}
+
+	if !authenticated {
+		w.WriteHeader(http.StatusNotFound)
+		w.Write([]byte("Failed"))
+		return
+	}
+
+	// TODO: Create cookie here (on client, and store on DB, delete old cookies on same hardware) and that links to the users ID
+
+	log.Printf("Logged in to user with ID: %s", id)
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Success"))
 }

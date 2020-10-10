@@ -21,7 +21,7 @@ const (
 	TableMinigame = "minigame"
 )
 
-// COOKIE Const
+// COOKIE Const // TODO: possibly move to another package for cookie management, or just a new file
 const (
 	// CookieName ...
 	CookieName = "HealthWellnessMonitoring"

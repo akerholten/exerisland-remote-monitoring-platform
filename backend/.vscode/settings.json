@@ -1,0 +1,7 @@
+{
+    "go.lintTool": "golangci-lint",
+    "editor.hover.delay": 100,
+    "go.autocompleteUnimportedPackages": true,
+    "go.formatTool": "goimports",
+    "go.useLanguageServer": true
+}

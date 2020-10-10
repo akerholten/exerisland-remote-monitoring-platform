@@ -3,6 +3,7 @@ package db
 import (
 	"HealthWellnessRemoteMonitoring/internal/tools"
 	"context"
+	"errors"
 	"fmt"
 	"log"
 )
@@ -28,10 +29,16 @@ type User_Logon struct {
 	UserID         string `json:"userID" valid:"alphanum, optional"`
 }
 
+type LoginForm struct {
+	Email    string `json:"email" valid:"email, required"`
+	Password string `json:"password" valid:"alphanum, required"`
+}
+
+// AddToUserTable adds the user to logon_user table which is used for logging in
 func AddToUserTable(user SignupUser, ctx context.Context) error {
 	userLogon := User_Logon{
 		Email:          user.Email,
-		Password:       tools.ConvertPlainPassword(user.Email, user.Password),
+		Password:       user.Password,
 		UserType:       user.UserType,
 		OrganizationID: user.OrganizationID,
 		UserID:         user.UserID,
@@ -80,4 +87,71 @@ func AddToUserTable(user SignupUser, ctx context.Context) error {
 	// Everything went okay, so we return nil
 	log.Printf("New logon_user added at key %s", newKey)
 	return nil
+}
+
+// AuthenticateUser verifies that the user exists in the database logon entry with
+// email and password, and then it returns the ID of that user, returns error if something went wrong
+func AuthenticateUser(form LoginForm, ctx context.Context) (bool, string, error) {
+
+	table := DBClient().Database.NewRef(TableUser)
+
+	results, err := table.OrderByKey().GetOrdered(ctx)
+	if err != nil {
+		return false, "", err
+	}
+
+	for _, r := range results {
+		var userEntry User_Logon
+		if err := r.Unmarshal(&userEntry); err != nil {
+			return false, "", err
+		}
+
+		// If there is a match entry, authentication is successfull
+		if form.Email == userEntry.Email && form.Password == userEntry.Password {
+			return true, r.Key(), nil
+		}
+	}
+
+	// TODO: return this error here, or is that kind of wrong?
+	// As this will be sent many times when people type wrong password etc
+	return false, "", errors.New("User not found")
+}
+
+func IsExistingUser(email string, ctx context.Context) (bool, error) {
+	table := DBClient().Database.NewRef(TableUser)
+
+	results, err := table.OrderByKey().GetOrdered(ctx)
+	if err != nil {
+		return false, err
+	}
+
+	for _, r := range results {
+		var userEntry User_Logon
+		if err := r.Unmarshal(&userEntry); err != nil {
+			return false, err
+		}
+
+		// If there is a match entry, user exists
+		if email == userEntry.Email {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
+func GetUser(id string, ctx context.Context) (*User_Logon, error) {
+	var user User_Logon
+
+	err := DBClient().Database.NewRef(TableUser).Get(ctx, &user)
+	if err != nil {
+		return nil, err
+	}
+
+	// If user did not exist
+	if len(user.Email) <= 1 {
+		return nil, nil
+	}
+
+	return &user, nil
 }

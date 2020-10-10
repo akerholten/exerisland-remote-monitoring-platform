@@ -39,6 +39,8 @@ type Recommendation struct {
 
 func AddToPatientTable(user SignupUser) (string, error) {
 
+	// TODO: Implement similarly to observerInterface adding to observertable
+	// But also add other stuff here, like the shortID
 	log.Printf("Method not implemented yet, user was: %s\n", user.Email)
 
 	return "", nil
