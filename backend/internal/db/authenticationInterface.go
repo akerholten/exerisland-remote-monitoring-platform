@@ -168,7 +168,7 @@ func AddToCookieTable(cookie CookieData, ctx context.Context) error {
 	}
 
 	// Everything went okay, so we return nil
-	log.Printf("New cookie added at key/token %s", newKey)
+	log.Printf("New cookie added at key/token %s", cookie.Token)
 	return nil
 }
 

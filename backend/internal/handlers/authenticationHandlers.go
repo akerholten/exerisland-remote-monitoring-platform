@@ -219,6 +219,13 @@ func ManualLoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	err = db.AddToCookieTable(dbCookie, ctx)
+	if err != nil {
+		log.Printf("Could not add cookie to db table, err was: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
 	log.Printf("Logged in to user with ID: %s", id)
 
 	w.WriteHeader(http.StatusOK)
