@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"HealthWellnessRemoteMonitoring/internal/constants"
+	"HealthWellnessRemoteMonitoring/internal/cookie"
 	"HealthWellnessRemoteMonitoring/internal/db"
 	"HealthWellnessRemoteMonitoring/internal/tools"
 	"context"
@@ -196,6 +197,27 @@ func ManualLoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// TODO: Create cookie here (on client, and store on DB, delete old cookies on same hardware) and that links to the users ID
+	encodedCookie, err := cookie.CreateCookie(w, id, r.URL.Path)
+	if err != nil {
+		log.Printf("Could not create cookie, err was: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	dbCookie := db.CookieData{
+		UserID: id,
+		Token:  encodedCookie,
+	}
+
+	// TODO: only delete cookies that are related to the specific hardware of the user
+	// currently it will log out from all other instances when logging in to a new instance on new hardware/computer
+	// TODO: possibly this could even be temporarily removed and that would be okay for now
+	err = db.DeleteAllUserCookies(id, ctx)
+	if err != nil {
+		log.Printf("Could not delete user cookies, err was: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
 	log.Printf("Logged in to user with ID: %s", id)
 

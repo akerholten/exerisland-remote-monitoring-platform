@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"time"
 
 	firebase "firebase.google.com/go"
 	firebaseDB "firebase.google.com/go/db"
@@ -17,16 +16,10 @@ const (
 	TablePatient = "observer"
 	// User ...
 	TableUser = "logon_user"
-	// User ...
+	// Minigame ...
 	TableMinigame = "minigame"
-)
-
-// COOKIE Const // TODO: possibly move to another package for cookie management, or just a new file
-const (
-	// CookieName ...
-	CookieName = "HealthWellnessMonitoring"
-	// CookieExpiration ...
-	CookieExpiration = time.Hour * 24 * 7
+	// Cookie ...
+	TableCookies = "cookies"
 )
 
 type Database interface {

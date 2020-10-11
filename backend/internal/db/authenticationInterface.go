@@ -33,6 +33,11 @@ type LoginForm struct {
 	Password string `json:"password" valid:"alphanum, required"`
 }
 
+type CookieData struct {
+	UserID string `json:"userID" valid:"-, required"`
+	Token  string `json:"token" valid:"alphanum, required"`
+}
+
 // AddToUserTable adds the user to logon_user table which is used for logging in
 func AddToUserTable(user SignupUser, ctx context.Context) error {
 	userLogon := User_Logon{
@@ -91,7 +96,6 @@ func AddToUserTable(user SignupUser, ctx context.Context) error {
 // AuthenticateUser verifies that the user exists in the database logon entry with
 // email and password, and then it returns the ID of that user, returns error if something went wrong
 func AuthenticateUser(form LoginForm, ctx context.Context) (bool, string, error) {
-
 	table := DBClient().Database.NewRef(TableUser)
 
 	results, err := table.OrderByKey().GetOrdered(ctx)
@@ -111,8 +115,6 @@ func AuthenticateUser(form LoginForm, ctx context.Context) (bool, string, error)
 		}
 	}
 
-	// TODO: return this error here, or is that kind of wrong?
-	// As this will be sent many times when people type wrong password etc
 	return false, "", nil
 }
 
@@ -142,15 +144,98 @@ func IsExistingUser(email string, ctx context.Context) (bool, error) {
 func GetUser(id string, ctx context.Context) (*User_Logon, error) {
 	var user User_Logon
 
-	err := DBClient().Database.NewRef(TableUser).Get(ctx, &user)
+	err := DBClient().Database.NewRef(TableUser).Child(id).Get(ctx, &user)
 	if err != nil {
 		return nil, err
 	}
 
 	// If user did not exist
 	if len(user.Email) <= 1 {
-		return nil, nil
+		return nil, nil // TODO: possibly notfound error to be logged or something
 	}
 
 	return &user, nil
+}
+
+// ----- Cookie stuff -----
+
+func AddToCookieTable(cookie CookieData, ctx context.Context) error {
+	table := DBClient().Database.NewRef(TableCookies)
+
+	err := table.Child(cookie.Token).Set(ctx, cookie)
+	if err != nil {
+		return err
+	}
+
+	// Everything went okay, so we return nil
+	log.Printf("New cookie added at key/token %s", newKey)
+	return nil
+}
+
+// GetCookie uses decoded cookie data and returns encoded if found
+func GetCookie(cookie CookieData, ctx context.Context) (*CookieData, error) {
+	var entry CookieData
+
+	// Assumption here is that the cookie.Token is the same as the entry.Key() in db
+	err := DBClient().Database.NewRef(TableCookies).Child(cookie.Token).Get(ctx, &entry)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(entry.UserID) <= 1 {
+		return nil, nil // TODO: possibly notfound error to be logged or something
+	}
+
+	return &entry, nil
+}
+
+func GetUserFromCookie(cookie CookieData, ctx context.Context) (*User_Logon, error) {
+	var cookieEntry CookieData
+	// Assumption here is that the cookie.Token is the same as the entry.Key() in db
+	err := DBClient().Database.NewRef(TableCookies).Child(cookie.Token).Get(ctx, &cookieEntry)
+	if err != nil {
+		return nil, err
+	}
+
+	// Gets the user with the ID from token and there check if it exists, etc
+	return GetUser(cookieEntry.UserID, ctx)
+}
+
+// DeleteCookie deletes all cookies with specific token (used for e.g. logout)
+func DeleteCookie(token string, ctx context.Context) error {
+	err := DBClient().Database.NewRef(TableCookies).Child(token).Delete(ctx)
+	if err != nil {
+		return err
+	}
+
+	// Everything was successfull, so we return nil
+	return nil
+}
+
+// DeleteCookie deletes all cookies related to specific user)
+func DeleteAllUserCookies(id string, ctx context.Context) error {
+	table := DBClient().Database.NewRef(TableCookies)
+
+	results, err := table.OrderByKey().GetOrdered(ctx)
+	if err != nil {
+		return err
+	}
+
+	for _, r := range results {
+		var cookieEntry CookieData
+		if err := r.Unmarshal(&cookieEntry); err != nil {
+			return err
+		}
+
+		// If there is a match entry, we delete that entry
+		if id == cookieEntry.UserID {
+			err = table.Child(r.Key()).Delete(ctx)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	// Everything was successfull, so we return nil
+	return nil
 }
