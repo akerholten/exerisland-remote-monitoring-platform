@@ -20,6 +20,11 @@ type SignupUser struct {
 	// Response string        `json:"captcha" valid:"ascii, required"` // CAPTCHA?
 }
 
+// Data base entry of User_Logon
+// TODO: possibly have another strcut that does not contain password, etc, that can be returned?
+// Atleast need some to verify userType on front-end to show correct information, could
+// potentially be a new endpoint/handler instead though, that return either
+// "observer" or "patient"/"user" purely
 type User_Logon struct {
 	Email          string `json:"email" valid:"email, required"`
 	Password       string `json:"password" valid:"alphanum, required"`
@@ -172,12 +177,13 @@ func AddToCookieTable(cookie CookieData, ctx context.Context) error {
 	return nil
 }
 
-// GetCookie uses decoded cookie data and returns encoded if found
+// GetCookie uses decoded cookie data and returns decoded if found
 func GetCookie(cookie CookieData, ctx context.Context) (*CookieData, error) {
 	var entry CookieData
 
 	// Assumption here is that the cookie.Token is the same as the entry.Key() in db
 	err := DBClient().Database.NewRef(TableCookies).Child(cookie.Token).Get(ctx, &entry)
+
 	if err != nil {
 		return nil, err
 	}

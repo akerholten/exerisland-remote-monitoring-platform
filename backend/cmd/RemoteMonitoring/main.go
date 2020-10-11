@@ -32,8 +32,8 @@ func main() {
 	// Authentication handlers //SignupHandler Below
 	router.HandleFunc("/signup", handlers.SignupHandler).Methods(http.MethodPost).Headers("Content-Type", "application/json")
 	router.HandleFunc("/manualLogin", handlers.ManualLoginHandler).Methods(http.MethodPost).Headers("Content-Type", "application/json")
-	router.HandleFunc("/logout", NotImplementedHandler).Methods(http.MethodPost).Headers("Content-Type", "application/json")
-	router.HandleFunc("/cookieLogin", NotImplementedHandler).Methods(http.MethodPost).Headers("Content-Type", "application/json")
+	router.HandleFunc("/logout", handlers.LogoutHandler).Methods(http.MethodPost)
+	router.HandleFunc("/cookieLogin", handlers.CookieLoginHandler).Methods(http.MethodPost)
 
 	// Debug tools
 

@@ -182,7 +182,6 @@ func ManualLoginHandler(w http.ResponseWriter, r *http.Request) {
 	form.Password = tools.ConvertPlainPassword(form.Email, form.Password)
 
 	authenticated, id, err := db.AuthenticateUser(form, ctx)
-
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Failed"))
@@ -204,9 +203,19 @@ func ManualLoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	dbCookie := db.CookieData{
+	// THIS is a bit messy, but keep it for now if it works
+	// (issue is that cookie must be encoded on user's end, but decoded on DB end) (a bit weird structure here)
+
+	tempEncodedDbCookie := db.CookieData{
 		UserID: id,
 		Token:  encodedCookie,
+	}
+
+	decodedDbCookie, err := cookie.DecodeCookieData(tempEncodedDbCookie)
+	if err != nil {
+		log.Printf("Error decoding cookie data, err was: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 
 	// TODO: only delete cookies that are related to the specific hardware of the user
@@ -219,7 +228,7 @@ func ManualLoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = db.AddToCookieTable(dbCookie, ctx)
+	err = db.AddToCookieTable(decodedDbCookie, ctx)
 	if err != nil {
 		log.Printf("Could not add cookie to db table, err was: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -229,5 +238,73 @@ func ManualLoginHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Logged in to user with ID: %s", id)
 
 	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Success"))
+}
+
+func CookieLoginHandler(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+
+	clientCookie, err := cookie.FetchCookie(r)
+	if err != nil {
+		// This could mean that the cookie is not present so technically not a internal server error, but could be bad request
+		log.Printf("Could not fetch cookie, err was: %v", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	ctx := context.Background()
+
+	err = cookie.AuthenticateCookie(w, clientCookie, ctx)
+	if err != nil {
+		log.Printf("Could not authenticate cookie, err was: %v", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// TODO: Potentially return a JSON-object containing some data about the user to use on front-end here
+	// such as user type ("observer", "patient"/"user"), names, etc, etc? for now just success
+
+	w.WriteHeader(http.StatusAccepted)
+	w.Write([]byte("Success"))
+}
+
+func LogoutHandler(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+
+	clientCookie, err := cookie.FetchCookie(r)
+	if err != nil {
+		// This could mean that the cookie is not present so technically not a internal server error, but could be bad request
+		log.Printf("Could not fetch cookie, err was: %v", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	err = cookie.DeleteClientCookie(w, r.URL.Path)
+	if err != nil {
+		log.Printf("Could not delete client cookie, err was: %v", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	ctx := context.Background()
+
+	err = cookie.AuthenticateCookie(w, clientCookie, ctx)
+	if err != nil {
+		log.Printf("Could not authenticate client cookie, err was: %v", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	err = db.DeleteCookie(clientCookie.Token, ctx)
+	if err != nil {
+		log.Printf("Could not delete db cookie with token, err was: %v", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// TODO: Potentially return a JSON-object containing some data about the user to use on front-end here
+	// such as user type ("observer", "patient"/"user"), names, etc, etc? for now just success
+
+	w.WriteHeader(http.StatusAccepted)
 	w.Write([]byte("Success"))
 }

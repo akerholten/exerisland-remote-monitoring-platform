@@ -39,7 +39,8 @@ func InitNewManager() *RMCookieManager {
 	// Might use some persistent hash and block keys here later? for persistent cookie verification
 	// this will create new instance everytime the server reboots etc as of now (redendering previous cookies useless)
 	// That again might be a security measurement so yeah
-	manager.secureCookieInstance = securecookie.New(securecookie.GenerateRandomKey(64), securecookie.GenerateRandomKey(32))
+	log.Printf("Initializing new cookie manager ...")
+	manager.secureCookieInstance = securecookie.New(securecookie.GenerateRandomKey(32), securecookie.GenerateRandomKey(32))
 
 	return &manager
 }
@@ -84,7 +85,7 @@ func CreateCookie(w http.ResponseWriter, id string, urlString string) (string, e
 			Value:    encoded,
 			Domain:   u.Hostname(),
 			Expires:  time.Now().Add(constants.CookieExpiration),
-			Secure:   false, // TODO: Should this be true? maybe?
+			Secure:   false, // TODO: Should this be true? maybe? // WAS false
 			HttpOnly: true,
 		}
 
@@ -111,7 +112,7 @@ func DeleteClientCookie(w http.ResponseWriter, urlString string) error {
 			Value:    encoded,
 			Domain:   u.Hostname(),
 			Expires:  time.Now(),
-			Secure:   true,
+			Secure:   false,
 			HttpOnly: true,
 		}
 
@@ -163,19 +164,18 @@ func AuthenticateCookie(w http.ResponseWriter, clientCookie db.CookieData, ctx c
 	if len(clientCookie.Token) <= 0 {
 		return errors.New("Invalid token in cookie")
 	}
-	encodedDbCookie, err := db.GetCookie(clientCookie, ctx)
+
+	// GetCookie will return nil if the cookie does not exist
+	dbCookie, err := db.GetCookie(clientCookie, ctx)
 	if err != nil {
 		log.Panicf("Something went wrong getting cookie, err: %v", err)
 	}
 
-	dbData, err := DecodeCookieData(*encodedDbCookie)
-	if err != nil {
-		log.Panicf("Something went wrong decoding cookie, err: %v", err)
-	}
-
 	// If not authenticated
-	if dbData != clientCookie {
+	if dbCookie == nil {
 		return errors.New("clientCookie did not match db")
 	}
+
+	// Everything went alright, successfully authenticated, so we return nil
 	return nil
 }
