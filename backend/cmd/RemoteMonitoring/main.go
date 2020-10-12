@@ -6,10 +6,12 @@ import (
 	"HealthWellnessRemoteMonitoring/internal/handlers"
 	"HealthWellnessRemoteMonitoring/internal/tools"
 	"fmt"
+	"os"
 
 	"log"
 	"net/http"
 
+	gorillaHandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	// "golang.org/x/crypto/acme/autocert" // For HTTPS in production
 )
@@ -26,12 +28,21 @@ func main() {
 	log.Printf("Setting up http mux router ...\n")
 	router := mux.NewRouter().StrictSlash(false)
 
+	// Setting up CORS settings
+	// see https://stackoverflow.com/questions/40985920/making-golang-gorilla-cors-handler-work
+	// RemoteMonitoring_ORIGIN_ALLOWED is like `scheme://dns[:port]`, or `*` (insecure)
+
+	log.Printf("Origin allowed is: %s", os.Getenv("RemoteMonitoring_ORIGIN_ALLOWED"))
+	headersOk := gorillaHandlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type"})
+	originsOk := gorillaHandlers.AllowedOrigins([]string{os.Getenv("RemoteMonitoring_ORIGIN_ALLOWED"), "http://localhost:3000"}) //os.Getenv("RemoteMonitoring_ORIGIN_ALLOWED")
+	methodsOk := gorillaHandlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
+
 	// Debug func
 	router.HandleFunc("/debugFunc", DebugHandler).Methods(http.MethodGet)
 
 	// Authentication handlers //SignupHandler Below
-	router.HandleFunc("/signup", handlers.SignupHandler).Methods(http.MethodPost).Headers("Content-Type", "application/json")
-	router.HandleFunc("/manualLogin", handlers.ManualLoginHandler).Methods(http.MethodPost).Headers("Content-Type", "application/json")
+	router.HandleFunc("/signup", handlers.SignupHandler).Methods(http.MethodPost).Headers("Content-Type", "application/json; charset=utf-8") // TODO: regexp for more content-types to be accepted
+	router.HandleFunc("/manualLogin", handlers.ManualLoginHandler).Methods(http.MethodPost).Headers("Content-Type", "application/json; charset=utf-8")
 	router.HandleFunc("/logout", handlers.LogoutHandler).Methods(http.MethodPost)
 	router.HandleFunc("/cookieLogin", handlers.CookieLoginHandler).Methods(http.MethodPost)
 
@@ -51,7 +62,7 @@ func main() {
 	//Csrf := csrf.Protect(securecookie.GenerateRandomKey(32),csrf.Secure(false))
 
 	// go http.ListenAndServe(fmt.Sprintf(":http://%s:%d", RemoteMonitoring.ServerAddress, RemoteMonitoring.Port), certManager.HTTPHandler(nil))
-	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%d", RemoteMonitoring.ServerAddress, RemoteMonitoring.Port), router))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%d", RemoteMonitoring.ServerAddress, RemoteMonitoring.Port), gorillaHandlers.CORS(originsOk, headersOk, methodsOk)(router)))
 	// log.Fatal(server.ListenAndServeTLS("", ""))
 }
 

@@ -115,6 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     _tryCookieLogin();
 
+    // @TODO: Navigate correctly based on logged in or not, or show the correct dashboard accordingly
     if (!loggedIn) {
       currentPage = LoginPage();
       // currentPage = PatientDashboard();

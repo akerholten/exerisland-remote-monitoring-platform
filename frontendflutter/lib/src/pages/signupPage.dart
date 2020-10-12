@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontendflutter/src/handlers/signupHandler.dart';
+import 'package:frontendflutter/src/model_classes/signupForm.dart';
 import '../handlers/loginHandler.dart';
 import '../components/alerts.dart';
 import '../constants/route_names.dart';
@@ -11,14 +13,77 @@ class SignupPage extends StatefulWidget {
 
 class _SignupPageState extends State<SignupPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  String email, password, repeatPassword, organizationID = '';
+  String email,
+      firstName,
+      lastName,
+      password,
+      repeatPassword,
+      organizationID = '';
 
-  void _trySignup() {
-    setState(() {
-      // Do verification of input, password == repeatPassword, valid email etc, possibly salt and hash password here?
-      // Do signup - then login / cookie and session creating
-      Alerts.showWarning("Method not implemented yet");
-    });
+  bool _signedUp = false;
+
+  void _trySignup() async {
+    // Do verification of input, password == repeatPassword, valid email etc, possibly salt and hash password here?
+    if (!_verifyInput()) {
+      return;
+    }
+
+    // Do signup - then login / cookie and session creating
+    SignupForm form = new SignupForm(
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        password: password,
+        userType:
+            "observer", // @TODO: Possibly make this an option to choose, or that this should be defaulted on backend and not here
+        organizationID: organizationID);
+
+    _signedUp = await SignupHandler.signUp(form);
+
+    if (_signedUp == false) {
+      return;
+    }
+
+    Navigator.of(context).pushNamed(Routes.Login);
+    // setState(() {});
+  }
+
+  bool _verifyInput() {
+    RegExp emailRegExp = new RegExp(
+        r"^[ÆØÅæøåA-Za-z0-9a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[ÆØÅæøåA-Za-z0-9a-zA-Z0-9](?:[ÆØÅæøåa-zA-Z0-9-]{0,253}[ÆØÅæøåa-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$");
+
+    RegExp nameRegExp = new RegExp(r"^[ÆØÅæøåa-zA-Z0-9]*$");
+    if (!emailRegExp.hasMatch(email)) {
+      Alerts.showError("Invalid email");
+      return false;
+    }
+
+    if (!nameRegExp.hasMatch(firstName)) {
+      Alerts.showError("Invalid first name");
+      return false;
+    }
+
+    if (!nameRegExp.hasMatch(lastName)) {
+      Alerts.showError("Invalid last name");
+      return false;
+    }
+
+    if (password.length < 8) {
+      Alerts.showError("Password must be atleast 8 characters long!");
+      return false;
+    }
+
+    if (password != repeatPassword) {
+      Alerts.showError("Passwords do not match!");
+      return false;
+    }
+
+    if (!nameRegExp.hasMatch(organizationID)) {
+      Alerts.showError("Invalid organization ID");
+      return false;
+    }
+
+    return true;
   }
 
   @override
@@ -60,6 +125,28 @@ class _SignupPageState extends State<SignupPage> {
                             onChanged: (value) {
                               setState(() {
                                 email = value;
+                              });
+                            },
+                          ),
+                          TextFormField(
+                            decoration: InputDecoration(
+                              hintText: 'Enter first name',
+                              labelText: 'First name',
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                firstName = value;
+                              });
+                            },
+                          ),
+                          TextFormField(
+                            decoration: InputDecoration(
+                              hintText: 'Enter last name',
+                              labelText: 'Last name',
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                lastName = value;
                               });
                             },
                           ),
