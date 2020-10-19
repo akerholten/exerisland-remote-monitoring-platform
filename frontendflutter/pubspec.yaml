@@ -41,6 +41,9 @@ dependencies:
   # For JSON annotations (model classes)
   json_annotation: ^3.0.0
 
+  # For cookies in requests
+  requests: ^3.3.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

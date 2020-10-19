@@ -113,7 +113,7 @@ func DeleteClientCookie(w http.ResponseWriter, urlString string) error {
 			Domain:   u.Hostname(),
 			Expires:  time.Now(),
 			Secure:   false,
-			HttpOnly: true,
+			HttpOnly: false,
 		}
 
 		http.SetCookie(w, &tokenCookie)

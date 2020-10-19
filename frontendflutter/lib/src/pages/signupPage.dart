@@ -21,6 +21,7 @@ class _SignupPageState extends State<SignupPage> {
       organizationID = '';
 
   bool _signedUp = false;
+  bool _loading = false;
 
   void _trySignup() async {
     // Do verification of input, password == repeatPassword, valid email etc, possibly salt and hash password here?
@@ -38,14 +39,21 @@ class _SignupPageState extends State<SignupPage> {
             "observer", // @TODO: Possibly make this an option to choose, or that this should be defaulted on backend and not here
         organizationID: organizationID);
 
+    setState(() {
+      _loading = true;
+    });
+
     _signedUp = await SignupHandler.signUp(form);
+
+    setState(() {
+      _loading = false;
+    });
 
     if (_signedUp == false) {
       return;
     }
 
     Navigator.of(context).pushNamed(Routes.Login);
-    // setState(() {});
   }
 
   bool _verifyInput() {
@@ -199,20 +207,25 @@ class _SignupPageState extends State<SignupPage> {
                               ]),
                           Align(
                             alignment: Alignment.centerRight,
-                            child: FlatButton(
-                              child: Text(
-                                'Register',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .button
-                                    .copyWith(fontSize: 16),
-                              ),
-                              padding: EdgeInsets.only(
-                                  left: 64, right: 64, bottom: 20, top: 20),
-                              color: Theme.of(context).primaryColor,
-                              textColor: Colors.white,
-                              onPressed: _trySignup,
-                            ),
+                            child: _loading
+                                ? CircularProgressIndicator()
+                                : FlatButton(
+                                    child: Text(
+                                      'Register',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .button
+                                          .copyWith(fontSize: 16),
+                                    ),
+                                    padding: EdgeInsets.only(
+                                        left: 64,
+                                        right: 64,
+                                        bottom: 20,
+                                        top: 20),
+                                    color: Theme.of(context).primaryColor,
+                                    textColor: Colors.white,
+                                    onPressed: _trySignup,
+                                  ),
                           ),
                         ].expand(
                           (widget) => [

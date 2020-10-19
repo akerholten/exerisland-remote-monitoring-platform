@@ -98,10 +98,15 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void _tryCookieLogin() {
-    setState(() {
-      loggedIn = LoginHandler.isLoggedInWithCookie();
-    });
+  void _tryCookieLogin() async {
+    loggedIn = await LoginHandler.isLoggedInWithCookie();
+
+    if (loggedIn) {
+      // TODO: Check if user is observer or patient here? And then push correct accordingly
+      Navigator.of(context).pushReplacementNamed(Routes.Dashboard);
+    } else {
+      Navigator.of(context).pushReplacementNamed(Routes.Login);
+    }
   }
 
   @override

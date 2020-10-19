@@ -16,7 +16,7 @@ class SignupHandler {
           'Content-Type': 'application/json',
         },
         body: jsonEncode(
-            signupForm)); // TODO: Change to using singupForm.toJson() somehow...
+            signupForm)); // TODO: Change to using signupForm.toJson() somehow...
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       Alerts.showInfo("Sign up was successful!");

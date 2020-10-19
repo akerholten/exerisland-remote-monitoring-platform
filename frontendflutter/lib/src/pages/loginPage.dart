@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontendflutter/src/model_classes/loginForm.dart';
 import '../handlers/loginHandler.dart';
 import '../components/alerts.dart';
 import '../constants/route_names.dart';
@@ -13,23 +14,60 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>(); // is this needed?
   String email, password = '';
   bool loggedIn = false;
+  bool _loading = false;
 
-  void _tryCookieLogin() {
-    setState(() {
-      loggedIn = LoginHandler.isLoggedInWithCookie();
-    });
+  void _tryCookieLogin() async {
+    loggedIn = await LoginHandler.isLoggedInWithCookie();
+
+    if (loggedIn) {
+      // TODO: Check if user is observer or patient here? And then push correct accordingly
+      Navigator.of(context).pushReplacementNamed(Routes.Dashboard);
+    }
   }
 
-  void _tryLogin() {
-    setState(() {
-      loggedIn = LoginHandler.login(email, password);
+  void _tryLogin() async {
+    if (!_verifyInput()) {
+      return;
+    }
 
-      if (loggedIn) {
-        Alerts.showInfo("Logged in was successfull");
-        Navigator.of(context).pushNamed(Routes.Dashboard);
-        // TODO: Navigate to overview page
-      }
+    LoginForm form = new LoginForm(email: email, password: password);
+
+    setState(() {
+      _loading = true;
     });
+
+    loggedIn = await LoginHandler.manualLogin(form);
+
+    setState(() {
+      _loading = false;
+    });
+
+    if (loggedIn) {
+      Alerts.showInfo("Logged in was successfull");
+      // TODO: Navigate to overview page
+      Navigator.of(context).pushReplacementNamed(Routes.Dashboard);
+    } else {
+      Alerts.showError("Unable to log in with email and password combination");
+    }
+  }
+
+  bool _verifyInput() {
+    RegExp emailRegExp = new RegExp(
+        r"^[ÆØÅæøåA-Za-z0-9a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[ÆØÅæøåA-Za-z0-9a-zA-Z0-9](?:[ÆØÅæøåa-zA-Z0-9-]{0,253}[ÆØÅæøåa-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$");
+
+    RegExp nameRegExp = new RegExp(r"^[ÆØÅæøåa-zA-Z0-9]*$");
+    if (!emailRegExp.hasMatch(email)) {
+      Alerts.showError("Invalid email");
+      return false;
+    }
+
+    // Verify anything with password?
+    // if (password.length < 8) {
+    //   Alerts.showError("Password must be atleast 8 characters long!");
+    //   return false;
+    // }
+
+    return true;
   }
 
   @override
@@ -109,20 +147,25 @@ class _LoginPageState extends State<LoginPage> {
                               ]),
                           Align(
                             alignment: Alignment.centerRight,
-                            child: FlatButton(
-                              padding: EdgeInsets.only(
-                                  left: 64, right: 64, bottom: 20, top: 20),
-                              color: Theme.of(context).primaryColor,
-                              textColor: Colors.white,
-                              onPressed: _tryLogin,
-                              child: Text(
-                                'Log in',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .button
-                                    .copyWith(fontSize: 16),
-                              ),
-                            ),
+                            child: _loading
+                                ? CircularProgressIndicator()
+                                : FlatButton(
+                                    padding: EdgeInsets.only(
+                                        left: 64,
+                                        right: 64,
+                                        bottom: 20,
+                                        top: 20),
+                                    color: Theme.of(context).primaryColor,
+                                    textColor: Colors.white,
+                                    onPressed: _tryLogin,
+                                    child: Text(
+                                      'Log in',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .button
+                                          .copyWith(fontSize: 16),
+                                    ),
+                                  ),
                           ),
                         ].expand(
                           (widget) => [

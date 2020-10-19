@@ -11,6 +11,10 @@ upgrade:
 doctor:
 	flutter doctor -v
 
+.PHONY: tools
+tools:
+	flutter pub run build_runner build
+
 .PHONY: build
 build:
 	echo "not implemented"

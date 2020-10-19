@@ -33,22 +33,26 @@ func main() {
 	// RemoteMonitoring_ORIGIN_ALLOWED is like `scheme://dns[:port]`, or `*` (insecure)
 
 	log.Printf("Origin allowed is: %s", os.Getenv("RemoteMonitoring_ORIGIN_ALLOWED"))
-	headersOk := gorillaHandlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type"})
+	headersOk := gorillaHandlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization", "Access-Control-Allow-Credentials", "Access-Control-Allow-Origin"})
 	originsOk := gorillaHandlers.AllowedOrigins([]string{os.Getenv("RemoteMonitoring_ORIGIN_ALLOWED"), "http://localhost:3000"}) //os.Getenv("RemoteMonitoring_ORIGIN_ALLOWED")
+	allowCreds := gorillaHandlers.AllowCredentials()
 	methodsOk := gorillaHandlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
+	exposedHeaders := gorillaHandlers.ExposedHeaders([]string{"*", "Set-Cookie"})
 
 	// Debug func
 	router.HandleFunc("/debugFunc", DebugHandler).Methods(http.MethodGet)
 
 	// Authentication handlers //SignupHandler Below
-	router.HandleFunc("/signup", handlers.SignupHandler).Methods(http.MethodPost).Headers("Content-Type", "application/json; charset=utf-8") // TODO: regexp for more content-types to be accepted
-	router.HandleFunc("/manualLogin", handlers.ManualLoginHandler).Methods(http.MethodPost).Headers("Content-Type", "application/json; charset=utf-8")
-	router.HandleFunc("/logout", handlers.LogoutHandler).Methods(http.MethodPost)
-	router.HandleFunc("/cookieLogin", handlers.CookieLoginHandler).Methods(http.MethodPost)
+	router.HandleFunc("/api/signup", handlers.SignupHandler).Methods(http.MethodPost).Headers("Content-Type", "application/json; charset=utf-8") // TODO: regexp for more content-types to be accepted
+	router.HandleFunc("/api/manualLogin", handlers.ManualLoginHandler).Methods(http.MethodPost).Headers("Content-Type", "application/json; charset=utf-8")
+	router.HandleFunc("/api/logout", handlers.LogoutHandler).Methods(http.MethodPost)
+	router.HandleFunc("/api/cookieLogin", handlers.CookieLoginHandler).Methods(http.MethodPost)
 
 	// Debug tools
 
 	log.Printf("\nListening through port %v...\n", RemoteMonitoring.Port)
+
+	http.Handle("/build/web/", http.StripPrefix("/build/web/", http.FileServer(http.Dir("build/web"))))
 
 	// server := &http.Server{
 	// 	Addr:    ":https",
@@ -62,7 +66,7 @@ func main() {
 	//Csrf := csrf.Protect(securecookie.GenerateRandomKey(32),csrf.Secure(false))
 
 	// go http.ListenAndServe(fmt.Sprintf(":http://%s:%d", RemoteMonitoring.ServerAddress, RemoteMonitoring.Port), certManager.HTTPHandler(nil))
-	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%d", RemoteMonitoring.ServerAddress, RemoteMonitoring.Port), gorillaHandlers.CORS(originsOk, headersOk, methodsOk)(router)))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%d", RemoteMonitoring.ServerAddress, RemoteMonitoring.Port), gorillaHandlers.CORS(originsOk, headersOk, methodsOk, allowCreds, exposedHeaders)(router)))
 	// log.Fatal(server.ListenAndServeTLS("", ""))
 }
 

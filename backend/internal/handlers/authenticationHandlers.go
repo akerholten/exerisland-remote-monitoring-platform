@@ -120,7 +120,7 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 
 func ManualLoginHandler(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	if r.Header.Get("Content-Type") != "application/json" {
+	if r.Header.Get("Content-Type") != "application/json; charset=utf-8" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
