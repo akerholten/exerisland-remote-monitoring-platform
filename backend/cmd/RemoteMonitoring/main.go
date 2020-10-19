@@ -37,7 +37,7 @@ func main() {
 	originsOk := gorillaHandlers.AllowedOrigins([]string{os.Getenv("RemoteMonitoring_ORIGIN_ALLOWED"), "http://localhost:3000"}) //os.Getenv("RemoteMonitoring_ORIGIN_ALLOWED")
 	allowCreds := gorillaHandlers.AllowCredentials()
 	methodsOk := gorillaHandlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
-	exposedHeaders := gorillaHandlers.ExposedHeaders([]string{"*"})
+	// exposedHeaders := gorillaHandlers.ExposedHeaders([]string{"*"})
 
 	// Debug func
 	router.HandleFunc("/debugFunc", DebugHandler).Methods(http.MethodGet)
@@ -64,7 +64,7 @@ func main() {
 	//Csrf := csrf.Protect(securecookie.GenerateRandomKey(32),csrf.Secure(false))
 
 	// go http.ListenAndServe(fmt.Sprintf(":http://%s:%d", RemoteMonitoring.ServerAddress, RemoteMonitoring.Port), certManager.HTTPHandler(nil))
-	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%d", RemoteMonitoring.ServerAddress, RemoteMonitoring.Port), gorillaHandlers.CORS(originsOk, headersOk, methodsOk, allowCreds, exposedHeaders)(router)))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%d", RemoteMonitoring.ServerAddress, RemoteMonitoring.Port), gorillaHandlers.CORS(originsOk, headersOk, methodsOk, allowCreds)(router)))
 	// log.Fatal(server.ListenAndServeTLS("", ""))
 }
 
