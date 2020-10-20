@@ -68,6 +68,30 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if len(signupData.FirstName) > 100 {
+		_, err := w.Write([]byte("FirstName is longer than 100 characters"))
+		if err != nil {
+			log.Printf("Error when FirstName was too long and writing bytes: %v", err)
+		}
+		return
+	}
+
+	if len(signupData.LastName) > 100 {
+		_, err := w.Write([]byte("LastName is longer than 100 characters"))
+		if err != nil {
+			log.Printf("Error when LastName was too long and writing bytes: %v", err)
+		}
+		return
+	}
+
+	if len(signupData.OrganizationID) > 100 {
+		_, err := w.Write([]byte("OrganizationID is longer than 100 characters"))
+		if err != nil {
+			log.Printf("Error when OrganizationID was too long and writing bytes: %v", err)
+		}
+		return
+	}
+
 	valid, err := validator.ValidateStruct(signupData)
 	if err != nil || !valid {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -305,6 +329,40 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 
 	// TODO: Potentially return a JSON-object containing some data about the user to use on front-end here
 	// such as user type ("observer", "patient"/"user"), names, etc, etc? for now just success
+
+	w.WriteHeader(http.StatusAccepted)
+	w.Write([]byte("Success"))
+}
+
+func VerifyObserverHandler(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+
+	clientCookie, err := cookie.FetchCookie(r)
+	if err != nil {
+		// This could mean that the cookie is not present so technically not a internal server error, but could be bad request
+		log.Printf("Could not fetch cookie, err was: %v", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	ctx := context.Background()
+
+	user, err := db.GetUserFromCookie(clientCookie, ctx)
+	if err != nil {
+		log.Printf("Could not fetch user from cookie, err was: %v", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if user == nil {
+		log.Printf("Could not fetch user from cookie, err was: %v", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	if user.UserType != constants.ObserverType {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
 
 	w.WriteHeader(http.StatusAccepted)
 	w.Write([]byte("Success"))

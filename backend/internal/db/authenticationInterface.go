@@ -207,6 +207,19 @@ func GetUserFromCookie(cookie CookieData, ctx context.Context) (*User_Logon, err
 	return GetUser(cookieEntry.UserID, ctx)
 }
 
+// TODO: have a way to generically return the ref to the place the usertable can be edited, as this might be used alot?
+// func GetUserTableFromCookie(cookie CookieData, ctx context.Context) (*firebaseDb.Ref, error) {
+// 	var userEntry User_Logon
+// 	// Assumption here is that the cookie.Token is the same as the entry.Key() in db
+// 	err := DBClient().Database.NewRef(TableCookies).Child(cookie.Token).Get(ctx, &cookieEntry)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	// Gets the user with the ID from token and there check if it exists, etc
+// 	return GetUser(cookieEntry.UserID, ctx)
+// }
+
 // DeleteCookie deletes all cookies with specific token (used for e.g. logout)
 func DeleteCookie(token string, ctx context.Context) error {
 	err := DBClient().Database.NewRef(TableCookies).Child(token).Delete(ctx)

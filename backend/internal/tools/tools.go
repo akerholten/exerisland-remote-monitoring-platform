@@ -42,10 +42,10 @@ func GetNewLongUniqueID(safetyCount int) (string, error) {
 }
 
 // Base 62 ID implementation https://stackoverflow.com/questions/9543715/generating-human-readable-usable-short-but-unique-ids
-func GetNewShortUniqueID(length int) string {
+func GetNewShortUniqueID(length int, safetyCount int64) string {
 	newId := ""
 
-	seed := time.Now().Unix()
+	seed := time.Now().Unix() + safetyCount
 
 	rand.Seed(seed)
 	for i := 0; i < length; i++ {

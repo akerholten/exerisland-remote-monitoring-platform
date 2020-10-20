@@ -47,6 +47,10 @@ func main() {
 	router.HandleFunc("/manualLogin", handlers.ManualLoginHandler).Methods(http.MethodPost).Headers("Content-Type", "application/json; charset=utf-8")
 	router.HandleFunc("/logout", handlers.LogoutHandler).Methods(http.MethodPost)
 	router.HandleFunc("/cookieLogin", handlers.CookieLoginHandler).Methods(http.MethodPost)
+	router.HandleFunc("/verifyObserver", handlers.VerifyObserverHandler).Methods(http.MethodPost)
+
+	// Observer handlers
+	router.HandleFunc("/addPatient", handlers.AddPatientHandler).Methods(http.MethodPost).Headers("Content-Type", "application/json; charset=utf-8")
 
 	// Debug tools
 
@@ -72,7 +76,7 @@ func DebugHandler(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	// ctx := context.Background()
 	// DebugFunctionality(ctx)
-	log.Printf("Unique short ID: %s", tools.GetNewShortUniqueID(constants.PatientShortIDLength))
+	log.Printf("Unique short ID: %s", tools.GetNewShortUniqueID(0, int64(constants.PatientShortIDLength)))
 
 	longId, err := tools.GetNewLongUniqueID(0)
 	if err != nil {
