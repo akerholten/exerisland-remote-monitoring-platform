@@ -20,12 +20,19 @@ class Tools {
     }
   }
 
-  static void logoutUser(BuildContext context) async {
+  static void _logoutUser(BuildContext context) async {
     bool loggedOut = await LoginHandler.logout();
 
     if (loggedOut) {
       Alerts.showInfo("Logged out successfully");
       Navigator.of(context).pushReplacementNamed(Routes.Login);
     }
+  }
+
+  static void promptUserLogout(BuildContext context) {
+    Alerts.showConfirmationDialog(
+        context, "Logout", "Are you sure you want to logout?", () {
+      _logoutUser(context);
+    });
   }
 }

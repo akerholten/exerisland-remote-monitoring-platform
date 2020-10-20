@@ -210,7 +210,7 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
           // LOGOUT ICON
           IconButton(
             icon: Icon(Icons.logout),
-            onPressed: () => Tools.logoutUser(context),
+            onPressed: () => Tools.promptUserLogout(context),
           )
         ],
       ),

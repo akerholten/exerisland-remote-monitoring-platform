@@ -105,7 +105,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
           // LOGOUT ICON
           IconButton(
             icon: Icon(Icons.logout),
-            onPressed: () => Tools.logoutUser(context),
+            onPressed: () => Tools.promptUserLogout(context),
           )
         ],
       ),
