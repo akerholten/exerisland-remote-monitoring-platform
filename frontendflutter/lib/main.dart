@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'src/handlers/tools.dart';
 import 'src/constants/constants.dart';
 import 'src/components/testForm.dart';
 import 'src/handlers/loginHandler.dart';
@@ -55,10 +56,20 @@ class MyApp extends StatelessWidget {
         Routes.Test: (context) => FormWidgetsDemo(), // TODO: remove
         Routes.Signup: (context) => SignupPage(),
         Routes.ForgotPassword: (context) => ForgotPasswordPage(),
-        Routes.Dashboard: (context) =>
-            TherapistDashboard(), // TODO: Solve difference between showing therapist and patient dashboard when going here
-        Routes.SpecificPersonDashboard: (context) =>
-            PatientDashboard(), // TODO: Solve handling ID to retrieve correct person
+
+        // PROTECTED ROUTES (Always checks cookie)
+        Routes.Dashboard: (context) {
+          Tools.verifyCookieLogin(context);
+
+          // TODO: Do an if check to see if the person is therapist or not,
+          // if not, then go to specificPersonDashboard of that person here
+          return TherapistDashboard();
+        }, // TODO: Solve difference between showing therapist and patient dashboard when going here
+        Routes.SpecificPersonDashboard: (context) {
+          Tools.verifyCookieLogin(context);
+          // TODO: Solve handling ID to retrieve correct person
+          return PatientDashboard();
+        }
       },
     );
   }

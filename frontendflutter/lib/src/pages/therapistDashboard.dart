@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import '../handlers/loginHandler.dart';
-import '../components/alerts.dart';
-import '../components/testForm.dart';
 import '../components/modal_AddNewPatient.dart';
 import '../constants/route_names.dart';
 import '../constants/constants.dart';
