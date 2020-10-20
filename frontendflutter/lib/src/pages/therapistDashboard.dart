@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../handlers/tools.dart';
 import '../components/modal_AddNewPatient.dart';
 import '../constants/route_names.dart';
 import '../constants/constants.dart';
@@ -205,6 +206,13 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
       appBar: AppBar(
         // automaticallyImplyLeading: false,
         title: Text(Constants.applicationName),
+        actions: [
+          // LOGOUT ICON
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () => Tools.logoutUser(context),
+          )
+        ],
       ),
       body: Center(
         child: SingleChildScrollView(

@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import '../handlers/loginHandler.dart';
-import '../components/alerts.dart';
-import '../components/testForm.dart';
+import '../handlers/tools.dart';
 import '../components/taskCompletionList.dart';
 import '../components/sessionInformationList.dart';
 import '../components/activityGraph.dart';
-import '../components/modal_AddNewPatient.dart';
-import '../constants/route_names.dart';
 import '../constants/constants.dart';
 
 class PatientDashboard extends StatefulWidget {
@@ -105,6 +101,13 @@ class _PatientDashboardState extends State<PatientDashboard> {
       appBar: AppBar(
         // automaticallyImplyLeading: false,
         title: Text(Constants.applicationName),
+        actions: [
+          // LOGOUT ICON
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () => Tools.logoutUser(context),
+          )
+        ],
       ),
       body: Center(
         child: SingleChildScrollView(

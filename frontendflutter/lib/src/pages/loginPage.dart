@@ -43,7 +43,6 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     if (loggedIn) {
-      Alerts.showInfo("Logged in was successfull");
       // TODO: Navigate to overview page
       Navigator.of(context).pushReplacementNamed(Routes.Dashboard);
     } else {

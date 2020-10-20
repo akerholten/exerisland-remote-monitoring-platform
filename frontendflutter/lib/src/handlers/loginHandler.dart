@@ -89,4 +89,19 @@ class LoginHandler {
       return false;
     }
   }
+
+  static Future<bool> logout() async {
+    final http.Response response = await http.post(
+      Constants.backendURL + "/logout",
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 202) {
+      // Alerts.showInfo("Sign up was successful!");
+      return true;
+    } else {
+      // Was unsuccessful at signing up ( display some message of sort?, possibly catch more http errors? )
+      // Alerts.showError("Cookie has expired, log in again to continue");
+      return false;
+    }
+  }
 }

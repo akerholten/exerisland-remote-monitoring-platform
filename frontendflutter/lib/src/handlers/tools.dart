@@ -19,4 +19,13 @@ class Tools {
       Navigator.of(context).pushReplacementNamed(Routes.Login);
     }
   }
+
+  static void logoutUser(BuildContext context) async {
+    bool loggedOut = await LoginHandler.logout();
+
+    if (loggedOut) {
+      Alerts.showInfo("Logged out successfully");
+      Navigator.of(context).pushReplacementNamed(Routes.Login);
+    }
+  }
 }
