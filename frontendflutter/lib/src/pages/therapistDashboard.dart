@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:frontendflutter/src/handlers/observerHandler.dart';
 import 'package:frontendflutter/src/model_classes/patient.dart';
+import 'package:frontendflutter/src/model_classes/patients.dart';
 import '../handlers/tools.dart';
 import '../components/modal_AddNewPatient.dart';
 import '../constants/route_names.dart';
@@ -17,8 +19,10 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
   double dataTableMaxHeight = 900;
 
   Patient newPatient = new Patient();
+  Patients patients;
+  bool _loading = false;
+  // patients.list = new List<Patient>();
 
-  List<Patient> patients = new List<Patient>();
   List<String> columnTitles = [
     'Name',
     'Email',
@@ -27,6 +31,11 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
     'Goals',
     'Recent activity'
   ];
+
+  void _fillWithTempData() {
+    patients = new Patients();
+    patients.list = new List<Patient>();
+  }
 
   void _debugFillwithData() {
     setState(() {
@@ -42,7 +51,24 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
       // temp.recommendationsCompleted = patientCount - 1;
       temp.recentActivityDate = DateTime.now().toIso8601String();
 
-      patients.add(temp);
+      patients.list.add(temp);
+    });
+  }
+
+  void _getAllPatients() async {
+    setState(() {
+      _loading = true;
+    });
+
+    Patients tempPatients = new Patients();
+    tempPatients.list = await ObserverHandler.getAllPatients();
+
+    print("We fine with elements 1?");
+
+    setState(() {
+      print("We fine with elements 2?");
+      patients = tempPatients;
+      _loading = false;
     });
   }
 
@@ -64,7 +90,7 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
       temp.recommendationsCompleted = patientCount - 1;
       temp.recentActivityDate = DateTime.now().toIso8601String();
 
-      patients.add(temp);
+      patients.list.add(temp);
     });
   }
 
@@ -91,6 +117,13 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
     double tableItemHeight = 70;
 
     ScrollController _controller = new ScrollController();
+
+    // data cannot be null
+    if (patients == null || patients.list == null) {
+      _fillWithTempData();
+      // Asynchronously collecting all patients
+      _getAllPatients();
+    }
 
     Widget tableHeader() {
       return Container(
@@ -135,7 +168,7 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
               physics: const AlwaysScrollableScrollPhysics(),
               controller: _controller,
               shrinkWrap: true,
-              children: (patients
+              children: (patients.list
                   .map((patient) => FlatButton(
                         onPressed: () => Navigator.of(context).pushNamed(Routes
                             .SpecificPersonDashboard), // TODO: make this actually go to the id of the person
@@ -169,7 +202,9 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
                                   alignment: Alignment.center,
                                   height: tableItemHeight,
                                   width: tableItemWidth,
-                                  child: SelectableText(patient.age.toString()),
+                                  child: SelectableText(
+                                      Tools.birthDateToAge(patient.birthDate)
+                                          .toString()),
                                 ),
                                 Container(
                                   alignment: Alignment.center,
@@ -185,12 +220,16 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
                                   alignment: Alignment.center,
                                   height: tableItemHeight,
                                   width: tableItemWidth,
-                                  child: SelectableText(DateTime.now()
-                                          .difference(DateTime.parse(
-                                              patient.recentActivityDate))
-                                          .inHours
-                                          .toString() +
-                                      " hours ago"), // TODO: Implement helper tool that will calculate whether to show days/hours etc here, show better information
+                                  child: SelectableText(patient
+                                              .recentActivityDate ==
+                                          null
+                                      ? "Never"
+                                      : DateTime.now()
+                                              .difference(DateTime.parse(
+                                                  patient.recentActivityDate))
+                                              .inHours
+                                              .toString() +
+                                          " hours ago"), // TODO: Implement helper tool that will calculate whether to show days/hours etc here, show better information
                                 ),
                               ],
                             ),
@@ -265,7 +304,7 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
                           ],
                         ),
                       ),
-                      patients.length == 0
+                      patients.list.length == 0
                           ? Container(
                               alignment: Alignment.center,
                               padding: EdgeInsets.only(top: 250),

@@ -26,21 +26,21 @@ class Patient {
   String note;
 
   // maybe obsolete, consider it (TODO: remove)
-  @JsonKey(required: false)
+  @JsonKey(required: false, defaultValue: 0)
   int age;
 
   // maybe obsolete, consider it
-  @JsonKey(required: false)
+  @JsonKey(required: false, defaultValue: 0)
   int recommendationsCount;
 
   // maybe obsolete, consider it
-  @JsonKey(required: false)
+  @JsonKey(required: false, defaultValue: 0)
   int recommendationsCompleted;
 
-  @JsonKey(required: false)
+  @JsonKey(required: false, nullable: true)
   List<Session> sessions;
 
-  @JsonKey(required: false)
+  @JsonKey(required: false, nullable: true)
   List<Recommendation> recommendations;
 
   Patient(

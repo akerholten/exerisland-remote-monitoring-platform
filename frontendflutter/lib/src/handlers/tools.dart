@@ -51,4 +51,9 @@ class Tools {
       _logoutUser(context);
     });
   }
+
+  static int birthDateToAge(String birthDate) {
+    return (DateTime.now().difference(DateTime.parse(birthDate)).inDays ~/ 365)
+        .toInt();
+  }
 }

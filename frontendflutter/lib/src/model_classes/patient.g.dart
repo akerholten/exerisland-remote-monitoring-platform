@@ -26,9 +26,9 @@ Patient _$PatientFromJson(Map<String, dynamic> json) {
             e == null ? null : Session.fromJson(e as Map<String, dynamic>))
         ?.toList(),
   )
-    ..age = json['age'] as int
-    ..recommendationsCount = json['recommendationsCount'] as int
-    ..recommendationsCompleted = json['recommendationsCompleted'] as int;
+    ..age = json['age'] as int ?? 0
+    ..recommendationsCount = json['recommendationsCount'] as int ?? 0
+    ..recommendationsCompleted = json['recommendationsCompleted'] as int ?? 0;
 }
 
 Map<String, dynamic> _$PatientToJson(Patient instance) => <String, dynamic>{

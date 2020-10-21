@@ -52,6 +52,7 @@ class AddNewPatientModalState extends State<AddNewPatientModal> {
     }
 
     Navigator.of(context).pop();
+    // onPatientAdded(_patientAdded);
     // TODO: also must retrieve the data of patients over again, such that the new patient is seen in list
   }
 
