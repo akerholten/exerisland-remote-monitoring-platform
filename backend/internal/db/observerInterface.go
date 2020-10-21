@@ -9,13 +9,13 @@ import (
 )
 
 type Observer struct {
-	FirstName string            `json:"firstName" valid:"printableascii, required"`
-	LastName  string            `json:"lastName" valid:"printableascii, required"`
-	Patients  map[string]string `json:"patients" valid:"-"` // PatientIDs
+	FirstName string   `json:"firstName" valid:"printableascii, required"`
+	LastName  string   `json:"lastName" valid:"printableascii, required"`
+	Patients  []string `json:",omitempty" valid:",optional"` // PatientIDs
 }
 
 func AddToObserverTable(user SignupUser, ctx context.Context) (string, error) {
-	var patients map[string]string
+	var patients []string
 	observer := Observer{
 		FirstName: user.FirstName,
 		LastName:  user.LastName,
@@ -96,6 +96,9 @@ func AddPatientToObserver(clientCookie CookieData, patientId string, ctx context
 	if observerData == nil {
 		return errors.New("Could not find observer user data")
 	}
+
+	fmt.Printf("%+v\n", observerData)
+	// was for debug
 	for key, obj := range observerData.Patients {
 		log.Printf("\nThe patients for this guy: id: %s, value: %s", key, obj)
 	}
@@ -128,4 +131,50 @@ func AddPatientToObserver(clientCookie CookieData, patientId string, ctx context
 
 	// everything was successful so we return nil
 	return nil
+}
+
+func GetPatients(clientCookie CookieData, ctx context.Context) ([]Patient, error) {
+	var returnPatients []Patient
+
+	observerData, err := GetObserver(clientCookie, ctx)
+	if err != nil {
+		return returnPatients, err
+	}
+	if observerData == nil {
+		return returnPatients, errors.New("Could not find observer user data")
+	}
+
+	observerPatientsRef := DBClient().Database.NewRef(TableObserver).Child(clientCookie.UserID).Child("patients")
+
+	existingObserverPatients, err := observerPatientsRef.OrderByKey().GetOrdered(ctx)
+	if err != nil {
+		return returnPatients, err
+	}
+
+	// Do the key need to be returned in order to query for this exact patient later on?
+	for _, r := range existingObserverPatients {
+		var currentPatient Patient
+		var id string
+
+		if err := r.Unmarshal(&id); err != nil {
+			return returnPatients, err
+		}
+
+		// TODO: Implement a get patient function that also gets all the sessions and recommendations and fills this
+		// up for the patient before returned
+		err = DBClient().Database.NewRef(TablePatient).Child(id).Get(ctx, &currentPatient)
+		if err != nil {
+			return returnPatients, err
+		}
+
+		if len(currentPatient.Email) < 1 {
+			log.Printf("This patient's mail was invalid, meaning the user most likely is invalid, skipping")
+			continue
+		}
+
+		returnPatients = append(returnPatients, currentPatient)
+	}
+
+	// everything was successful so we return nil
+	return returnPatients, nil
 }

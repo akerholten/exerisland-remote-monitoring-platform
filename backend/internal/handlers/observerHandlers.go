@@ -21,6 +21,41 @@ func AddPatientHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+	ctx := context.Background()
+
+	// AUTH USER
+	clientCookie, err := cookie.FetchCookie(r)
+	if err != nil {
+		// This could mean that the cookie is not present so technically not a internal server error, but could be bad request
+		log.Printf("Could not fetch cookie, err was: %v", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	user, err := db.GetUserFromCookie(clientCookie, ctx)
+	if err != nil {
+		log.Printf("Could not fetch user from cookie, err was: %v", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if user == nil {
+		log.Printf("Could not fetch user from cookie, err was: %v", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if user.UserType != constants.ObserverType {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	// a bit redundant because the cookie is retrieved later as well.. don't know if it matters
+	// could potentially send in cookie only here, and not responsewriter and request?
+	// authenticated := AuthenticateUserType(r, constants.ObserverType)
+	// if !authenticated {
+	// 	w.WriteHeader(http.StatusUnauthorized)
+	// 	w.Write([]byte("Unauthorized"))
+	// 	return
+	// }
 
 	var signupData db.PatientSignupData
 
@@ -82,8 +117,6 @@ func AddPatientHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ctx := context.Background()
-
 	loginUserData := db.SignupUser{
 		Email:     signupData.Email,
 		FirstName: signupData.FirstName,
@@ -122,6 +155,23 @@ func AddPatientHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// ----- ADD THE PATIENT ID TO THE OBSERVERS LIST OF PATIENTS  -----
+	err = db.AddPatientToObserver(clientCookie, loginUserData.UserID, ctx)
+	if err != nil {
+		log.Printf("Could not add patient to observers list of patients, err was: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Write([]byte("Patient added!"))
+}
+
+func GetPatientsHandler(w http.ResponseWriter, r *http.Request) {
+	log.Printf("Got a request for all patients...")
+	defer r.Body.Close()
+
+	ctx := context.Background()
+
+	// Authentication ...
 	clientCookie, err := cookie.FetchCookie(r)
 	if err != nil {
 		// This could mean that the cookie is not present so technically not a internal server error, but could be bad request
@@ -141,20 +191,22 @@ func AddPatientHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-
 	if user.UserType != constants.ObserverType {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
-	log.Printf("Cookie token is now: " + clientCookie.Token + "\nCookie id is now: " + clientCookie.UserID)
-
-	err = db.AddPatientToObserver(clientCookie, loginUserData.UserID, ctx)
+	// Get array of patients from observerInterface function
+	patients, err := db.GetPatients(clientCookie, ctx)
 	if err != nil {
-		log.Printf("Could not add patient to observers list of patients, err was: %v", err)
+		log.Printf("Could not fetch patients from this user, err was: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	w.Write([]byte("Patient added!"))
+	// Marshal it into json and return
+	patientsJson, err := json.Marshal(patients)
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(patientsJson)
 }

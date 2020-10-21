@@ -367,3 +367,32 @@ func VerifyObserverHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusAccepted)
 	w.Write([]byte("Success"))
 }
+
+func AuthenticateUserType(r *http.Request, userType string) bool {
+	defer r.Body.Close()
+
+	clientCookie, err := cookie.FetchCookie(r)
+	if err != nil {
+		// This could mean that the cookie is not present so technically not a internal server error, but could be bad request
+		log.Printf("Could not fetch cookie, err was: %v", err)
+		return false
+	}
+
+	ctx := context.Background()
+
+	user, err := db.GetUserFromCookie(clientCookie, ctx)
+	if err != nil {
+		log.Printf("Could not fetch user from cookie, err was: %v", err)
+		return false
+	}
+	if user == nil {
+		log.Printf("Could not fetch user from cookie, err was: %v", err)
+		return false
+	}
+
+	if user.UserType != userType {
+		return false
+	}
+
+	return true
+}

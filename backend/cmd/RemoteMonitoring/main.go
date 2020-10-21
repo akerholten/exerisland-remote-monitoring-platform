@@ -51,6 +51,7 @@ func main() {
 
 	// Observer handlers
 	router.HandleFunc("/addPatient", handlers.AddPatientHandler).Methods(http.MethodPost).Headers("Content-Type", "application/json; charset=utf-8")
+	router.HandleFunc("/getAllPatients", handlers.GetPatientsHandler).Methods(http.MethodGet)
 
 	// Debug tools
 
