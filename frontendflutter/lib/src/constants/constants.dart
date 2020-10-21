@@ -4,6 +4,7 @@ class Constants {
   static const String dateFormat = "dd/MM/yyyy";
 }
 
+// TODO: Change into model class with ToJson and FromJson functions
 class Patient {
   String firstName,
       lastName,
