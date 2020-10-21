@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:frontendflutter/src/handlers/observerHandler.dart';
+import 'package:frontendflutter/src/model_classes/addPatientForm.dart';
+import 'package:frontendflutter/src/model_classes/patient.dart';
 
 import '../components/alerts.dart';
-import '../constants/constants.dart';
 import 'testForm.dart';
 
 class AddNewPatientModal extends StatefulWidget {
@@ -18,6 +20,41 @@ class AddNewPatientModal extends StatefulWidget {
 class AddNewPatientModalState extends State<AddNewPatientModal> {
   Patient newPatient = new Patient();
 
+  DateTime _chosenDateTime;
+
+  bool _loading = false;
+
+  void _tryAddNewPatient() async {
+    if (_isDataFilled() == false) {
+      return;
+    }
+    bool _patientAdded = false;
+
+    AddPatientForm form = new AddPatientForm(
+        firstName: newPatient.firstName,
+        lastName: newPatient.lastName,
+        email: newPatient.email,
+        birthDate: newPatient.birthDate,
+        note: newPatient.note);
+
+    setState(() {
+      _loading = true;
+    });
+
+    _patientAdded = await ObserverHandler.addPatient(form);
+
+    setState(() {
+      _loading = false;
+    });
+
+    if (_patientAdded == false) {
+      return;
+    }
+
+    Navigator.of(context).pop();
+    // TODO: also must retrieve the data of patients over again, such that the new patient is seen in list
+  }
+
   bool _isDataFilled() {
     if (newPatient.firstName == null || newPatient.firstName == "") {
       Alerts.showError("First name field must be entered");
@@ -31,7 +68,7 @@ class AddNewPatientModalState extends State<AddNewPatientModal> {
       Alerts.showError("Email field must be entered");
       return false;
     }
-    if (newPatient.issue == null || newPatient.issue == "") {
+    if (newPatient.note == null || newPatient.note == "") {
       Alerts.showError("Issue field must be entered");
       return false;
     }
@@ -41,8 +78,9 @@ class AddNewPatientModalState extends State<AddNewPatientModal> {
 
   @override
   Widget build(BuildContext context) {
-    if (newPatient.dateOfBirth == null) {
-      newPatient.dateOfBirth = DateTime.utc(1990); // It needs a temp value
+    if (newPatient.birthDate == null) {
+      newPatient.birthDate =
+          DateTime.utc(1990).toIso8601String(); // It needs a temp value
     }
 
     return Container(
@@ -119,11 +157,12 @@ class AddNewPatientModalState extends State<AddNewPatientModal> {
                           Container(
                             padding: EdgeInsets.only(bottom: 8),
                             child: FormDatePicker(
-                              date: newPatient.dateOfBirth,
+                              date: DateTime.parse(newPatient.birthDate),
                               title: "Date of birth",
                               onChanged: (value) {
                                 setState(() {
-                                  newPatient.dateOfBirth = value;
+                                  newPatient.birthDate =
+                                      (value as DateTime).toIso8601String();
                                 });
                               },
                             ),
@@ -137,7 +176,7 @@ class AddNewPatientModalState extends State<AddNewPatientModal> {
                               ),
                               onChanged: (value) {
                                 setState(() {
-                                  newPatient.issue = value;
+                                  newPatient.note = value;
                                 });
                               },
                             ),
@@ -168,25 +207,22 @@ class AddNewPatientModalState extends State<AddNewPatientModal> {
                                   SizedBox(
                                     width: 180,
                                     height: 50,
-                                    child: FlatButton(
-                                      child: Text(
-                                        'Register patient',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .button
-                                            .copyWith(fontSize: 16),
-                                      ),
-                                      color: Theme.of(context).primaryColor,
-                                      textColor: Colors.white,
-                                      onPressed: (() {
-                                        if (_isDataFilled()) {
-                                          widget.onPatientAdded(newPatient);
-                                          Navigator.of(context).pop();
-                                          Alerts.showInfo(
-                                              "Patient added succesfully");
-                                        }
-                                      }),
-                                    ),
+                                    child: _loading
+                                        ? CircularProgressIndicator()
+                                        : FlatButton(
+                                            child: Text(
+                                              'Register patient',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .button
+                                                  .copyWith(fontSize: 16),
+                                            ),
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            textColor: Colors.white,
+                                            onPressed: (() =>
+                                                _tryAddNewPatient()),
+                                          ),
                                   ),
                                 ]),
                           ),

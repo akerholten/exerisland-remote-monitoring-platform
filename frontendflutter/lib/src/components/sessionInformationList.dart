@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import '../handlers/loginHandler.dart';
+import 'package:frontendflutter/src/model_classes/patient.dart';
 import '../components/alerts.dart';
-import '../constants/route_names.dart';
 import '../constants/constants.dart';
-import '../handlers/debugTools.dart';
 import 'package:intl/intl.dart' as intl;
-import 'package:getwidget/getwidget.dart';
 import '../handlers/tools.dart';
 
 class SessionInformationList extends StatefulWidget {
@@ -100,8 +97,8 @@ class _SessionInformationListState extends State<SessionInformationList> {
                                 alignment: Alignment.center,
                                 height: tableItemHeight,
                                 width: tableItemWidth,
-                                child: SelectableText(
-                                    Tools.printDuration(session.duration)),
+                                child: SelectableText(Tools.printDuration(
+                                    Tools.parseDuration(session.duration))),
                               ),
                               Container(
                                 alignment: Alignment.center,
@@ -114,9 +111,9 @@ class _SessionInformationListState extends State<SessionInformationList> {
                                 alignment: Alignment.center,
                                 height: tableItemHeight,
                                 width: tableItemWidth,
-                                child: SelectableText(
-                                    intl.DateFormat(Constants.dateFormat)
-                                        .format(session.createdAt)),
+                                child: SelectableText(intl.DateFormat(
+                                        Constants.dateFormat)
+                                    .format(DateTime.parse(session.createdAt))),
                               ),
                             ],
                           ),

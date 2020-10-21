@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontendflutter/src/model_classes/patient.dart';
 import '../handlers/tools.dart';
 import '../components/modal_AddNewPatient.dart';
 import '../constants/route_names.dart';
@@ -35,11 +36,11 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
       temp.firstName = "FirstName" + patientCount.toString();
       temp.lastName = "LastName" + patientCount.toString();
       temp.email = "email" + patientCount.toString() + "@emailer.com";
-      temp.issue = "Knee pain";
-      temp.age = patientCount;
-      temp.recommendationsCount = patientCount;
-      temp.recommendationsCompleted = patientCount - 1;
-      temp.recentActivity = patientCount.toString() + " hours ago";
+      temp.note = "Knee pain";
+      // temp.age = patientCount;
+      // temp.recommendationsCount = patientCount;
+      // temp.recommendationsCompleted = patientCount - 1;
+      temp.recentActivityDate = DateTime.now().toIso8601String();
 
       patients.add(temp);
     });
@@ -54,12 +55,14 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
       temp.firstName = newPatient.firstName;
       temp.lastName = newPatient.lastName;
       temp.email = newPatient.email;
-      temp.issue = newPatient.issue;
-      temp.age = DateTime.now().difference(newPatient.dateOfBirth).inDays ~/
+      temp.note = newPatient.note;
+      temp.age = DateTime.now()
+              .difference(DateTime.parse(newPatient.birthDate))
+              .inDays ~/
           365; // TODO: Rework as this is dumb and not accurate/correct
       temp.recommendationsCount = patientCount;
       temp.recommendationsCompleted = patientCount - 1;
-      temp.recentActivity = patientCount.toString() + " hours ago";
+      temp.recentActivityDate = DateTime.now().toIso8601String();
 
       patients.add(temp);
     });
@@ -160,7 +163,7 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
                                   alignment: Alignment.center,
                                   height: tableItemHeight,
                                   width: tableItemWidth,
-                                  child: SelectableText(patient.issue),
+                                  child: SelectableText(patient.note),
                                 ),
                                 Container(
                                   alignment: Alignment.center,
@@ -182,7 +185,12 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
                                   alignment: Alignment.center,
                                   height: tableItemHeight,
                                   width: tableItemWidth,
-                                  child: SelectableText(patient.recentActivity),
+                                  child: SelectableText(DateTime.now()
+                                          .difference(DateTime.parse(
+                                              patient.recentActivityDate))
+                                          .inHours
+                                          .toString() +
+                                      " hours ago"), // TODO: Implement helper tool that will calculate whether to show days/hours etc here, show better information
                                 ),
                               ],
                             ),

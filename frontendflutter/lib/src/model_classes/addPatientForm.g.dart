@@ -8,12 +8,12 @@ part of 'addPatientForm.dart';
 
 AddPatientForm _$AddPatientFormFromJson(Map<String, dynamic> json) {
   $checkKeys(json,
-      requiredKeys: const ['firstName', 'lastName', 'email', 'dateOfBirth']);
+      requiredKeys: const ['firstName', 'lastName', 'email', 'birthDate']);
   return AddPatientForm(
     firstName: json['firstName'] as String,
     lastName: json['lastName'] as String,
     email: json['email'] as String,
-    dateOfBirth: json['dateOfBirth'] as String,
+    birthDate: json['birthDate'] as String,
     note: json['note'] as String,
   );
 }
@@ -23,6 +23,6 @@ Map<String, dynamic> _$AddPatientFormToJson(AddPatientForm instance) =>
       'firstName': instance.firstName,
       'lastName': instance.lastName,
       'email': instance.email,
-      'dateOfBirth': instance.dateOfBirth,
+      'birthDate': instance.birthDate,
       'note': instance.note,
     };

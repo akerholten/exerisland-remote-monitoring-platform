@@ -1,4 +1,5 @@
-import '../constants/constants.dart';
+import 'package:frontendflutter/src/model_classes/metric.dart';
+import 'package:frontendflutter/src/model_classes/minigame.dart';
 
 class DebugTools {
   static List<Minigame> getListOfMinigames() {
@@ -6,7 +7,7 @@ class DebugTools {
 
     for (int i = 0; i <= 10; i++) {
       Minigame newMinigame = new Minigame();
-      newMinigame.id = i;
+      newMinigame.id = i.toString();
       newMinigame.name = "Minigame Name " + i.toString();
       newMinigame.description = "Minigame description " +
           newMinigame.id.toString() +
@@ -16,7 +17,7 @@ class DebugTools {
       newMinigame.availableMetrics = new List<Metric>();
       for (int j = i; j <= 10; j++) {
         Metric newMetric = new Metric();
-        newMetric.id = j;
+        newMetric.id = j.toString();
         newMetric.name = "Metric " + j.toString();
         newMetric.unit = "meters";
         newMetric.value = 0;

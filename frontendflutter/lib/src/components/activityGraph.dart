@@ -1,11 +1,5 @@
 import 'package:flutter/material.dart';
-import '../handlers/loginHandler.dart';
-import '../components/alerts.dart';
-import '../constants/route_names.dart';
-import '../constants/constants.dart';
-import '../handlers/debugTools.dart';
-import 'package:intl/intl.dart' as intl;
-import 'package:getwidget/getwidget.dart';
+import 'package:frontendflutter/src/model_classes/patient.dart';
 
 class ActivityGraph extends StatefulWidget {
   @required
@@ -20,7 +14,7 @@ class ActivityGraph extends StatefulWidget {
 class _ActivityGraphState extends State<ActivityGraph> {
   @override
   Widget build(BuildContext context) {
-    ScrollController _controller = new ScrollController();
+    // ScrollController _controller = new ScrollController();
 
     return Container(
       child: Center(

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:frontendflutter/src/model_classes/metric.dart';
+import 'package:frontendflutter/src/model_classes/minigame.dart';
+import 'package:frontendflutter/src/model_classes/recommendation.dart';
 
 import '../components/alerts.dart';
 import '../constants/constants.dart';
@@ -25,8 +28,8 @@ class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
   Recommendation newRec = new Recommendation();
   Metric tempSelectedMetric = new Metric();
   int _tempMetricValue;
-  int _metricDropdownValue =
-      -1; // hack for now, could not make this value reset properly when choosing new minigame
+  String _metricDropdownValue =
+      ""; // hack for now, could not make this value reset properly when choosing new minigame
 
   var _metricValueInputController = TextEditingController();
 
@@ -108,7 +111,8 @@ class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
   @override
   Widget build(BuildContext context) {
     if (newRec.deadline == null) {
-      newRec.deadline = DateTime.now(); // It needs a temp value
+      newRec.deadline =
+          DateTime.now().toIso8601String(); // It needs a temp value
     }
     if (newRec.goals == null) {
       newRec.goals = new List<Metric>(); // temp value
@@ -153,6 +157,7 @@ class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
                   newRec.minigameId = value;
                   miniGameSelected = true;
                   // ----- UGLY hack for now to make sure the selected metric type is available -----
+                  // TODO: Make a way to workaround for this so ID can be string (evaluate if this now works)
                   _metricDropdownValue = availableMinigames
                       .firstWhere((e) => e.id == newRec.minigameId)
                       .availableMetrics[0]
@@ -315,7 +320,7 @@ class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
           Container(
             padding: EdgeInsets.only(bottom: 8),
             child: FormDatePicker(
-              date: newRec.deadline,
+              date: DateTime.parse(newRec.deadline),
               title: "Deadline",
               onChanged: (value) {
                 setState(() {

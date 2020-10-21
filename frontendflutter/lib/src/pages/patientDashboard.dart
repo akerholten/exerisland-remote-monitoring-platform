@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:frontendflutter/src/model_classes/activity.dart';
+import 'package:frontendflutter/src/model_classes/metric.dart';
+import 'package:frontendflutter/src/model_classes/patient.dart';
+import 'package:frontendflutter/src/model_classes/recommendation.dart';
+import 'package:frontendflutter/src/model_classes/session.dart';
 import '../handlers/tools.dart';
 import '../components/taskCompletionList.dart';
 import '../components/sessionInformationList.dart';
@@ -32,23 +37,26 @@ class _PatientDashboardState extends State<PatientDashboard> {
     currentPatient.firstName = "FirstName" + patientCount.toString();
     currentPatient.lastName = "LastName" + patientCount.toString();
     currentPatient.email = "email" + patientCount.toString() + "@emailer.com";
-    currentPatient.issue = "Knee pain";
+    currentPatient.note = "Knee pain";
     currentPatient.age = patientCount;
     currentPatient.recommendationsCount = patientCount;
     currentPatient.recommendationsCompleted = patientCount - 1;
-    currentPatient.recentActivity = patientCount.toString() + " hours ago";
+    currentPatient.recentActivityDate = DateTime.now().toIso8601String();
     currentPatient.recommendations = new List<Recommendation>();
     currentPatient.sessions = new List<Session>();
 
     // Add debug recommendations list
     for (int i = 0; i <= 10; i++) {
       Recommendation newRec = new Recommendation();
-      newRec.minigameId = i;
-      newRec.id = i;
-      newRec.observerId = 1;
-      newRec.deadline = DateTime.now().subtract(new Duration(days: i));
+      newRec.minigameId = i.toString();
+      newRec.id = i.toString();
+      newRec.observerId = "1";
+      newRec.deadline =
+          DateTime.now().subtract(new Duration(days: i)).toIso8601String();
       if (i % 2 == 0) {
-        newRec.completedAt = DateTime.now().subtract(new Duration(days: i * 2));
+        newRec.completedAt = DateTime.now()
+            .subtract(new Duration(days: i * 2))
+            .toIso8601String();
       }
       currentPatient.recommendations.add(newRec);
     }
@@ -56,23 +64,25 @@ class _PatientDashboardState extends State<PatientDashboard> {
     // Add debug sessions list
     for (int i = 0; i <= 10; i++) {
       Session newSession = new Session();
-      newSession.id = i;
-      newSession.createdAt = DateTime.now().subtract(new Duration(days: i));
+      newSession.id = i.toString();
+      newSession.createdAt =
+          DateTime.now().subtract(new Duration(days: i)).toString();
       newSession.duration =
-          new Duration(hours: i, minutes: i + 1, seconds: i + 2);
+          new Duration(hours: i, minutes: i + 1, seconds: i + 2).toString();
 
       newSession.activities = new List<Activity>();
       for (int j = 0; j <= i; j++) {
         Activity debugActivity = new Activity();
-        debugActivity.id = j;
-        debugActivity.createdAt =
-            DateTime.now().subtract(new Duration(days: i, hours: j));
-        debugActivity.minigameId = j;
+        debugActivity.id = j.toString();
+        debugActivity.createdAt = DateTime.now()
+            .subtract(new Duration(days: i, hours: j))
+            .toIso8601String();
+        debugActivity.minigameId = j.toString();
         debugActivity.metrics = new List<Metric>();
 
         for (int k = 0; k <= 5; k++) {
           Metric debugMetric = new Metric();
-          debugMetric.id = k;
+          debugMetric.id = k.toString();
           debugMetric.name = "Metric " + k.toString();
           debugMetric.unit = "Unit " + k.toString();
           debugMetric.value = k * 17;

@@ -113,6 +113,7 @@ func AddPatientHandler(w http.ResponseWriter, r *http.Request) {
 
 	valid, err := validator.ValidateStruct(signupData)
 	if err != nil || !valid {
+		log.Printf("Could not validate struct data properly, err: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

@@ -1,0 +1,47 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'patient.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Patient _$PatientFromJson(Map<String, dynamic> json) {
+  $checkKeys(json,
+      requiredKeys: const ['firstName', 'lastName', 'email', 'birthDate']);
+  return Patient(
+    firstName: json['firstName'] as String,
+    lastName: json['lastName'] as String,
+    email: json['email'] as String,
+    birthDate: json['birthDate'] as String,
+    recentActivityDate: json['recentActivityDate'] as String,
+    note: json['note'] as String,
+    recommendations: (json['recommendations'] as List)
+        ?.map((e) => e == null
+            ? null
+            : Recommendation.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
+    sessions: (json['sessions'] as List)
+        ?.map((e) =>
+            e == null ? null : Session.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
+  )
+    ..age = json['age'] as int
+    ..recommendationsCount = json['recommendationsCount'] as int
+    ..recommendationsCompleted = json['recommendationsCompleted'] as int;
+}
+
+Map<String, dynamic> _$PatientToJson(Patient instance) => <String, dynamic>{
+      'firstName': instance.firstName,
+      'lastName': instance.lastName,
+      'email': instance.email,
+      'birthDate': instance.birthDate,
+      'recentActivityDate': instance.recentActivityDate,
+      'note': instance.note,
+      'age': instance.age,
+      'recommendationsCount': instance.recommendationsCount,
+      'recommendationsCompleted': instance.recommendationsCompleted,
+      'sessions': instance.sessions?.map((e) => e?.toJson())?.toList(),
+      'recommendations':
+          instance.recommendations?.map((e) => e?.toJson())?.toList(),
+    };

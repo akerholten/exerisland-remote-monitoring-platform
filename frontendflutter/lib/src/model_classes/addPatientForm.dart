@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'addPatientForm.g.dart';
@@ -15,19 +14,19 @@ class AddPatientForm {
   String email;
 
   @JsonKey(required: true)
-  String dateOfBirth;
+  String birthDate;
 
   @JsonKey(required: false)
   String note;
 
   AddPatientForm(
-      {this.firstName, this.lastName, this.email, this.dateOfBirth, this.note});
+      {this.firstName, this.lastName, this.email, this.birthDate, this.note});
 
   /// A necessary factory constructor for creating a new User instance
   /// from a map. Pass the map to the generated `_$AddPatientFormFromJson()` constructor.
   /// The constructor is named after the source class, in this case, User.
   factory AddPatientForm.fromJson(Map<String, dynamic> json) =>
-      _$AddPatientFormJson(json);
+      _$AddPatientFormFromJson(json);
 
   /// `toJson` is the convention for a class to declare support for serialization
   /// to JSON. The implementation simply calls the private, generated

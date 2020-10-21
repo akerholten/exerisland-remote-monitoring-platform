@@ -1,25 +1,26 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'minigame.dart';
 
-part 'loginForm.g.dart';
+part 'minigames.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class LoginForm {
+class Minigames {
   @JsonKey(required: true)
-  String email;
+  String id;
 
   @JsonKey(required: true)
-  String password;
+  List<Minigame> minigames;
 
-  LoginForm({this.email, this.password});
+  Minigames({this.id, this.minigames});
 
   /// A necessary factory constructor for creating a new User instance
-  /// from a map. Pass the map to the generated `_$LoginFormFromJson()` constructor.
+  /// from a map. Pass the map to the generated `_$MinigamesFromJson()` constructor.
   /// The constructor is named after the source class, in this case, User.
-  factory LoginForm.fromJson(Map<String, dynamic> json) =>
-      _$LoginFormFromJson(json);
+  factory Minigames.fromJson(Map<String, dynamic> json) =>
+      _$MinigamesFromJson(json);
 
   /// `toJson` is the convention for a class to declare support for serialization
   /// to JSON. The implementation simply calls the private, generated
-  /// helper method `_$LoginFormToJson`.
-  Map<String, dynamic> toJson() => _$LoginFormToJson(this);
+  /// helper method `_$MinigamesToJson`.
+  Map<String, dynamic> toJson() => _$MinigamesToJson(this);
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../handlers/loginHandler.dart';
+import 'package:frontendflutter/src/model_classes/patient.dart';
+import 'package:frontendflutter/src/model_classes/recommendation.dart';
 import '../components/alerts.dart';
 import '../components/buttons/smallButtons.dart';
-import '../constants/route_names.dart';
 import 'modal_AddNewRecommendation.dart';
 import '../constants/constants.dart';
 import '../handlers/debugTools.dart';
@@ -133,9 +133,12 @@ class _TaskCompletionListState extends State<TaskCompletionList> {
                                 Container(
                                   padding: EdgeInsets.all(4),
                                   child: SelectableText(
-                                    DebugTools.getListOfMinigames()[
-                                            recommendation.minigameId]
+                                    DebugTools.getListOfMinigames()
+                                        .singleWhere((element) =>
+                                            element.id ==
+                                            recommendation.minigameId)
                                         .name, // TODO: Replace with correct function
+                                    // recommendation.minigameId] // dont know if this will work now
                                     style:
                                         Theme.of(context).textTheme.headline6,
                                   ),
@@ -145,7 +148,8 @@ class _TaskCompletionListState extends State<TaskCompletionList> {
                                   child: SelectableText(
                                     "Due date: " +
                                         intl.DateFormat(Constants.dateFormat)
-                                            .format(recommendation.deadline),
+                                            .format(DateTime.parse(
+                                                recommendation.deadline)),
                                     style:
                                         Theme.of(context).textTheme.bodyText2,
                                   ),
