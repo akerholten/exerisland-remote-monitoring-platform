@@ -100,11 +100,8 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
         builder: (BuildContext context) {
           return AlertDialog(
             content: AddNewPatientModal(
-              onPatientAdded: (value) {
-                setState(() {
-                  newPatient = value;
-                  _addPatientToDatabase();
-                });
+              onPatientAdded: () {
+                _getAllPatients();
               },
             ),
           );
@@ -308,10 +305,13 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
                           ? Container(
                               alignment: Alignment.center,
                               padding: EdgeInsets.only(top: 250),
-                              child: SelectableText(
-                                'You have no patients yet',
-                                style: Theme.of(context).textTheme.headline4,
-                              ),
+                              child: _loading
+                                  ? CircularProgressIndicator()
+                                  : SelectableText(
+                                      'You have no patients yet',
+                                      style:
+                                          Theme.of(context).textTheme.headline4,
+                                    ),
                             )
                           : Card(
                               child: Column(children: [

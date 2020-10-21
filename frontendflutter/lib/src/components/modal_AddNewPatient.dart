@@ -9,7 +9,7 @@ import 'testForm.dart';
 class AddNewPatientModal extends StatefulWidget {
   // final Patient newPatient;
   // final DateTime newPatientDateOfBirth;
-  final ValueChanged onPatientAdded;
+  final VoidCallback onPatientAdded;
 
   AddNewPatientModal({this.onPatientAdded});
 
@@ -51,8 +51,8 @@ class AddNewPatientModalState extends State<AddNewPatientModal> {
       return;
     }
 
+    widget.onPatientAdded();
     Navigator.of(context).pop();
-    // onPatientAdded(_patientAdded);
     // TODO: also must retrieve the data of patients over again, such that the new patient is seen in list
   }
 
