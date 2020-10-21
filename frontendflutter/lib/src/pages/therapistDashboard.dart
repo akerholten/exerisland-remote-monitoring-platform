@@ -22,7 +22,7 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
   List<String> columnTitles = [
     'Name',
     'Email',
-    'Issue',
+    'Note',
     'Age',
     'Goals',
     'Recent activity'

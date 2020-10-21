@@ -69,7 +69,7 @@ class AddNewPatientModalState extends State<AddNewPatientModal> {
       return false;
     }
     if (newPatient.note == null || newPatient.note == "") {
-      Alerts.showError("Issue field must be entered");
+      Alerts.showError("Note field must be entered");
       return false;
     }
 
@@ -171,8 +171,8 @@ class AddNewPatientModalState extends State<AddNewPatientModal> {
                             padding: EdgeInsets.only(bottom: 8),
                             child: TextFormField(
                               decoration: InputDecoration(
-                                hintText: 'Enter issue',
-                                labelText: 'Issue',
+                                hintText: 'Enter note',
+                                labelText: 'Note',
                               ),
                               onChanged: (value) {
                                 setState(() {
@@ -204,12 +204,12 @@ class AddNewPatientModalState extends State<AddNewPatientModal> {
                                           {Navigator.of(context).pop()}),
                                     ),
                                   ),
-                                  SizedBox(
-                                    width: 180,
-                                    height: 50,
-                                    child: _loading
-                                        ? CircularProgressIndicator()
-                                        : FlatButton(
+                                  _loading
+                                      ? CircularProgressIndicator()
+                                      : SizedBox(
+                                          width: 180,
+                                          height: 50,
+                                          child: FlatButton(
                                             child: Text(
                                               'Register patient',
                                               style: Theme.of(context)
@@ -223,7 +223,7 @@ class AddNewPatientModalState extends State<AddNewPatientModal> {
                                             onPressed: (() =>
                                                 _tryAddNewPatient()),
                                           ),
-                                  ),
+                                        ),
                                 ]),
                           ),
                         ]
