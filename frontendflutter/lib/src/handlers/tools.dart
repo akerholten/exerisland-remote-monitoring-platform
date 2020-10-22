@@ -15,7 +15,7 @@ class Tools {
   static Duration parseDuration(String s) {
     int hours = 0;
     int minutes = 0;
-    int seconds = 0;
+    int micros;
     List<String> parts = s.split(':');
     if (parts.length > 2) {
       hours = int.parse(parts[parts.length - 3]);
@@ -23,8 +23,8 @@ class Tools {
     if (parts.length > 1) {
       minutes = int.parse(parts[parts.length - 2]);
     }
-    seconds = int.parse(parts[parts.length - 1]);
-    return Duration(hours: hours, minutes: minutes, seconds: seconds);
+    micros = (double.parse(parts[parts.length - 1]) * 1000000).round();
+    return Duration(hours: hours, minutes: minutes, microseconds: micros);
   }
 
   static void verifyCookieLogin(BuildContext context) async {
