@@ -14,6 +14,10 @@ type Observer struct {
 	Patients  []string `json:",omitempty" valid:",optional"` // PatientIDs
 }
 
+type GetPatientForm struct {
+	ShortID string `json:"shortId" valid:"alphanum, required"`
+}
+
 func AddToObserverTable(user SignupUser, ctx context.Context) (string, error) {
 	var patients []string
 	observer := Observer{
@@ -144,14 +148,6 @@ func AddPatientToObserver(clientCookie CookieData, patientId string, shortId str
 func GetPatients(clientCookie CookieData, ctx context.Context) ([]Patient, error) {
 	var returnPatients []Patient
 
-	observerData, err := GetObserver(clientCookie, ctx)
-	if err != nil {
-		return returnPatients, err
-	}
-	if observerData == nil {
-		return returnPatients, errors.New("Could not find observer user data")
-	}
-
 	observerPatientsRef := DBClient().Database.NewRef(TableObserver).Child(clientCookie.UserID).Child("patients")
 
 	existingObserverPatients, err := observerPatientsRef.OrderByKey().GetOrdered(ctx)
@@ -185,4 +181,33 @@ func GetPatients(clientCookie CookieData, ctx context.Context) ([]Patient, error
 
 	// everything was successful so we return nil
 	return returnPatients, nil
+}
+
+func GetPatient(clientCookie CookieData, shortId string, ctx context.Context) (*Patient, error) {
+	var patient Patient
+
+	observerPatientRef := DBClient().Database.NewRef(TableObserver).Child(clientCookie.UserID).Child("patients").Child(shortId)
+
+	var patientId string
+
+	err := observerPatientRef.Get(ctx, &patientId)
+	if err != nil {
+		return nil, err
+	}
+	if len(patientId) < 1 {
+		return nil, errors.New("Could not find patient")
+	}
+
+	err = DBClient().Database.NewRef(TablePatient).Child(patientId).Get(ctx, &patient)
+	if err != nil {
+		return nil, err
+	}
+	if len(patient.Email) < 1 {
+		return nil, errors.New("Could not find patient")
+	}
+
+	// TODO: Fill the rest of the data, recommendations, sessions, activites, and so on
+
+	// Everything went ok so we return patient and nil
+	return &patient, nil
 }

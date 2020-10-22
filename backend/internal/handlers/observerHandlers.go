@@ -207,53 +207,77 @@ func GetPatientsHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Marshal it into json and return
 	patientsJson, err := json.Marshal(patients)
+	if err != nil {
+		log.Printf("Could not marshal patients from this user before return, err was: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
 	w.WriteHeader(http.StatusOK)
 	w.Write(patientsJson)
 }
 
-// func GetPatientHandler(w http.ResponseWriter, r *http.Request) {
-// 	log.Printf("Got a request for all patients...")
-// 	defer r.Body.Close()
+func GetPatientHandler(w http.ResponseWriter, r *http.Request) {
+	log.Printf("Got a request for a specific patient...")
+	defer r.Body.Close()
 
-// 	ctx := context.Background()
+	ctx := context.Background()
 
-// 	// Authentication ...
-// 	clientCookie, err := cookie.FetchCookie(r)
-// 	if err != nil {
-// 		// This could mean that the cookie is not present so technically not a internal server error, but could be bad request
-// 		log.Printf("Could not fetch cookie, err was: %v", err)
-// 		w.WriteHeader(http.StatusBadRequest)
-// 		return
-// 	}
+	// Authentication ...
+	clientCookie, err := cookie.FetchCookie(r)
+	if err != nil {
+		// This could mean that the cookie is not present so technically not a internal server error, but could be bad request
+		log.Printf("Could not fetch cookie, err was: %v", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
-// 	user, err := db.GetUserFromCookie(clientCookie, ctx)
-// 	if err != nil {
-// 		log.Printf("Could not fetch user from cookie, err was: %v", err)
-// 		w.WriteHeader(http.StatusBadRequest)
-// 		return
-// 	}
-// 	if user == nil {
-// 		log.Printf("Could not fetch user from cookie, err was: %v", err)
-// 		w.WriteHeader(http.StatusBadRequest)
-// 		return
-// 	}
-// 	if user.UserType != constants.ObserverType {
-// 		w.WriteHeader(http.StatusUnauthorized)
-// 		return
-// 	}
+	user, err := db.GetUserFromCookie(clientCookie, ctx)
+	if err != nil {
+		log.Printf("Could not fetch user from cookie, err was: %v", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if user == nil {
+		log.Printf("Could not fetch user from cookie, err was: %v", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if user.UserType != constants.ObserverType {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
 
-// 	// Get array of patients from observerInterface function
-// 	patients, err := db.GetPatients(clientCookie, ctx)
-// 	if err != nil {
-// 		log.Printf("Could not fetch patients from this user, err was: %v", err)
-// 		w.WriteHeader(http.StatusInternalServerError)
-// 		return
-// 	}
+	var getPatientForm db.GetPatientForm
 
-// 	// Marshal it into json and return
-// 	patientsJson, err := json.Marshal(patients)
+	respBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
 
-// 	w.WriteHeader(http.StatusOK)
-// 	w.Write(patientsJson)
-// }
+	err = json.Unmarshal(respBody, &getPatientForm)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Printf("Error unmarshaling: %s, error: %v", string(respBody), err)
+	}
+
+	// Get array of patients from observerInterface function
+	patient, err := db.GetPatient(clientCookie, getPatientForm.ShortID, ctx)
+	if err != nil {
+		log.Printf("Could not fetch patient from this user, err was: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	// Marshal it into json and return
+	patientJson, err := json.Marshal(patient)
+	if err != nil {
+		log.Printf("Could not marshal patient from this user before return, err was: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(patientJson)
+}
