@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import '../handlers/loginHandler.dart';
 import '../components/alerts.dart';
-import '../constants/route_names.dart';
 import '../constants/constants.dart';
 
 class ForgotPasswordPage extends StatefulWidget {

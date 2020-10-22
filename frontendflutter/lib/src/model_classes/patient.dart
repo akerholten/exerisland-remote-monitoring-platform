@@ -25,6 +25,9 @@ class Patient {
   @JsonKey(required: false)
   String note;
 
+  @JsonKey(required: false)
+  String shortID;
+
   // maybe obsolete, consider it (TODO: remove)
   @JsonKey(required: false, defaultValue: 0)
   int age;

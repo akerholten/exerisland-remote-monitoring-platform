@@ -1,11 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:frontendflutter/src/components/alerts.dart';
 import 'package:frontendflutter/src/constants/constants.dart';
 import 'package:frontendflutter/src/model_classes/signupForm.dart';
 import 'dart:convert'; // For jsonEncode, jsonDecode
 import 'package:http/http.dart' as http;
 
-import 'dart:io';
 import 'dart:async';
 
 class SignupHandler {

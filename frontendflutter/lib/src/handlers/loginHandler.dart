@@ -1,13 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:frontendflutter/src/components/alerts.dart';
 import 'package:frontendflutter/src/constants/constants.dart';
 import 'package:frontendflutter/src/model_classes/loginForm.dart';
-import 'package:frontendflutter/src/model_classes/signupForm.dart';
 import 'dart:convert'; // For jsonEncode, jsonDecode
 import 'package:http/http.dart' as http;
-import 'package:requests/requests.dart';
 
-import 'dart:io';
 import 'dart:async';
 
 // IF ISSUES WITH COOKIES; REMEMBER THIS: https://medium.com/swlh/flutter-web-node-js-cors-and-cookies-f5db8d6de882

@@ -20,8 +20,6 @@ class AddNewPatientModal extends StatefulWidget {
 class AddNewPatientModalState extends State<AddNewPatientModal> {
   Patient newPatient = new Patient();
 
-  DateTime _chosenDateTime;
-
   bool _loading = false;
 
   void _tryAddNewPatient() async {

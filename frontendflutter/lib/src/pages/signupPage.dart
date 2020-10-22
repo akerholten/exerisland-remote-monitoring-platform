@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontendflutter/src/handlers/signupHandler.dart';
 import 'package:frontendflutter/src/model_classes/signupForm.dart';
-import '../handlers/loginHandler.dart';
 import '../components/alerts.dart';
 import '../constants/route_names.dart';
 import '../constants/constants.dart';

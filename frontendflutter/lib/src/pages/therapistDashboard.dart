@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontendflutter/src/handlers/observerHandler.dart';
 import 'package:frontendflutter/src/model_classes/patient.dart';
-import 'package:frontendflutter/src/model_classes/patients.dart';
 import '../handlers/tools.dart';
 import '../components/modal_AddNewPatient.dart';
 import '../constants/route_names.dart';
@@ -19,7 +18,7 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
   double dataTableMaxHeight = 900;
 
   Patient newPatient = new Patient();
-  Patients patients;
+  List<Patient> patients;
   bool _loading = false;
   // patients.list = new List<Patient>();
 
@@ -33,26 +32,7 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
   ];
 
   void _fillWithTempData() {
-    patients = new Patients();
-    patients.list = new List<Patient>();
-  }
-
-  void _debugFillwithData() {
-    setState(() {
-      patientCount++;
-
-      Patient temp = new Patient();
-      temp.firstName = "FirstName" + patientCount.toString();
-      temp.lastName = "LastName" + patientCount.toString();
-      temp.email = "email" + patientCount.toString() + "@emailer.com";
-      temp.note = "Knee pain";
-      // temp.age = patientCount;
-      // temp.recommendationsCount = patientCount;
-      // temp.recommendationsCompleted = patientCount - 1;
-      temp.recentActivityDate = DateTime.now().toIso8601String();
-
-      patients.list.add(temp);
-    });
+    patients = new List<Patient>();
   }
 
   void _getAllPatients() async {
@@ -60,37 +40,12 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
       _loading = true;
     });
 
-    Patients tempPatients = new Patients();
-    tempPatients.list = await ObserverHandler.getAllPatients();
-
-    print("We fine with elements 1?");
+    List<Patient> tempPatients = new List<Patient>();
+    tempPatients = await ObserverHandler.getAllPatients();
 
     setState(() {
-      print("We fine with elements 2?");
       patients = tempPatients;
       _loading = false;
-    });
-  }
-
-  _addPatientToDatabase() {
-    // TODO: Actually implement this
-    setState(() {
-      patientCount++;
-
-      Patient temp = new Patient();
-      temp.firstName = newPatient.firstName;
-      temp.lastName = newPatient.lastName;
-      temp.email = newPatient.email;
-      temp.note = newPatient.note;
-      temp.age = DateTime.now()
-              .difference(DateTime.parse(newPatient.birthDate))
-              .inDays ~/
-          365; // TODO: Rework as this is dumb and not accurate/correct
-      temp.recommendationsCount = patientCount;
-      temp.recommendationsCompleted = patientCount - 1;
-      temp.recentActivityDate = DateTime.now().toIso8601String();
-
-      patients.list.add(temp);
     });
   }
 
@@ -116,7 +71,7 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
     ScrollController _controller = new ScrollController();
 
     // data cannot be null
-    if (patients == null || patients.list == null) {
+    if (patients == null) {
       _fillWithTempData();
       // Asynchronously collecting all patients
       _getAllPatients();
@@ -165,7 +120,7 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
               physics: const AlwaysScrollableScrollPhysics(),
               controller: _controller,
               shrinkWrap: true,
-              children: (patients.list
+              children: (patients
                   .map((patient) => FlatButton(
                         onPressed: () => Navigator.of(context).pushNamed(Routes
                             .SpecificPersonDashboard), // TODO: make this actually go to the id of the person
@@ -301,17 +256,19 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
                           ],
                         ),
                       ),
-                      patients.list.length == 0
+                      patients.length == 0
                           ? Container(
                               alignment: Alignment.center,
                               padding: EdgeInsets.only(top: 250),
-                              child: _loading
-                                  ? CircularProgressIndicator()
-                                  : SelectableText(
-                                      'You have no patients yet',
-                                      style:
-                                          Theme.of(context).textTheme.headline4,
-                                    ),
+                              child:
+                                  _loading // if loading in patients from backend
+                                      ? CircularProgressIndicator()
+                                      : SelectableText(
+                                          'You have no patients yet',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline4,
+                                        ),
                             )
                           : Card(
                               child: Column(children: [

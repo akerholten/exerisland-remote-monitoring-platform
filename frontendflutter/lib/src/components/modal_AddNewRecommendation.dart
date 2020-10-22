@@ -5,7 +5,6 @@ import 'package:frontendflutter/src/model_classes/minigame.dart';
 import 'package:frontendflutter/src/model_classes/recommendation.dart';
 
 import '../components/alerts.dart';
-import '../constants/constants.dart';
 import '../handlers/debugTools.dart';
 import 'buttons/smallButtons.dart';
 import 'testForm.dart';
@@ -39,7 +38,7 @@ class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
       .getListOfMinigames(); // TODO: Change to proper getting possible minigames
 
   bool _isDataFilled() {
-    if (newRec.minigameId == null || newRec.minigameId == -1) {
+    if (newRec.minigameId == null || newRec.minigameId == "") {
       Alerts.showError("Minigame must be chosen");
       return false;
     }
@@ -66,8 +65,6 @@ class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
   }
 
   void _addMetric() {
-    // TODO: have a check for when pressing + button to add new metric, that if that metric already has been added
-    // do not add duplicate
     var contains = newRec.goals.where((e) => e.id == tempSelectedMetric.id);
     // If we do have this metric added already
     if (contains.isNotEmpty) {
