@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontendflutter/src/model_classes/patient.dart';
+import 'package:frontendflutter/src/pages/errorPage.dart';
 import 'src/components/alerts.dart';
 import 'src/handlers/tools.dart';
 import 'src/constants/constants.dart';
@@ -101,11 +102,9 @@ class MyApp extends StatelessWidget {
             print(argArray);
 
             if (argArray.length <= 2) {
-              Alerts.showWarning("404 page not found1");
-              // TODO: Return 404 not found page // Remove below which is placeholder
               return MaterialPageRoute(
                 builder: (context) {
-                  return TherapistDashboard();
+                  return ErrorPage(title: "404 page not found");
                 },
                 settings: RouteSettings(name: settings.name),
               );
@@ -115,11 +114,9 @@ class MyApp extends StatelessWidget {
             args = new PatientDashboardArguments(argArray[2]);
 
             if (args.id.length < 1 || args.id.length > 20) {
-              Alerts.showWarning("404 page not found2");
-              // TODO: Return 404 not found page // Remove below which is placeholder
               return MaterialPageRoute(
                 builder: (context) {
-                  return TherapistDashboard();
+                  return ErrorPage(title: "404 page not found");
                 },
                 settings: RouteSettings(name: settings.name),
               );
