@@ -88,7 +88,7 @@ func GetObserver(clientCookie CookieData, ctx context.Context) (*Observer, error
 	return &observer, nil
 }
 
-func AddPatientToObserver(clientCookie CookieData, patientId string, ctx context.Context) error {
+func AddPatientToObserver(clientCookie CookieData, patientId string, shortId string, ctx context.Context) error {
 	observerData, err := GetObserver(clientCookie, ctx)
 	if err != nil {
 		return err
@@ -105,25 +105,33 @@ func AddPatientToObserver(clientCookie CookieData, patientId string, ctx context
 	// Appending the new object to the array
 	// observerData.Patients = append(observerData.Patients, patientId)
 
-	observerPatientsRef := DBClient().Database.NewRef(TableObserver).Child(clientCookie.UserID).Child("patients")
-
-	existingObserverPatients, err := observerPatientsRef.OrderByKey().GetOrdered(ctx)
+	var retrieveId string
+	observerPatientRef := DBClient().Database.NewRef(TableObserver).Child(clientCookie.UserID).Child("patients").Child(shortId)
+	err = observerPatientRef.Get(ctx, &retrieveId)
 	if err != nil {
 		return err
 	}
-
-	for _, r := range existingObserverPatients {
-		var id string
-		if err := r.Unmarshal(&id); err != nil {
-			return err
-		}
-
-		if patientId == id {
-			return errors.New("User with that ID already exist for this observer")
-		}
+	if len(retrieveId) > 1 {
+		return errors.New("Patient already added to this observer")
 	}
 
-	_, err = observerPatientsRef.Push(ctx, patientId)
+	// existingObserverPatients, err := observerPatientsRef.OrderByKey().GetOrdered(ctx)
+	// if err != nil {
+	// 	return err
+	// }
+
+	// for _, r := range existingObserverPatients {
+	// 	var id string
+	// 	if err := r.Unmarshal(&id); err != nil {
+	// 		return err
+	// 	}
+
+	// 	if patientId == id {
+	// 		return errors.New("User with that ID already exist for this observer")
+	// 	}
+	// }
+
+	err = observerPatientRef.Set(ctx, patientId)
 	if err != nil {
 		log.Panicf("Error when setting new data %v", err)
 		return err

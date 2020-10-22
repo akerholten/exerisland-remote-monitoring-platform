@@ -156,7 +156,7 @@ func AddPatientHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// ----- ADD THE PATIENT ID TO THE OBSERVERS LIST OF PATIENTS  -----
-	err = db.AddPatientToObserver(clientCookie, loginUserData.UserID, ctx)
+	err = db.AddPatientToObserver(clientCookie, loginUserData.UserID, shortId, ctx)
 	if err != nil {
 		log.Printf("Could not add patient to observers list of patients, err was: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -211,3 +211,49 @@ func GetPatientsHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(patientsJson)
 }
+
+// func GetPatientHandler(w http.ResponseWriter, r *http.Request) {
+// 	log.Printf("Got a request for all patients...")
+// 	defer r.Body.Close()
+
+// 	ctx := context.Background()
+
+// 	// Authentication ...
+// 	clientCookie, err := cookie.FetchCookie(r)
+// 	if err != nil {
+// 		// This could mean that the cookie is not present so technically not a internal server error, but could be bad request
+// 		log.Printf("Could not fetch cookie, err was: %v", err)
+// 		w.WriteHeader(http.StatusBadRequest)
+// 		return
+// 	}
+
+// 	user, err := db.GetUserFromCookie(clientCookie, ctx)
+// 	if err != nil {
+// 		log.Printf("Could not fetch user from cookie, err was: %v", err)
+// 		w.WriteHeader(http.StatusBadRequest)
+// 		return
+// 	}
+// 	if user == nil {
+// 		log.Printf("Could not fetch user from cookie, err was: %v", err)
+// 		w.WriteHeader(http.StatusBadRequest)
+// 		return
+// 	}
+// 	if user.UserType != constants.ObserverType {
+// 		w.WriteHeader(http.StatusUnauthorized)
+// 		return
+// 	}
+
+// 	// Get array of patients from observerInterface function
+// 	patients, err := db.GetPatients(clientCookie, ctx)
+// 	if err != nil {
+// 		log.Printf("Could not fetch patients from this user, err was: %v", err)
+// 		w.WriteHeader(http.StatusInternalServerError)
+// 		return
+// 	}
+
+// 	// Marshal it into json and return
+// 	patientsJson, err := json.Marshal(patients)
+
+// 	w.WriteHeader(http.StatusOK)
+// 	w.Write(patientsJson)
+// }
