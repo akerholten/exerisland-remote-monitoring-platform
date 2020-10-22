@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontendflutter/src/model_classes/patient.dart';
+import 'src/components/alerts.dart';
 import 'src/handlers/tools.dart';
 import 'src/constants/constants.dart';
 import 'src/handlers/loginHandler.dart';
@@ -49,26 +51,121 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      routes: {
-        '/': (context) => MyHomePage(title: Constants.applicationName),
-        Routes.Login: (context) => LoginPage(),
-        Routes.Signup: (context) => SignupPage(),
-        Routes.ForgotPassword: (context) => ForgotPasswordPage(),
-
-        // PROTECTED ROUTES (Always checks cookie)
-        Routes.Dashboard: (context) {
+      initialRoute: "/",
+      onGenerateRoute: (settings) {
+        if (settings.name == Routes.Login) {
+          return MaterialPageRoute(
+            builder: (context) {
+              return LoginPage();
+            },
+            settings: RouteSettings(name: settings.name),
+          );
+        }
+        if (settings.name == Routes.Signup) {
+          return MaterialPageRoute(
+            builder: (context) {
+              return SignupPage();
+            },
+            settings: RouteSettings(name: settings.name),
+          );
+        }
+        if (settings.name == Routes.ForgotPassword) {
+          return MaterialPageRoute(
+            builder: (context) {
+              return ForgotPasswordPage();
+            },
+            settings: RouteSettings(name: settings.name),
+          );
+        }
+        if (settings.name == Routes.Dashboard) {
           Tools.verifyCookieLogin(context);
 
-          // TODO: Do an if check to see if the person is therapist or not,
-          // if not, then go to specificPersonDashboard of that person here
-          return TherapistDashboard();
-        }, // TODO: Solve difference between showing therapist and patient dashboard when going here
-        Routes.SpecificPersonDashboard: (context) {
+          return MaterialPageRoute(
+            builder: (context) {
+              return TherapistDashboard();
+            },
+            settings: RouteSettings(name: settings.name),
+          );
+        }
+        if (settings.name.contains(Routes.SpecificPersonDashboard)) {
           Tools.verifyCookieLogin(context);
-          // TODO: Solve handling ID to retrieve correct person
-          return PatientDashboard();
+          // Cast the arguments to the correct type: ScreenArguments.
+          PatientDashboardArguments args = settings.arguments;
+
+          if (args == null || args.id.length < 1) {
+            // URL looks like this http://localhost:3000/#/id/SOMEID
+            // meaning that the split will give us: [#, id, SOMEID]
+            var argArray = settings.name.split("/");
+
+            print("Here is argarray:");
+            print(argArray);
+
+            if (argArray.length <= 2) {
+              Alerts.showWarning("404 page not found1");
+              // TODO: Return 404 not found page // Remove below which is placeholder
+              return MaterialPageRoute(
+                builder: (context) {
+                  return TherapistDashboard();
+                },
+                settings: RouteSettings(name: settings.name),
+              );
+            }
+
+            // Collecting args from URL (does that work?)
+            args = new PatientDashboardArguments(argArray[2]);
+
+            if (args.id.length < 1 || args.id.length > 20) {
+              Alerts.showWarning("404 page not found2");
+              // TODO: Return 404 not found page // Remove below which is placeholder
+              return MaterialPageRoute(
+                builder: (context) {
+                  return TherapistDashboard();
+                },
+                settings: RouteSettings(name: settings.name),
+              );
+            }
+          }
+
+          // Then, extract the required data from the arguments and
+          // pass the data to the correct screen.
+          return MaterialPageRoute(
+            builder: (context) {
+              return PatientDashboard(patientId: args.id);
+            },
+            settings: RouteSettings(
+                name: Routes.SpecificPersonDashboard + "/" + args.id),
+          );
+        }
+        // If you push the PassArguments route
+        if (settings.name == "/") {
+          return MaterialPageRoute(
+            builder: (context) {
+              return MyHomePage(title: Constants.applicationName);
+            },
+            settings: RouteSettings(name: settings.name),
+          );
         }
       },
+      // routes: {
+      //   '/': (context) => MyHomePage(title: Constants.applicationName),
+      //   Routes.Login: (context) => LoginPage(),
+      //   Routes.Signup: (context) => SignupPage(),
+      //   Routes.ForgotPassword: (context) => ForgotPasswordPage(),
+
+      //   // PROTECTED ROUTES (Always checks cookie)
+      //   Routes.Dashboard: (context) {
+      //     Tools.verifyCookieLogin(context);
+
+      //     // TODO: Do an if check to see if the person is therapist or not,
+      //     // if not, then go to specificPersonDashboard of that person here
+      //     return TherapistDashboard();
+      //   }, // TODO: Solve difference between showing therapist and patient dashboard when going here
+      //   Routes.SpecificPersonDashboard: (context) {
+      //     Tools.verifyCookieLogin(context);
+      //     // TODO: Solve handling ID to retrieve correct person
+      //     return PatientDashboard();
+      //   }
+      // },
     );
   }
 }

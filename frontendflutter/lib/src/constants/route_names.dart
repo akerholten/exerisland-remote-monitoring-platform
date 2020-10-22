@@ -4,6 +4,6 @@ class Routes {
   static const String Signup = '/signup';
   static const String ForgotPassword = '/forgotpassword';
   static const String Dashboard = '/dashboard';
-  static const String SpecificPersonDashboard = '/id/';
+  static const String SpecificPersonDashboard = '/id';
   static const String Test = '/test';
 }

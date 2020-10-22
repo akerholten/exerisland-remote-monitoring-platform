@@ -4,6 +4,12 @@ class Constants {
   static const String dateFormat = "dd/MM/yyyy";
 }
 
+class PatientDashboardArguments {
+  final String id;
+
+  PatientDashboardArguments(this.id);
+}
+
 // TODO: Change into model class with ToJson and FromJson functions
 // class Patient {
 //   String firstName,

@@ -11,6 +11,11 @@ import '../components/activityGraph.dart';
 import '../constants/constants.dart';
 
 class PatientDashboard extends StatefulWidget {
+  @required
+  final String patientId;
+
+  PatientDashboard({this.patientId});
+
   @override
   _PatientDashboardState createState() => _PatientDashboardState();
 }
@@ -100,6 +105,10 @@ class _PatientDashboardState extends State<PatientDashboard> {
   Widget build(BuildContext context) {
     // double tableItemWidth = (dataTableMaxWidth * 0.75) / columnTitles.length;
     // double tableItemHeight = 70;
+    // final PatientDashboardArguments args =
+    //     ModalRoute.of(context).settings.arguments;
+
+    print("Args id were: " + widget.patientId);
     if (currentPatient.recommendations == null) {
       _debugFillData();
     }
