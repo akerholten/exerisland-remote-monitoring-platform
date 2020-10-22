@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontendflutter/src/components/alerts.dart';
+import 'package:frontendflutter/src/handlers/observerHandler.dart';
 import 'package:frontendflutter/src/model_classes/activity.dart';
 import 'package:frontendflutter/src/model_classes/metric.dart';
 import 'package:frontendflutter/src/model_classes/patient.dart';
@@ -9,12 +11,13 @@ import '../components/taskCompletionList.dart';
 import '../components/sessionInformationList.dart';
 import '../components/activityGraph.dart';
 import '../constants/constants.dart';
+import 'errorPage.dart';
 
 class PatientDashboard extends StatefulWidget {
   @required
-  final String patientId;
+  final String shortId;
 
-  PatientDashboard({this.patientId});
+  PatientDashboard({this.shortId});
 
   @override
   _PatientDashboardState createState() => _PatientDashboardState();
@@ -27,28 +30,55 @@ class _PatientDashboardState extends State<PatientDashboard> {
       1600; // TODO: change into consts and use from somewhere else? same as in therapistDashboard
   double pageMaxHeight = 900;
 
-  Patient currentPatient = new Patient();
+  Patient patient;
+  bool _loading;
+  bool _patientNotFound = false;
+
+  void _fillWithTempData() {
+    patient = new Patient();
+  }
+
+  void _getPatientDataAsync() async {
+    setState(() {
+      _loading = true;
+    });
+
+    Patient tempPatient = new Patient();
+
+    tempPatient = await ObserverHandler.getPatient(widget.shortId);
+
+    // if not found
+
+    setState(() {
+      _loading = false;
+      if (tempPatient == null) {
+        _patientNotFound = true;
+        return;
+      }
+      patient = tempPatient;
+    });
+  }
 
   void _addRecommendationToDatabase(Recommendation newRec) {
     setState(() {
       // TODO: actually implement
       // Upload recommendation to db
       // Refresh recommendation list after that is done
-      currentPatient.recommendations.add(newRec);
+      patient.recommendations.add(newRec);
     });
   }
 
   void _debugFillData() {
-    currentPatient.firstName = "FirstName" + patientCount.toString();
-    currentPatient.lastName = "LastName" + patientCount.toString();
-    currentPatient.email = "email" + patientCount.toString() + "@emailer.com";
-    currentPatient.note = "Knee pain";
-    currentPatient.age = patientCount;
-    currentPatient.recommendationsCount = patientCount;
-    currentPatient.recommendationsCompleted = patientCount - 1;
-    currentPatient.recentActivityDate = DateTime.now().toIso8601String();
-    currentPatient.recommendations = new List<Recommendation>();
-    currentPatient.sessions = new List<Session>();
+    patient.firstName = "FirstName" + patientCount.toString();
+    patient.lastName = "LastName" + patientCount.toString();
+    patient.email = "email" + patientCount.toString() + "@emailer.com";
+    patient.note = "Knee pain";
+    patient.age = patientCount;
+    patient.recommendationsCount = patientCount;
+    patient.recommendationsCompleted = patientCount - 1;
+    patient.recentActivityDate = DateTime.now().toIso8601String();
+    patient.recommendations = new List<Recommendation>();
+    patient.sessions = new List<Session>();
 
     // Add debug recommendations list
     for (int i = 0; i <= 10; i++) {
@@ -63,7 +93,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
             .subtract(new Duration(days: i * 2))
             .toIso8601String();
       }
-      currentPatient.recommendations.add(newRec);
+      patient.recommendations.add(newRec);
     }
 
     // Add debug sessions list
@@ -97,7 +127,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
         newSession.activities.add(debugActivity);
       }
 
-      currentPatient.sessions.add(newSession);
+      patient.sessions.add(newSession);
     }
   }
 
@@ -108,10 +138,20 @@ class _PatientDashboardState extends State<PatientDashboard> {
     // final PatientDashboardArguments args =
     //     ModalRoute.of(context).settings.arguments;
 
-    print("Args id were: " + widget.patientId);
-    if (currentPatient.recommendations == null) {
-      _debugFillData();
+    if (_patientNotFound) {
+      return ErrorPage(title: "404 page not found");
     }
+
+    print("Args id were: " + widget.shortId);
+    // data cannot be null
+    if (patient == null) {
+      _fillWithTempData();
+      // Asynchronously collecting all patients
+      _getPatientDataAsync();
+    }
+    // if (patient.recommendations == null) {
+    //   _debugFillData();
+    // }
 
     ScrollController _controller = new ScrollController();
 
@@ -119,7 +159,9 @@ class _PatientDashboardState extends State<PatientDashboard> {
       key: scaffoldKey,
       appBar: AppBar(
         // automaticallyImplyLeading: false,
-        title: Text(Constants.applicationName),
+        title: _loading
+            ? Text(Constants.applicationName)
+            : Text(patient.firstName + " " + patient.lastName),
         actions: [
           // LOGOUT ICON
           IconButton(
@@ -129,68 +171,72 @@ class _PatientDashboardState extends State<PatientDashboard> {
         ],
       ),
       body: Center(
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Container(
-              alignment: Alignment.topCenter,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                    maxWidth: pageMaxWidth, maxHeight: pageMaxHeight * 1.3),
-                child: Flexible(
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        // Task completion list
-                        Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
+        child: _loading // if we are loading the patients data currently
+            ? CircularProgressIndicator()
+            : SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Container(
+                    alignment: Alignment.topCenter,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                          maxWidth: pageMaxWidth,
+                          maxHeight: pageMaxHeight * 1.3),
+                      child: Flexible(
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Container(
-                                padding: EdgeInsets.all(8),
-                                alignment: Alignment.topCenter,
-                                height: pageMaxHeight * 0.9,
-                                width: (pageMaxWidth * 0.9) / 2,
-                                child: TaskCompletionList(
-                                  patient: currentPatient,
-                                  onRecommendationAdded: (value) =>
-                                      _addRecommendationToDatabase(value),
-                                ),
-                              ),
+                              // Task completion list
+                              Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.all(8),
+                                      alignment: Alignment.topCenter,
+                                      height: pageMaxHeight * 0.9,
+                                      width: (pageMaxWidth * 0.9) / 2,
+                                      child: TaskCompletionList(
+                                        patient: patient,
+                                        onRecommendationAdded: (value) =>
+                                            _addRecommendationToDatabase(value),
+                                      ),
+                                    ),
+                                  ]),
+                              Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      // SessionList
+                                      padding: EdgeInsets.all(8),
+                                      height: (pageMaxHeight * 0.9) / 2,
+                                      width: (pageMaxWidth * 0.9) / 2,
+                                      child: Card(
+                                        child: SessionInformationList(
+                                          patient: patient,
+                                          dataTableMaxWidth:
+                                              (pageMaxWidth * 0.9) / 2,
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      // ActivityGraph
+                                      padding: EdgeInsets.all(8),
+                                      height: (pageMaxHeight * 0.9) / 2,
+                                      width: (pageMaxWidth * 0.9) / 2,
+                                      child: Card(
+                                        child: ActivityGraph(
+                                          patient: patient,
+                                        ),
+                                      ),
+                                    ),
+                                  ])
                             ]),
-                        Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Container(
-                                // SessionList
-                                padding: EdgeInsets.all(8),
-                                height: (pageMaxHeight * 0.9) / 2,
-                                width: (pageMaxWidth * 0.9) / 2,
-                                child: Card(
-                                  child: SessionInformationList(
-                                    patient: currentPatient,
-                                    dataTableMaxWidth: (pageMaxWidth * 0.9) / 2,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                // ActivityGraph
-                                padding: EdgeInsets.all(8),
-                                height: (pageMaxHeight * 0.9) / 2,
-                                width: (pageMaxWidth * 0.9) / 2,
-                                child: Card(
-                                  child: ActivityGraph(
-                                    patient: currentPatient,
-                                  ),
-                                ),
-                              ),
-                            ])
-                      ]),
+                      ),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-        ),
       ),
     );
   }

@@ -43,11 +43,29 @@ class ObserverHandler {
         tempList.add(Patient.fromJson(element));
       });
 
-      print("We got done adding the elements");
-
       return tempList;
     } else {
       Alerts.showWarning("Could not retrieve list of patients");
+      return null;
+    }
+  }
+
+  static Future<Patient> getPatient(String id) async {
+    final http.Response response = await http.get(
+      Constants.backendURL + "/getPatient/" + id,
+    );
+
+    print("Trying to fetch a specific patient... ");
+    if (response.statusCode == 200 || response.statusCode == 202) {
+      Patient patient = new Patient();
+
+      var jsonData = jsonDecode(response.body);
+
+      patient = Patient.fromJson(jsonData);
+
+      return patient;
+    } else {
+      Alerts.showWarning("Could not retrieve patient");
       return null;
     }
   }

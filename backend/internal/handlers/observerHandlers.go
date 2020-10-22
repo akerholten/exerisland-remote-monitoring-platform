@@ -12,6 +12,7 @@ import (
 	"net/http"
 
 	validator "github.com/asaskevich/govalidator"
+	"github.com/gorilla/mux"
 )
 
 func AddPatientHandler(w http.ResponseWriter, r *http.Request) {
@@ -248,22 +249,24 @@ func GetPatientHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var getPatientForm db.GetPatientForm
+	vars := mux.Vars(r)
 
-	respBody, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		w.WriteHeader(http.StatusForbidden)
-		return
-	}
+	// var getPatientForm db.GetPatientForm
 
-	err = json.Unmarshal(respBody, &getPatientForm)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		log.Printf("Error unmarshaling: %s, error: %v", string(respBody), err)
-	}
+	// respBody, err := ioutil.ReadAll(r.Body)
+	// if err != nil {
+	// 	w.WriteHeader(http.StatusForbidden)
+	// 	return
+	// }
+
+	// err = json.Unmarshal(respBody, &getPatientForm)
+	// if err != nil {
+	// 	w.WriteHeader(http.StatusBadRequest)
+	// 	log.Printf("Error unmarshaling: %s, error: %v", string(respBody), err)
+	// }
 
 	// Get array of patients from observerInterface function
-	patient, err := db.GetPatient(clientCookie, getPatientForm.ShortID, ctx)
+	patient, err := db.GetPatient(clientCookie, vars["shortId"], ctx)
 	if err != nil {
 		log.Printf("Could not fetch patient from this user, err was: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)

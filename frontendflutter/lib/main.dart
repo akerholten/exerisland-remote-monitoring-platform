@@ -127,7 +127,7 @@ class MyApp extends StatelessWidget {
           // pass the data to the correct screen.
           return MaterialPageRoute(
             builder: (context) {
-              return PatientDashboard(patientId: args.id);
+              return PatientDashboard(shortId: args.id);
             },
             settings: RouteSettings(
                 name: Routes.SpecificPersonDashboard + "/" + args.id),
