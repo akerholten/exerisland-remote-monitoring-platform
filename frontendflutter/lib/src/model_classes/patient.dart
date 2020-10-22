@@ -43,6 +43,7 @@ class Patient {
   @JsonKey(required: false, nullable: true)
   List<Session> sessions;
 
+  // @JsonKey(required: false, defaultValue: {[]})
   @JsonKey(required: false, nullable: true)
   List<Recommendation> recommendations;
 
@@ -59,8 +60,18 @@ class Patient {
   /// A necessary factory constructor for creating a new User instance
   /// from a map. Pass the map to the generated `_$PatientFromJson()` constructor.
   /// The constructor is named after the source class, in this case, User.
-  factory Patient.fromJson(Map<String, dynamic> json) =>
-      _$PatientFromJson(json);
+  factory Patient.fromJson(Map<String, dynamic> json) {
+    Patient patient = _$PatientFromJson(json);
+
+    if (patient.sessions == null) {
+      patient.sessions = new List<Session>();
+    }
+    if (patient.recommendations == null) {
+      patient.recommendations = new List<Recommendation>();
+    }
+
+    return patient;
+  }
 
   /// `toJson` is the convention for a class to declare support for serialization
   /// to JSON. The implementation simply calls the private, generated

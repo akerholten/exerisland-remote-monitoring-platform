@@ -55,6 +55,7 @@ class MyApp extends StatelessWidget {
       initialRoute: "/",
       onGenerateRoute: (settings) {
         if (settings.name == Routes.Login) {
+          Tools.redirectIfAlreadyLoggedIn(context);
           return MaterialPageRoute(
             builder: (context) {
               return LoginPage();
@@ -206,7 +207,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
 
-    _tryCookieLogin();
+    Tools.redirectIfAlreadyLoggedIn(context);
 
     currentPage = LoginPage();
 

@@ -36,6 +36,15 @@ class Tools {
     }
   }
 
+  static void redirectIfAlreadyLoggedIn(BuildContext context) async {
+    bool loggedIn = await LoginHandler.isLoggedInWithCookie();
+
+    if (loggedIn) {
+      // TODO: Check if user is observer or patient here? And then push correct accordingly
+      Navigator.of(context).pushReplacementNamed(Routes.Dashboard);
+    }
+  }
+
   static void _logoutUser(BuildContext context) async {
     bool loggedOut = await LoginHandler.logout();
 
