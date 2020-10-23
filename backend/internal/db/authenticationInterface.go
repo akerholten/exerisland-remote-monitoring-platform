@@ -100,27 +100,27 @@ func AddToUserTable(user SignupUser, ctx context.Context) error {
 
 // AuthenticateUser verifies that the user exists in the database logon entry with
 // email and password, and then it returns the ID of that user, returns error if something went wrong
-func AuthenticateUser(form LoginForm, ctx context.Context) (bool, string, error) {
+func AuthenticateUser(form LoginForm, ctx context.Context) (*User_Logon, string, error) {
 	table := DBClient().Database.NewRef(TableUser)
 
 	results, err := table.OrderByKey().GetOrdered(ctx)
 	if err != nil {
-		return false, "", err
+		return nil, "", err
 	}
 
 	for _, r := range results {
 		var userEntry User_Logon
 		if err := r.Unmarshal(&userEntry); err != nil {
-			return false, "", err
+			return nil, "", err
 		}
 
 		// If there is a match entry, authentication is successfull
 		if form.Email == userEntry.Email && form.Password == userEntry.Password {
-			return true, r.Key(), nil
+			return &userEntry, r.Key(), nil
 		}
 	}
 
-	return false, "", nil
+	return nil, "", nil
 }
 
 func IsExistingUser(email string, ctx context.Context) (bool, error) {

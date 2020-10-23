@@ -163,7 +163,8 @@ func ManualLoginHandler(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Error unmarshaling: %s, error: %v", string(respBody), err)
 	}
 
-	if len(form.Password) < 8 {
+	if len(form.Password) < 3 {
+		w.WriteHeader(http.StatusUnauthorized)
 		_, err := w.Write([]byte("Wrong email or password"))
 		if err != nil {
 			log.Printf("Error when password was too short and writing bytes: %v", err)
@@ -172,6 +173,7 @@ func ManualLoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(form.Password) > 100 {
+		w.WriteHeader(http.StatusUnauthorized)
 		_, err := w.Write([]byte("Wrong email or password"))
 		if err != nil {
 			log.Printf("Error when password was too long and writing bytes: %v", err)
@@ -180,6 +182,7 @@ func ManualLoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(form.Email) < 8 {
+		w.WriteHeader(http.StatusUnauthorized)
 		_, err := w.Write([]byte("Wrong email or password"))
 		if err != nil {
 			log.Printf("Error when email was too short and writing bytes: %v", err)
@@ -188,6 +191,7 @@ func ManualLoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(form.Email) > 100 {
+		w.WriteHeader(http.StatusUnauthorized)
 		_, err := w.Write([]byte("Wrong email or password"))
 		if err != nil {
 			log.Printf("Error when email was too long and writing bytes: %v", err)
@@ -206,7 +210,7 @@ func ManualLoginHandler(w http.ResponseWriter, r *http.Request) {
 	// Salting and hashing password
 	form.Password = tools.ConvertPlainPassword(form.Email, form.Password)
 
-	authenticated, id, err := db.AuthenticateUser(form, ctx)
+	userInfo, id, err := db.AuthenticateUser(form, ctx)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Failed"))
@@ -214,7 +218,7 @@ func ManualLoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !authenticated {
+	if userInfo == nil {
 		w.WriteHeader(http.StatusNotFound)
 		w.Write([]byte("Failed"))
 		return
@@ -263,7 +267,7 @@ func ManualLoginHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Logged in to user with ID: %s", id)
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Success"))
+	w.Write([]byte(userInfo.UserType))
 }
 
 func CookieLoginHandler(w http.ResponseWriter, r *http.Request) {

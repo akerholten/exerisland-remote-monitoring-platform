@@ -20,7 +20,6 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
   Patient newPatient = new Patient();
   List<Patient> patients;
   bool _loading = false;
-  // patients.list = new List<Patient>();
 
   List<String> columnTitles = [
     'Name',
@@ -44,8 +43,13 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
     tempPatients = await ObserverHandler.getAllPatients();
 
     setState(() {
-      patients = tempPatients;
       _loading = false;
+      // In case it returns null, we don't want the screen to continuosly
+      // spam the backend each update for patients it can't retrieve
+      if (tempPatients == null) {
+        return;
+      }
+      patients = tempPatients;
     });
   }
 

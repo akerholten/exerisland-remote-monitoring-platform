@@ -49,7 +49,6 @@ class Tools {
     bool loggedOut = await LoginHandler.logout();
 
     if (loggedOut) {
-      Alerts.showInfo("Logged out successfully");
       Navigator.of(context).pushReplacementNamed(Routes.Login);
     }
   }

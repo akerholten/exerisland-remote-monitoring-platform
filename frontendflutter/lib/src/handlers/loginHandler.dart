@@ -1,8 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:frontendflutter/src/components/alerts.dart';
 import 'package:frontendflutter/src/constants/constants.dart';
 import 'package:frontendflutter/src/model_classes/loginForm.dart';
 import 'dart:convert'; // For jsonEncode, jsonDecode
 import 'package:http/http.dart' as http;
+import 'dart:html';
 
 import 'dart:async';
 
@@ -72,11 +74,8 @@ class LoginHandler {
             loginForm)); // TODO: Change to using loginForm.toJson() somehow...
 
     if (response.statusCode == 200 || response.statusCode == 202) {
-      response.headers.forEach((key, value) {
-        print("\nKey is: " + key + "\n Value is: " + value);
-      });
-      print(response.toString());
-      // Cookie.fromSetCookieValue(response.headers["set-cookie"]);
+      window.localStorage['userType'] = response.body;
+
       Alerts.showInfo("Login was successful!");
       return true;
     } else {
@@ -92,11 +91,11 @@ class LoginHandler {
     );
 
     if (response.statusCode == 200 || response.statusCode == 202) {
-      // Alerts.showInfo("Sign up was successful!");
+      Alerts.showInfo("Signed out successfully!");
+      window.localStorage['userType'] =
+          ""; // Possibly find a better way to clear this data?
       return true;
     } else {
-      // Was unsuccessful at signing up ( display some message of sort?, possibly catch more http errors? )
-      // Alerts.showError("Cookie has expired, log in again to continue");
       return false;
     }
   }

@@ -11,6 +11,7 @@ import 'src/pages/therapistDashboard.dart';
 import 'src/pages/patientDashboard.dart';
 import 'src/pages/forgotPasswordPage.dart';
 import 'src/constants/route_names.dart';
+import 'dart:html';
 
 void main() {
   // Can potentially do verification of login / cookie stuff here, and show correct screen accordingly
@@ -54,6 +55,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: "/",
       onGenerateRoute: (settings) {
+        // ----- LOGIN ROUTE -----
         if (settings.name == Routes.Login) {
           Tools.redirectIfAlreadyLoggedIn(context);
           return MaterialPageRoute(
@@ -63,6 +65,7 @@ class MyApp extends StatelessWidget {
             settings: RouteSettings(name: settings.name),
           );
         }
+        // ----- SIGNUP ROUTE -----
         if (settings.name == Routes.Signup) {
           return MaterialPageRoute(
             builder: (context) {
@@ -71,6 +74,7 @@ class MyApp extends StatelessWidget {
             settings: RouteSettings(name: settings.name),
           );
         }
+        // ----- FORGOT PASSWORD ROUTE -----
         if (settings.name == Routes.ForgotPassword) {
           return MaterialPageRoute(
             builder: (context) {
@@ -79,8 +83,22 @@ class MyApp extends StatelessWidget {
             settings: RouteSettings(name: settings.name),
           );
         }
+        // ----- DASHBOARD ROUTE -----
         if (settings.name == Routes.Dashboard) {
           Tools.verifyCookieLogin(context);
+
+          if (window.localStorage.containsKey('userType')) {
+            if (window.localStorage['userType'] == 'patient') {
+              return MaterialPageRoute(
+                builder: (context) {
+                  return PatientDashboard(
+                    personalPage: true,
+                  );
+                },
+                settings: RouteSettings(name: settings.name),
+              );
+            }
+          }
 
           return MaterialPageRoute(
             builder: (context) {
@@ -89,6 +107,7 @@ class MyApp extends StatelessWidget {
             settings: RouteSettings(name: settings.name),
           );
         }
+        // ----- SPECIFIC PERSON DASHBOARD ROUTE -----
         if (settings.name.contains(Routes.SpecificPersonDashboard)) {
           Tools.verifyCookieLogin(context);
           // Cast the arguments to the correct type: ScreenArguments.
@@ -98,9 +117,6 @@ class MyApp extends StatelessWidget {
             // URL looks like this http://localhost:3000/#/id/SOMEID
             // meaning that the split will give us: [#, id, SOMEID]
             var argArray = settings.name.split("/");
-
-            print("Here is argarray:");
-            print(argArray);
 
             if (argArray.length <= 2) {
               return MaterialPageRoute(
@@ -134,7 +150,7 @@ class MyApp extends StatelessWidget {
                 name: Routes.SpecificPersonDashboard + "/" + args.id),
           );
         }
-        // If you push the PassArguments route
+        // ----- HOME ROUTE -----
         if (settings.name == "/") {
           return MaterialPageRoute(
             builder: (context) {

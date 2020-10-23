@@ -4,6 +4,7 @@ import (
 	"HealthWellnessRemoteMonitoring/internal/constants"
 	"HealthWellnessRemoteMonitoring/internal/tools"
 	"context"
+	"errors"
 	"fmt"
 	"log"
 )
@@ -164,4 +165,23 @@ func AddToPatientTable(user PatientSignupData, ctx context.Context) (string, str
 	// Everything went okay
 	log.Printf("New patient added at key %s", newKey)
 	return newKey, newShortKey, nil
+}
+
+func GetPatientInfoFromId(userId string, ctx context.Context) (*Patient, error) {
+	var patient Patient
+
+	patientInfoRef := DBClient().Database.NewRef(TablePatient).Child(userId)
+
+	err := patientInfoRef.Get(ctx, &patient)
+	if err != nil {
+		return nil, err
+	}
+	if len(patient.Email) < 1 {
+		return nil, errors.New("Could not find patient")
+	}
+
+	// TODO: Fill the rest of the data, recommendations, sessions, activites, and so on
+
+	// Everything went ok so we return patient and nil
+	return &patient, nil
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontendflutter/src/components/alerts.dart';
 import 'package:frontendflutter/src/handlers/observerHandler.dart';
+import 'package:frontendflutter/src/handlers/patientHandler.dart';
 import 'package:frontendflutter/src/model_classes/activity.dart';
 import 'package:frontendflutter/src/model_classes/metric.dart';
 import 'package:frontendflutter/src/model_classes/patient.dart';
@@ -14,10 +15,11 @@ import '../constants/constants.dart';
 import 'errorPage.dart';
 
 class PatientDashboard extends StatefulWidget {
-  @required
+  final bool personalPage;
+
   final String shortId;
 
-  PatientDashboard({this.shortId});
+  PatientDashboard({this.shortId, this.personalPage = false});
 
   @override
   _PatientDashboardState createState() => _PatientDashboardState();
@@ -45,7 +47,11 @@ class _PatientDashboardState extends State<PatientDashboard> {
 
     Patient tempPatient = new Patient();
 
-    tempPatient = await ObserverHandler.getPatient(widget.shortId);
+    if (widget.personalPage) {
+      tempPatient = await PatientHandler.getPersonalInfo();
+    } else {
+      tempPatient = await ObserverHandler.getPatient(widget.shortId);
+    }
 
     // if not found
 
@@ -142,7 +148,6 @@ class _PatientDashboardState extends State<PatientDashboard> {
       return ErrorPage(title: "404 page not found");
     }
 
-    print("Args id were: " + widget.shortId);
     // data cannot be null
     if (patient == null) {
       _fillWithTempData();

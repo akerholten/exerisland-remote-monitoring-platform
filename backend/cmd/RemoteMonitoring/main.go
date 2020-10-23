@@ -54,6 +54,9 @@ func main() {
 	router.HandleFunc("/getAllPatients", handlers.GetPatientsHandler).Methods(http.MethodGet)
 	router.HandleFunc("/getPatient/{shortId}", handlers.GetPatientHandler).Methods(http.MethodGet)
 
+	// Patient handlers
+	router.HandleFunc("/getPersonalInfo", handlers.GetPersonalInfoHandler).Methods(http.MethodGet)
+
 	// Debug tools
 
 	log.Printf("\nListening through port %v...\n", RemoteMonitoring.Port)
