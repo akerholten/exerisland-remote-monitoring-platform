@@ -203,6 +203,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
                                       width: (pageMaxWidth * 0.9) / 2,
                                       child: TaskCompletionList(
                                         patient: patient,
+                                        personalPage: widget.personalPage,
                                         onRecommendationAdded: (value) =>
                                             _addRecommendationToDatabase(value),
                                       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontendflutter/src/components/alerts.dart';
 import 'package:frontendflutter/src/constants/constants.dart';
+import 'package:frontendflutter/src/handlers/tools.dart';
 import 'package:frontendflutter/src/model_classes/loginForm.dart';
 import 'dart:convert'; // For jsonEncode, jsonDecode
 import 'package:http/http.dart' as http;
@@ -33,6 +34,7 @@ class LoginHandler {
     } else {
       // Was unsuccessful at signing up ( display some message of sort?, possibly catch more http errors? )
       // Alerts.showError("Cookie has expired, log in again to continue");
+      Tools.resetLoginVariables();
       return false;
     }
   }
@@ -80,6 +82,7 @@ class LoginHandler {
       return true;
     } else {
       // Was unsuccessful at signing up ( display some message of sort?, possibly catch more http errors? )
+      Tools.resetLoginVariables();
       Alerts.showError("Unable to log in");
       return false;
     }
@@ -92,8 +95,8 @@ class LoginHandler {
 
     if (response.statusCode == 200 || response.statusCode == 202) {
       Alerts.showInfo("Signed out successfully!");
-      window.localStorage['userType'] =
-          ""; // Possibly find a better way to clear this data?
+      // Possibly find a better way to clear this data?
+      Tools.resetLoginVariables();
       return true;
     } else {
       return false;

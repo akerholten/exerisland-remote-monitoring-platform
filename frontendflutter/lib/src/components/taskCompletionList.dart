@@ -16,7 +16,10 @@ class TaskCompletionList extends StatefulWidget {
   @required
   final ValueChanged onRecommendationAdded;
 
-  TaskCompletionList({this.patient, this.onRecommendationAdded});
+  final bool personalPage;
+
+  TaskCompletionList(
+      {this.patient, this.onRecommendationAdded, this.personalPage = false});
 
   @override
   _TaskCompletionListState createState() => _TaskCompletionListState();
@@ -81,9 +84,11 @@ class _TaskCompletionListState extends State<TaskCompletionList> {
                             // Sort by ["Due date", "Completed date", "Progress", "Minigame"]
                           ]),
                       // Add new task/recommendation button
-                      PlusButton(
-                        onPressed: _showAddNewRecommendationModal,
-                      ),
+                      widget.personalPage
+                          ? Container() // Empty if personalPage
+                          : PlusButton(
+                              onPressed: _showAddNewRecommendationModal,
+                            ),
                     ]),
               ),
               // Progress bar
@@ -183,8 +188,8 @@ class _TaskCompletionListState extends State<TaskCompletionList> {
                                   child: Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
-                                        // TODO: Edit button
-                                        // TODO: Delete button
+                                        // TODO: Edit button for when the page is not widget.personalPage
+                                        // TODO: Delete button for when the page is not widget.personalPage
                                         // Card displaying ["Completed", "Not Started", "Expired", "In Progress"]
                                         Card(
                                           color: (recommendation.completedAt !=

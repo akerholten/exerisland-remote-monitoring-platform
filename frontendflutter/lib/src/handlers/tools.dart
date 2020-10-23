@@ -3,6 +3,8 @@ import '../constants/route_names.dart';
 import '../components/alerts.dart';
 import 'loginHandler.dart';
 
+import 'dart:html';
+
 class Tools {
   static String printDuration(Duration duration) {
     String twoDigits(int n) => n.toString().padLeft(2, "0");
@@ -63,5 +65,9 @@ class Tools {
   static int birthDateToAge(String birthDate) {
     return (DateTime.now().difference(DateTime.parse(birthDate)).inDays ~/ 365)
         .toInt();
+  }
+
+  static void resetLoginVariables() {
+    window.localStorage['userType'] = '';
   }
 }

@@ -67,6 +67,8 @@ class MyApp extends StatelessWidget {
         }
         // ----- SIGNUP ROUTE -----
         if (settings.name == Routes.Signup) {
+          Tools.redirectIfAlreadyLoggedIn(context);
+
           return MaterialPageRoute(
             builder: (context) {
               return SignupPage();
@@ -97,6 +99,12 @@ class MyApp extends StatelessWidget {
                 },
                 settings: RouteSettings(name: settings.name),
               );
+            } else if (window.localStorage['userType'] == '') {
+              return MaterialPageRoute(
+                  builder: (context) {
+                    return LoginPage();
+                  },
+                  settings: RouteSettings(name: Routes.Login));
             }
           }
 
@@ -112,6 +120,17 @@ class MyApp extends StatelessWidget {
           Tools.verifyCookieLogin(context);
           // Cast the arguments to the correct type: ScreenArguments.
           PatientDashboardArguments args = settings.arguments;
+
+          // Check in-case we are not logged in anymore
+          if (window.localStorage.containsKey('userType')) {
+            if (window.localStorage['userType'] == '') {
+              return MaterialPageRoute(
+                  builder: (context) {
+                    return LoginPage();
+                  },
+                  settings: RouteSettings(name: Routes.Login));
+            }
+          }
 
           if (args == null || args.id.length < 1) {
             // URL looks like this http://localhost:3000/#/id/SOMEID
