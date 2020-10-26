@@ -11,6 +11,15 @@ import (
 	firebaseDB "firebase.google.com/go/db"
 )
 
+type SimplePatientData struct {
+	FirstName string `json:"firstName" valid:"printableascii, required"`
+	LastName  string `json:"lastName" valid:"printableascii, required"`
+	Email     string `json:"email" valid:"email, required"`
+	BirthDate string `json:"birthDate" valid:"printableascii, optional"`
+	Note      string `json:"note" valid:"printableascii, optional"`
+	ShortID   string `json:"shortID" valid:"alphanum, optional"`
+}
+
 type Patient struct {
 	FirstName string    `json:"firstName" valid:"printableascii, required"`
 	LastName  string    `json:"lastName" valid:"printableascii, required"`
@@ -177,27 +186,35 @@ func AddToPatientTable(user PatientSignupData, ctx context.Context) (string, str
 }
 
 func GetPatientInfoFromId(userId string, ctx context.Context) (*Patient, error) {
-	var patient Patient
+	// This function has to retrieve a "simpler" struct type, that does not contain any
+	// arrays, as they caused problems with unmarshalling from the side of firebaseDB.Get(ctx, &patient)
+	var simplePatientData SimplePatientData
 
 	patientInfoRef := DBClient().Database.NewRef(TablePatient).Child(userId)
 
-	err := patientInfoRef.Get(ctx, &patient)
+	err := patientInfoRef.Get(ctx, &simplePatientData)
 	if err != nil {
-		log.Printf("Err was: %+v", err)
-		// return nil, err // TODO: remove comment, this should return
+		return nil, err
 	}
-	if len(patient.Email) < 1 {
+	if len(simplePatientData.Email) < 1 {
 		return nil, errors.New("Could not find patient")
 	}
 
+	patient := Patient{
+		FirstName: simplePatientData.FirstName,
+		LastName:  simplePatientData.LastName,
+		Email:     simplePatientData.Email,
+		BirthDate: simplePatientData.BirthDate,
+		Note:      simplePatientData.Note,
+		ShortID:   simplePatientData.ShortID,
+	}
+
 	// Retrieving and filling sessions / activities data
-	log.Print("1")
 	tempSessions, err := getPatientSessions(patientInfoRef, ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	log.Printf("Tempsessions are: %+v", tempSessions)
 	patient.Sessions = *tempSessions
 
 	// TODO: Fill the rest of the data, recommendations, and so on
@@ -222,28 +239,23 @@ func AddSessionToPatient(userId string, session Session, ctx context.Context) er
 
 func getPatientSessions(patientRef *firebaseDB.Ref, ctx context.Context) (*[]Session, error) {
 	var sessions []Session
-	log.Print("2")
 
 	results, err := patientRef.Child(TableSessions).OrderByKey().GetOrdered(ctx)
 	if err != nil {
 		return nil, err
 	}
-	log.Print("3")
 
 	for _, r := range results {
 		var currentSession Session
-		log.Print("4")
 
 		if err := r.Unmarshal(&currentSession); err != nil {
 			return &sessions, err
 		}
-		log.Print("5")
 
 		if len(currentSession.CreatedAt) < 1 {
 			log.Printf("Skipping this session, because CreatedAt was not set to anything, most likely invalid")
 			continue
 		}
-		log.Print("6")
 
 		tempActivities, err := getPatientActivities(patientRef, r.Key(), ctx)
 		if err != nil {
@@ -260,65 +272,63 @@ func getPatientSessions(patientRef *firebaseDB.Ref, ctx context.Context) (*[]Ses
 
 func getPatientActivities(patientRef *firebaseDB.Ref, sessionKey string, ctx context.Context) (*[]Activity, error) {
 	var activities []Activity
-	log.Print("7")
 
-	results, err := patientRef.Child(TableSessions).Child(sessionKey).Child("activities").OrderByKey().GetOrdered(ctx)
+	activitiesRef := patientRef.Child(TableSessions).Child(sessionKey).Child("activities")
+
+	results, err := activitiesRef.OrderByKey().GetOrdered(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	log.Print("8")
-
 	for _, r := range results {
-		var id string
+		var activity Activity
 
-		if err := r.Unmarshal(&id); err != nil {
+		if err := r.Unmarshal(&activity); err != nil {
 			return &activities, err
 		}
-		log.Print("9")
-
-		currentActivity, err := getPatientActivity(patientRef, id, ctx)
-		if err != nil {
-			return nil, err
-		}
-		if currentActivity == nil {
+		if len(activity.MinigameID) < 1 {
 			continue
 		}
 
-		activities = append(activities, *currentActivity)
+		tempMetrics, err := getMetrics(activitiesRef.Child(r.Key()).Child("metrics"), ctx)
+		if err != nil {
+			return &activities, err
+		}
+
+		activity.Metrics = *tempMetrics
+
+		activities = append(activities, activity)
 	}
 
 	return &activities, nil
 }
 
-func getPatientActivity(patientRef *firebaseDB.Ref, activityKey string, ctx context.Context) (*Activity, error) {
-	var activity Activity
-	log.Print("10")
+// func getPatientActivity(patientRef *firebaseDB.Ref, activityKey string, ctx context.Context) (*Activity, error) {
+// 	var activity Activity
+// 	log.Print("10")
 
-	err := patientRef.Child(TableActivities).Child(activityKey).Get(ctx, &activity)
-	if err != nil {
-		return nil, err
-	}
-	if len(activity.MinigameID) < 1 {
-		log.Printf("This activity's minigameId was invalid, meaning the activity most likely is invalid, skipping")
-		return nil, nil
-	}
+// 	err := patientRef.Child(TableActivities).Child(activityKey).Get(ctx, &activity)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	if len(activity.MinigameID) < 1 {
+// 		log.Printf("This activity's minigameId was invalid, meaning the activity most likely is invalid, skipping")
+// 		return nil, nil
+// 	}
 
-	// Retrieving metrics from this specific activity
-	tempMetrics, err := getMetrics(patientRef.Child(TableActivities).Child(activityKey).Child("metrics"), ctx)
-	if err != nil {
-		return &activity, err
-	}
+// 	// Retrieving metrics from this specific activity
+// 	tempMetrics, err := getMetrics(patientRef.Child(TableActivities).Child(activityKey).Child("metrics"), ctx)
+// 	if err != nil {
+// 		return &activity, err
+// 	}
 
-	activity.Metrics = *tempMetrics
+// 	activity.Metrics = *tempMetrics
 
-	return &activity, nil
-}
+// 	return &activity, nil
+// }
 
 func getMetrics(metricsRef *firebaseDB.Ref, ctx context.Context) (*[]Metric, error) {
 	var metrics []Metric
-
-	log.Print("11")
 
 	metricsInTable, err := metricsRef.OrderByKey().GetOrdered(ctx)
 	if err != nil {
