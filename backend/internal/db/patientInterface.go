@@ -61,7 +61,7 @@ type Activity struct {
 }
 
 type Metric struct {
-	Name  string `json:"firstName" valid:"alphanum, required"`
+	Name  string `json:"name" valid:"alphanum, required"`
 	Value string `json:"value" valid:"alphanum, required"`
 	Unit  string `json:"unit" valid:"alphanum, optional"`
 }
@@ -257,12 +257,15 @@ func getPatientSessions(patientRef *firebaseDB.Ref, ctx context.Context) (*[]Ses
 			continue
 		}
 
-		tempActivities, err := getPatientActivities(patientRef, r.Key(), ctx)
-		if err != nil {
-			return &sessions, err
-		}
+		// Ehm... System.Obsolete()..... this is not required.. it works right out of the box somehow....
+		// although other array things in firebase did not work, this seem to work
+		// alright thats quite nice though :-)
+		// tempActivities, err := getPatientActivities(patientRef, r.Key(), ctx)
+		// if err != nil {
+		// 	return &sessions, err
+		// }
 
-		currentSession.Activities = *tempActivities
+		// currentSession.Activities = *tempActivities
 
 		sessions = append(sessions, currentSession)
 	}
