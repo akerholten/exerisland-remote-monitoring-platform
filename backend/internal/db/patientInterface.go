@@ -7,27 +7,30 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"time"
 
 	firebaseDB "firebase.google.com/go/db"
 )
 
 type SimplePatientData struct {
-	FirstName string `json:"firstName" valid:"printableascii, required"`
-	LastName  string `json:"lastName" valid:"printableascii, required"`
-	Email     string `json:"email" valid:"email, required"`
-	BirthDate string `json:"birthDate" valid:"printableascii, optional"`
-	Note      string `json:"note" valid:"printableascii, optional"`
-	ShortID   string `json:"shortID" valid:"alphanum, optional"`
+	FirstName          string `json:"firstName" valid:"printableascii, required"`
+	LastName           string `json:"lastName" valid:"printableascii, required"`
+	Email              string `json:"email" valid:"email, required"`
+	BirthDate          string `json:"birthDate" valid:"printableascii, optional"`
+	Note               string `json:"note" valid:"printableascii, optional"`
+	ShortID            string `json:"shortID" valid:"alphanum, optional"`
+	RecentActivityDate string `json:"recentActivityDate" valid:"printableascii, optional"`
 }
 
 type Patient struct {
-	FirstName string    `json:"firstName" valid:"printableascii, required"`
-	LastName  string    `json:"lastName" valid:"printableascii, required"`
-	Email     string    `json:"email" valid:"email, required"`
-	BirthDate string    `json:"birthDate" valid:"printableascii, optional"`
-	Note      string    `json:"note" valid:"printableascii, optional"`
-	ShortID   string    `json:"shortID" valid:"alphanum, optional"`
-	Sessions  []Session `json:"sessions,omitempty" valid:",optional"`
+	FirstName          string    `json:"firstName" valid:"printableascii, required"`
+	LastName           string    `json:"lastName" valid:"printableascii, required"`
+	Email              string    `json:"email" valid:"email, required"`
+	BirthDate          string    `json:"birthDate" valid:"printableascii, optional"`
+	Note               string    `json:"note" valid:"printableascii, optional"`
+	ShortID            string    `json:"shortID" valid:"alphanum, optional"`
+	RecentActivityDate string    `json:"recentActivityDate" valid:"printableascii, optional"`
+	Sessions           []Session `json:"sessions,omitempty" valid:",optional"`
 	// Activites       []Activity       `json:"activities" valid:"-"`
 	Recommendations []Recommendation `json:"recommendations,omitempty" valid:",optional"`
 }
@@ -201,12 +204,13 @@ func GetPatientInfoFromId(userId string, ctx context.Context) (*Patient, error) 
 	}
 
 	patient := Patient{
-		FirstName: simplePatientData.FirstName,
-		LastName:  simplePatientData.LastName,
-		Email:     simplePatientData.Email,
-		BirthDate: simplePatientData.BirthDate,
-		Note:      simplePatientData.Note,
-		ShortID:   simplePatientData.ShortID,
+		FirstName:          simplePatientData.FirstName,
+		LastName:           simplePatientData.LastName,
+		Email:              simplePatientData.Email,
+		BirthDate:          simplePatientData.BirthDate,
+		Note:               simplePatientData.Note,
+		ShortID:            simplePatientData.ShortID,
+		RecentActivityDate: simplePatientData.RecentActivityDate,
 	}
 
 	// Retrieving and filling sessions / activities data
@@ -224,7 +228,13 @@ func GetPatientInfoFromId(userId string, ctx context.Context) (*Patient, error) 
 }
 
 func AddSessionToPatient(userId string, session Session, ctx context.Context) error {
-	patientSessionsRef := DBClient().Database.NewRef(TablePatient).Child(userId).Child(TableSessions)
+	patientRef := DBClient().Database.NewRef(TablePatient).Child(userId)
+	err := patientRef.Child("recentActivityDate").Set(ctx, time.Now().Format(time.RFC3339))
+	if err != nil {
+		return err
+	}
+
+	patientSessionsRef := patientRef.Child(TableSessions)
 
 	sessionRef, err := patientSessionsRef.Push(ctx, session)
 	if err != nil {
@@ -260,6 +270,7 @@ func getPatientSessions(patientRef *firebaseDB.Ref, ctx context.Context) (*[]Ses
 		// Ehm... System.Obsolete()..... this is not required.. it works right out of the box somehow....
 		// although other array things in firebase did not work, this seem to work
 		// alright thats quite nice though :-)
+
 		// tempActivities, err := getPatientActivities(patientRef, r.Key(), ctx)
 		// if err != nil {
 		// 	return &sessions, err

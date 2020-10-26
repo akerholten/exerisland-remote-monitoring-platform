@@ -178,16 +178,14 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
                                   alignment: Alignment.center,
                                   height: tableItemHeight,
                                   width: tableItemWidth,
-                                  child: SelectableText(patient
-                                              .recentActivityDate ==
-                                          null
+                                  child: SelectableText((patient
+                                                  .recentActivityDate ==
+                                              null ||
+                                          patient.recentActivityDate == "")
                                       ? "Never"
-                                      : DateTime.now()
-                                              .difference(DateTime.parse(
-                                                  patient.recentActivityDate))
-                                              .inHours
-                                              .toString() +
-                                          " hours ago"), // TODO: Implement helper tool that will calculate whether to show days/hours etc here, show better information
+                                      : Tools.durationAgoString(DateTime.now()
+                                          .difference(DateTime.parse(
+                                              patient.recentActivityDate)))),
                                 ),
                               ],
                             ),

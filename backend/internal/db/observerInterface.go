@@ -145,8 +145,8 @@ func AddPatientToObserver(clientCookie CookieData, patientId string, shortId str
 	return nil
 }
 
-func GetPatients(clientCookie CookieData, ctx context.Context) ([]Patient, error) {
-	var returnPatients []Patient
+func GetPatients(clientCookie CookieData, ctx context.Context) ([]SimplePatientData, error) {
+	var returnPatients []SimplePatientData
 
 	observerPatientsRef := DBClient().Database.NewRef(TableObserver).Child(clientCookie.UserID).Child("patients")
 
@@ -157,7 +157,7 @@ func GetPatients(clientCookie CookieData, ctx context.Context) ([]Patient, error
 
 	// Do the key need to be returned in order to query for this exact patient later on?
 	for _, r := range existingObserverPatients {
-		var currentPatient Patient
+		var currentPatient SimplePatientData
 		var id string
 
 		if err := r.Unmarshal(&id); err != nil {

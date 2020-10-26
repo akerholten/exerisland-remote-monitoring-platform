@@ -70,4 +70,19 @@ class Tools {
   static void resetLoginVariables() {
     window.localStorage['userType'] = '';
   }
+
+  static String durationAgoString(Duration duration) {
+    String rtrString = "";
+
+    if (duration.inDays >= 1) {
+      return duration.inDays.toString() + " days ago";
+    }
+    if (duration.inHours >= 1) {
+      return duration.inHours.toString() + " hours ago";
+    }
+    if (duration.inMinutes >= 1) {
+      return duration.inMinutes.toString() + " minutes ago";
+    }
+    return duration.inSeconds.toString() + " seconds ago";
+  }
 }
