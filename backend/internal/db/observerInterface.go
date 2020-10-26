@@ -104,7 +104,7 @@ func AddPatientToObserver(clientCookie CookieData, patientId string, shortId str
 	fmt.Printf("%+v\n", observerData)
 	// was for debug
 	for key, obj := range observerData.Patients {
-		log.Printf("\nThe patients for this guy: id: %s, value: %s", key, obj)
+		log.Printf("\nThe patients for this guy: id: %d, value: %s", key, obj)
 	}
 	// Appending the new object to the array
 	// observerData.Patients = append(observerData.Patients, patientId)
@@ -183,9 +183,7 @@ func GetPatients(clientCookie CookieData, ctx context.Context) ([]Patient, error
 	return returnPatients, nil
 }
 
-func GetPatient(clientCookie CookieData, shortId string, ctx context.Context) (*Patient, error) {
-	var patient Patient
-
+func GetPatientWithShortId(clientCookie CookieData, shortId string, ctx context.Context) (*Patient, error) {
 	observerPatientRef := DBClient().Database.NewRef(TableObserver).Child(clientCookie.UserID).Child("patients").Child(shortId)
 
 	var patientId string
@@ -198,7 +196,7 @@ func GetPatient(clientCookie CookieData, shortId string, ctx context.Context) (*
 		return nil, errors.New("Could not find patient")
 	}
 
-	err = DBClient().Database.NewRef(TablePatient).Child(patientId).Get(ctx, &patient)
+	patient, err := GetPatientInfoFromId(patientId, ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -206,8 +204,6 @@ func GetPatient(clientCookie CookieData, shortId string, ctx context.Context) (*
 		return nil, errors.New("Could not find patient")
 	}
 
-	// TODO: Fill the rest of the data, recommendations, sessions, activites, and so on
-
 	// Everything went ok so we return patient and nil
-	return &patient, nil
+	return patient, nil
 }

@@ -18,9 +18,9 @@ type Patient struct {
 	BirthDate string    `json:"birthDate" valid:"printableascii, optional"`
 	Note      string    `json:"note" valid:"printableascii, optional"`
 	ShortID   string    `json:"shortID" valid:"alphanum, optional"`
-	Sessions  []Session `json:"sessions" valid:"-"`
+	Sessions  []Session `json:"sessions,omitempty" valid:",optional"`
 	// Activites       []Activity       `json:"activities" valid:"-"`
-	Recommendations []Recommendation `json:"recommendations" valid:"-"`
+	Recommendations []Recommendation `json:"recommendations,omitempty" valid:",optional"`
 }
 
 type PatientShortIDTableEntry struct {
@@ -38,12 +38,17 @@ type PatientSignupData struct {
 type Session struct {
 	Duration   string     `json:"duration" valid:"printableascii, optional"`  // time thing? ISO8601 string
 	CreatedAt  string     `json:"createdAt" valid:"printableascii, optional"` // timestamp ISO8601 string
-	Activities []Activity `json:"activities" valid:"-"`                       // possibly stored as Activity IDs ?
+	Activities []Activity `json:"activities,omitempty" valid:",optional"`     // possibly stored as Activity IDs ?
 }
+
+// type UploadSession struct {
+// 	ShortID        string  `json:"shortID" valid:"alphanum, optional"`
+// 	CurrentSession Session `json:"session" valid:"-"`
+// }
 
 type Activity struct {
 	MinigameID string   `json:"minigameID" valid:"alphanum, required"`
-	Metrics    []Metric `json:"metrics" valid:"-"`
+	Metrics    []Metric `json:"metrics,omitempty" valid:",optional"`
 }
 
 type Metric struct {
@@ -178,44 +183,67 @@ func GetPatientInfoFromId(userId string, ctx context.Context) (*Patient, error) 
 
 	err := patientInfoRef.Get(ctx, &patient)
 	if err != nil {
-		return nil, err
+		log.Printf("Err was: %+v", err)
+		// return nil, err // TODO: remove comment, this should return
 	}
 	if len(patient.Email) < 1 {
 		return nil, errors.New("Could not find patient")
 	}
 
 	// Retrieving and filling sessions / activities data
+	log.Print("1")
 	tempSessions, err := getPatientSessions(patientInfoRef, ctx)
 	if err != nil {
 		return nil, err
 	}
 
+	log.Printf("Tempsessions are: %+v", tempSessions)
 	patient.Sessions = *tempSessions
 
-	// TODO: Fill the rest of the data, recommendations, sessions, activites, and so on
+	// TODO: Fill the rest of the data, recommendations, and so on
 
 	// Everything went ok so we return patient and nil
 	return &patient, nil
 }
 
+func AddSessionToPatient(userId string, session Session, ctx context.Context) error {
+	patientSessionsRef := DBClient().Database.NewRef(TablePatient).Child(userId).Child(TableSessions)
+
+	sessionRef, err := patientSessionsRef.Push(ctx, session)
+	if err != nil {
+		return err
+	}
+
+	log.Print("Added a new thing at " + sessionRef.Key)
+	// TODO: Possibly need to use sessionRef for filling in activity array within?
+
+	return nil
+}
+
 func getPatientSessions(patientRef *firebaseDB.Ref, ctx context.Context) (*[]Session, error) {
 	var sessions []Session
+	log.Print("2")
 
 	results, err := patientRef.Child(TableSessions).OrderByKey().GetOrdered(ctx)
 	if err != nil {
 		return nil, err
 	}
+	log.Print("3")
 
 	for _, r := range results {
 		var currentSession Session
+		log.Print("4")
 
 		if err := r.Unmarshal(&currentSession); err != nil {
 			return &sessions, err
 		}
+		log.Print("5")
+
 		if len(currentSession.CreatedAt) < 1 {
 			log.Printf("Skipping this session, because CreatedAt was not set to anything, most likely invalid")
 			continue
 		}
+		log.Print("6")
 
 		tempActivities, err := getPatientActivities(patientRef, r.Key(), ctx)
 		if err != nil {
@@ -232,11 +260,14 @@ func getPatientSessions(patientRef *firebaseDB.Ref, ctx context.Context) (*[]Ses
 
 func getPatientActivities(patientRef *firebaseDB.Ref, sessionKey string, ctx context.Context) (*[]Activity, error) {
 	var activities []Activity
+	log.Print("7")
 
 	results, err := patientRef.Child(TableSessions).Child(sessionKey).Child("activities").OrderByKey().GetOrdered(ctx)
 	if err != nil {
 		return nil, err
 	}
+
+	log.Print("8")
 
 	for _, r := range results {
 		var id string
@@ -244,6 +275,7 @@ func getPatientActivities(patientRef *firebaseDB.Ref, sessionKey string, ctx con
 		if err := r.Unmarshal(&id); err != nil {
 			return &activities, err
 		}
+		log.Print("9")
 
 		currentActivity, err := getPatientActivity(patientRef, id, ctx)
 		if err != nil {
@@ -261,6 +293,7 @@ func getPatientActivities(patientRef *firebaseDB.Ref, sessionKey string, ctx con
 
 func getPatientActivity(patientRef *firebaseDB.Ref, activityKey string, ctx context.Context) (*Activity, error) {
 	var activity Activity
+	log.Print("10")
 
 	err := patientRef.Child(TableActivities).Child(activityKey).Get(ctx, &activity)
 	if err != nil {
@@ -284,6 +317,8 @@ func getPatientActivity(patientRef *firebaseDB.Ref, activityKey string, ctx cont
 
 func getMetrics(metricsRef *firebaseDB.Ref, ctx context.Context) (*[]Metric, error) {
 	var metrics []Metric
+
+	log.Print("11")
 
 	metricsInTable, err := metricsRef.OrderByKey().GetOrdered(ctx)
 	if err != nil {

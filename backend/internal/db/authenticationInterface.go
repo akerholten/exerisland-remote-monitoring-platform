@@ -3,6 +3,7 @@ package db
 import (
 	"HealthWellnessRemoteMonitoring/internal/tools"
 	"context"
+	"errors"
 	"fmt"
 	"log"
 )
@@ -160,6 +161,20 @@ func GetUser(id string, ctx context.Context) (*User_Logon, error) {
 	}
 
 	return &user, nil
+}
+
+func GetUserIdFromShortId(shortId string, ctx context.Context) (*string, error) {
+	var userId string
+
+	err := DBClient().Database.NewRef(TablePatientShortID).Child(shortId).Child("patientID").Get(ctx, &userId)
+	if err != nil {
+		return nil, err
+	}
+	if len(userId) < 1 {
+		return nil, errors.New("User not found")
+	}
+
+	return &userId, nil
 }
 
 // ----- Cookie stuff -----

@@ -73,6 +73,7 @@ func AddPatientHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(signupData.Email) < 8 {
+		w.WriteHeader(http.StatusBadRequest)
 		_, err := w.Write([]byte("Email is shorter than 8 characters"))
 		if err != nil {
 			log.Printf("Error when email was too short and writing bytes: %v", err)
@@ -81,6 +82,7 @@ func AddPatientHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(signupData.Email) > 100 {
+		w.WriteHeader(http.StatusBadRequest)
 		_, err := w.Write([]byte("Email is longer than 100 characters"))
 		if err != nil {
 			log.Printf("Error when email was too long and writing bytes: %v", err)
@@ -89,6 +91,7 @@ func AddPatientHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(signupData.FirstName) > 100 {
+		w.WriteHeader(http.StatusBadRequest)
 		_, err := w.Write([]byte("FirstName is longer than 100 characters"))
 		if err != nil {
 			log.Printf("Error when FirstName was too long and writing bytes: %v", err)
@@ -97,6 +100,7 @@ func AddPatientHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(signupData.LastName) > 100 {
+		w.WriteHeader(http.StatusBadRequest)
 		_, err := w.Write([]byte("FirstName is longer than 100 characters"))
 		if err != nil {
 			log.Printf("Error when FirstName was too long and writing bytes: %v", err)
@@ -105,6 +109,7 @@ func AddPatientHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(signupData.Note) > 100 {
+		w.WriteHeader(http.StatusBadRequest)
 		_, err := w.Write([]byte("Note is longer than 100 characters"))
 		if err != nil {
 			log.Printf("Error when Note was too long and writing bytes: %v", err)
@@ -266,7 +271,7 @@ func GetPatientHandler(w http.ResponseWriter, r *http.Request) {
 	// }
 
 	// Get array of patients from observerInterface function
-	patient, err := db.GetPatient(clientCookie, vars["shortId"], ctx)
+	patient, err := db.GetPatientWithShortId(clientCookie, vars["shortId"], ctx)
 	if err != nil {
 		log.Printf("Could not fetch patient from this user, err was: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
