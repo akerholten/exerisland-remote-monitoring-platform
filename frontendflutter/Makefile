@@ -17,4 +17,4 @@ tools:
 
 .PHONY: build
 build:
-	echo "not implemented"
+	flutter build web

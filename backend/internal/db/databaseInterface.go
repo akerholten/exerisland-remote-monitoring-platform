@@ -14,6 +14,10 @@ const (
 	TableObserver = "observer"
 	// Patient ...
 	TablePatient = "patient"
+	// Sessions
+	TableSessions = "sessions"
+	// Sessions
+	TableActivities = "activities"
 	// ShortID Lookup table ...
 	TablePatientShortID = "patient_shortid"
 	// User ...

@@ -41,7 +41,7 @@ func GetPersonalInfoHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Get array of patients from observerInterface function
+	// Get patients based on ID
 	patient, err := db.GetPatientInfoFromId(user.UserID, ctx)
 	if err != nil {
 		log.Printf("Could not fetch patient from this user, err was: %v", err)
