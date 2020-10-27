@@ -60,6 +60,9 @@ func main() {
 	// Patient Unity Handlers
 	router.HandleFunc("/uploadSession", handlers.UploadSession).Methods(http.MethodPost).Headers("Content-Type", "application/json; charset=utf-8")
 
+	// Open Handlers without authentication
+	router.HandleFunc("/getMinigames", handlers.GetMinigamesHandler).Methods(http.MethodGet)
+
 	// Debug tools
 
 	log.Printf("\nListening through port %v...\n", RemoteMonitoring.Port)
