@@ -7,11 +7,9 @@ part of 'activity.dart';
 // **************************************************************************
 
 Activity _$ActivityFromJson(Map<String, dynamic> json) {
-  $checkKeys(json, requiredKeys: const ['id', 'minigameId', 'createdAt']);
+  $checkKeys(json, requiredKeys: const ['minigameID']);
   return Activity(
-    id: json['id'] as String,
-    minigameId: json['minigameId'] as String,
-    createdAt: json['createdAt'] as String,
+    minigameID: json['minigameID'] as String,
     metrics: (json['metrics'] as List)
         ?.map((e) =>
             e == null ? null : Metric.fromJson(e as Map<String, dynamic>))
@@ -20,8 +18,6 @@ Activity _$ActivityFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$ActivityToJson(Activity instance) => <String, dynamic>{
-      'id': instance.id,
-      'minigameId': instance.minigameId,
-      'createdAt': instance.createdAt,
+      'minigameID': instance.minigameID,
       'metrics': instance.metrics?.map((e) => e?.toJson())?.toList(),
     };

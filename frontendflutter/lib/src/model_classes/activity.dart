@@ -6,19 +6,19 @@ part 'activity.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Activity {
-  @JsonKey(required: true)
-  String id;
+  // @JsonKey(required: true)
+  // String id;
+
+  // @JsonKey(required: true)
+  // String createdAt;
 
   @JsonKey(required: true)
-  String minigameId;
-
-  @JsonKey(required: true)
-  String createdAt;
+  String minigameID;
 
   @JsonKey(required: false)
   List<Metric> metrics;
 
-  Activity({this.id, this.minigameId, this.createdAt, this.metrics});
+  Activity({this.minigameID, this.metrics});
 
   /// A necessary factory constructor for creating a new User instance
   /// from a map. Pass the map to the generated `_$ActivityFromJson()` constructor.

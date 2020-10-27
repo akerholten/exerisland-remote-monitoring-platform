@@ -5,15 +5,18 @@ part 'metric.g.dart';
 @JsonSerializable(explicitToJson: true)
 class Metric {
   @JsonKey(required: true)
+  String id;
+
+  @JsonKey(required: true)
   String name;
 
   @JsonKey(required: true)
-  String value;
+  int value;
 
   @JsonKey(required: true)
   String unit;
 
-  Metric({this.name, this.value, this.unit});
+  Metric({this.id, this.name, this.value, this.unit});
 
   /// A necessary factory constructor for creating a new User instance
   /// from a map. Pass the map to the generated `_$MetricFromJson()` constructor.

@@ -97,8 +97,11 @@ class _SessionInformationListState extends State<SessionInformationList> {
                                 alignment: Alignment.center,
                                 height: tableItemHeight,
                                 width: tableItemWidth,
-                                child: SelectableText(Tools.printDuration(
-                                    Tools.parseDuration(session.duration))),
+                                child: (session.duration == null ||
+                                        session.duration == "")
+                                    ? SelectableText("No data")
+                                    : SelectableText(Tools.printDuration(
+                                        Tools.parseDuration(session.duration))),
                               ),
                               Container(
                                 alignment: Alignment.center,

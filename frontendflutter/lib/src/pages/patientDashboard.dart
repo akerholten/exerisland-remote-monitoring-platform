@@ -105,7 +105,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
     // Add debug sessions list
     for (int i = 0; i <= 10; i++) {
       Session newSession = new Session();
-      newSession.id = i.toString();
+      newSession.id = i;
       newSession.createdAt =
           DateTime.now().subtract(new Duration(days: i)).toString();
       newSession.duration =
@@ -114,11 +114,16 @@ class _PatientDashboardState extends State<PatientDashboard> {
       newSession.activities = new List<Activity>();
       for (int j = 0; j <= i; j++) {
         Activity debugActivity = new Activity();
-        debugActivity.id = j.toString();
-        debugActivity.createdAt = DateTime.now()
-            .subtract(new Duration(days: i, hours: j))
-            .toIso8601String();
-        debugActivity.minigameId = j.toString();
+        // debugActivity.id = j.toString();
+        // debugActivity.createdAt = DateTime.now()
+        //     .subtract(new Duration(days: i, hours: j))
+        //     .toIso8601String();
+        debugActivity.minigameID = "someMinigameId";
+
+        if (j >= 1) {
+          debugActivity.minigameID = "someMinigameId" + j.toString();
+        }
+
         debugActivity.metrics = new List<Metric>();
 
         for (int k = 0; k <= 5; k++) {

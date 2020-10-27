@@ -48,6 +48,7 @@ type PatientSignupData struct {
 }
 
 type Session struct {
+	Id         int        `json:"id" valid:"integer, optional"`
 	Duration   string     `json:"duration" valid:"printableascii, optional"`  // time thing? ISO8601 string
 	CreatedAt  string     `json:"createdAt" valid:"printableascii, optional"` // timestamp ISO8601 string
 	Activities []Activity `json:"activities,omitempty" valid:",optional"`     // possibly stored as Activity IDs ?
@@ -64,8 +65,9 @@ type Activity struct {
 }
 
 type Metric struct {
+	Id    string `json:"id" valid:"alphanum, required"`
 	Name  string `json:"name" valid:"alphanum, required"`
-	Value string `json:"value" valid:"alphanum, required"`
+	Value int    `json:"value" valid:"integer, required"`
 	Unit  string `json:"unit" valid:"alphanum, optional"`
 }
 
@@ -77,7 +79,7 @@ type Recommendation struct {
 	CompletedAt string   `json:"completedAt" valid:"integer, optional"` // timestamp
 	Deadline    string   `json:"deadline" valid:"integer, optional"`    // timestamp
 	Status      string   `json:"status" valid:"alphanum, optional"`     // "In Progress", "Not Started", "Completed", "Expired"
-	Activities  []string `json:"activities" valid:"-"`                  // Activities linked to completing this recommendation
+	SessionIDs  []string `json:"sessionIDs" valid:"-"`                  // Session linked to completing this recommendation (might not be needed)
 }
 
 func AddToPatientTable(user PatientSignupData, ctx context.Context) (string, string, error) {
@@ -237,6 +239,19 @@ func AddSessionToPatient(userId string, session Session, ctx context.Context) er
 	patientSessionsRef := patientRef.Child(TableSessions)
 
 	sessionRef, err := patientSessionsRef.Push(ctx, session)
+	if err != nil {
+		return err
+	}
+
+	// For retrieving length of existing sessions
+	existingSessions, err := patientRef.Child(TableSessions).OrderByKey().GetOrdered(ctx)
+	if err != nil {
+		return err
+	}
+
+	// Set the ID so that it can be received from front-end
+	// The ID will always be the index + 1, so it starts from 1
+	err = sessionRef.Child("id").Set(ctx, len(existingSessions))
 	if err != nil {
 		return err
 	}

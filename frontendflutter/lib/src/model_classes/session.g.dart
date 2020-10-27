@@ -9,7 +9,7 @@ part of 'session.dart';
 Session _$SessionFromJson(Map<String, dynamic> json) {
   $checkKeys(json, requiredKeys: const ['id', 'duration', 'createdAt']);
   return Session(
-    id: json['id'] as String,
+    id: json['id'] as int,
     duration: json['duration'] as String,
     createdAt: json['createdAt'] as String,
     activities: (json['activities'] as List)

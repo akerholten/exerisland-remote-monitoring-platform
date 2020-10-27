@@ -7,7 +7,7 @@ part 'session.g.dart';
 @JsonSerializable(explicitToJson: true)
 class Session {
   @JsonKey(required: true)
-  String id;
+  int id;
 
   @JsonKey(required: true)
   String duration;
