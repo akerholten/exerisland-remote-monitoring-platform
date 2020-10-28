@@ -100,11 +100,12 @@ func UploadSession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if len(session.Duration) < 1 {
-		_, err := w.Write([]byte("Duration in session upload invalid"))
-		if err != nil {
-			log.Printf("Error when duration was invalid and writing bytes: %v", err)
-		}
-		return
+		log.Printf("Duration in session upload invalid, it was: %s", session.Duration)
+		// _, err := w.Write([]byte("Duration in session upload invalid"))
+		// if err != nil {
+		// 	log.Printf("Error when duration was invalid and writing bytes: %v", err)
+		// }
+		// return
 	}
 
 	session.CreatedAt = time.Now().Format(time.RFC3339)
