@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontendflutter/src/constants/hwsession.dart';
+import 'package:frontendflutter/src/model_classes/minigame.dart';
 import 'package:frontendflutter/src/model_classes/patient.dart';
 import 'package:frontendflutter/src/model_classes/recommendation.dart';
 import '../components/alerts.dart';
@@ -28,6 +30,21 @@ class TaskCompletionList extends StatefulWidget {
 class _TaskCompletionListState extends State<TaskCompletionList> {
   Recommendation newRec = new Recommendation();
 
+  List<Minigame> minigames;
+  bool _loading = false;
+
+  void _getMinigames() async {
+    setState(() {
+      _loading = true;
+    });
+
+    minigames = await HWSession().getMinigames();
+
+    setState(() {
+      _loading = false;
+    });
+  }
+
   void _showAddNewRecommendationModal() {
     showDialog(
         context: context,
@@ -48,6 +65,10 @@ class _TaskCompletionListState extends State<TaskCompletionList> {
   @override
   Widget build(BuildContext context) {
     ScrollController _controller = new ScrollController();
+
+    if (minigames == null) {
+      _getMinigames();
+    }
 
     return Card(
       child: Column(
@@ -137,16 +158,19 @@ class _TaskCompletionListState extends State<TaskCompletionList> {
                               children: [
                                 Container(
                                   padding: EdgeInsets.all(4),
-                                  child: SelectableText(
-                                    DebugTools.getListOfMinigames()
-                                        .singleWhere((element) =>
-                                            element.id ==
-                                            recommendation.minigameId)
-                                        .name, // TODO: Replace with correct function
-                                    // recommendation.minigameId] // dont know if this will work now
-                                    style:
-                                        Theme.of(context).textTheme.headline6,
-                                  ),
+                                  child: _loading
+                                      ? CircularProgressIndicator()
+                                      : SelectableText(
+                                          minigames
+                                              .singleWhere((element) =>
+                                                  element.id ==
+                                                  recommendation.minigameId)
+                                              .name, // TODO: Replace with correct function
+                                          // recommendation.minigameId] // dont know if this will work now
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline6,
+                                        ),
                                 ),
                                 Container(
                                   padding: EdgeInsets.all(4),

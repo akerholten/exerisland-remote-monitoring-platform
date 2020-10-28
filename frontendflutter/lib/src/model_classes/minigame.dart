@@ -15,10 +15,10 @@ class Minigame {
   @JsonKey(required: false)
   String description;
 
-  @JsonKey(required: false)
+  @JsonKey(required: false, nullable: true)
   List<String> tags;
 
-  @JsonKey(required: true)
+  @JsonKey(required: true, nullable: true)
   List<Metric> availableMetrics;
 
   Minigame(
@@ -27,8 +27,18 @@ class Minigame {
   /// A necessary factory constructor for creating a new User instance
   /// from a map. Pass the map to the generated `_$MinigameFromJson()` constructor.
   /// The constructor is named after the source class, in this case, User.
-  factory Minigame.fromJson(Map<String, dynamic> json) =>
-      _$MinigameFromJson(json);
+  factory Minigame.fromJson(Map<String, dynamic> json) {
+    Minigame minigame = _$MinigameFromJson(json);
+
+    if (minigame.tags == null) {
+      minigame.tags = new List<String>();
+    }
+    if (minigame.availableMetrics == null) {
+      minigame.availableMetrics = new List<Metric>();
+    }
+
+    return minigame;
+  }
 
   /// `toJson` is the convention for a class to declare support for serialization
   /// to JSON. The implementation simply calls the private, generated

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:frontendflutter/src/constants/hwsession.dart';
 import 'package:frontendflutter/src/model_classes/metric.dart';
 import 'package:frontendflutter/src/model_classes/minigame.dart';
 import 'package:frontendflutter/src/model_classes/recommendation.dart';
@@ -34,8 +35,20 @@ class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
 
   bool miniGameSelected = false;
 
-  List<Minigame> availableMinigames = DebugTools
-      .getListOfMinigames(); // TODO: Change to proper getting possible minigames
+  List<Minigame> minigames; // TODO: Change to proper getting possible minigames
+  bool _loadingMinigames = false;
+
+  void _getMinigames() async {
+    setState(() {
+      _loadingMinigames = true;
+    });
+
+    minigames = await HWSession().getMinigames();
+
+    setState(() {
+      _loadingMinigames = false;
+    });
+  }
 
   bool _isDataFilled() {
     if (newRec.minigameId == null || newRec.minigameId == "") {
@@ -107,6 +120,10 @@ class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
 
   @override
   Widget build(BuildContext context) {
+    if (minigames == null) {
+      _getMinigames();
+    }
+
     if (newRec.deadline == null) {
       newRec.deadline =
           DateTime.now().toIso8601String(); // It needs a temp value
@@ -131,42 +148,44 @@ class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
           // MINIGAME
           Container(
             padding: EdgeInsets.only(bottom: 8),
-            child: DropdownButtonFormField(
-              items: availableMinigames
-                  .map(
-                    (minigame) => DropdownMenuItem(
-                      child: Text(minigame.name),
-                      value: minigame.id,
+            child: _loadingMinigames
+                ? CircularProgressIndicator()
+                : DropdownButtonFormField(
+                    items: minigames
+                        .map(
+                          (minigame) => DropdownMenuItem(
+                            child: Text(minigame.name),
+                            value: minigame.id,
+                          ),
+                        )
+                        .toList(),
+                    decoration: InputDecoration(
+                      hintText: 'Select minigame',
+                      labelText: 'Minigame',
                     ),
-                  )
-                  .toList(),
-              decoration: InputDecoration(
-                hintText: 'Select minigame',
-                labelText: 'Minigame',
-              ),
-              onChanged: (value) {
-                setState(() {
-                  if (value == newRec.minigameId) {
-                    // if we select the same as we already had before, don't do anything
-                    return;
-                  }
-                  _resetTempData();
-                  newRec.minigameId = value;
-                  miniGameSelected = true;
-                  // ----- UGLY hack for now to make sure the selected metric type is available -----
-                  // TODO: Make a way to workaround for this so ID can be string (evaluate if this now works)
-                  _metricDropdownValue = availableMinigames
-                      .firstWhere((e) => e.id == newRec.minigameId)
-                      .availableMetrics[0]
-                      .id;
-                  tempSelectedMetric = availableMinigames
-                      .firstWhere((e) => e.id == newRec.minigameId)
-                      .availableMetrics
-                      .firstWhere((m) => m.id == _metricDropdownValue);
-                  // ----- end of UGLY hack for now to make sure the selected metric type is available -----
-                });
-              },
-            ),
+                    onChanged: (value) {
+                      setState(() {
+                        if (value == newRec.minigameId) {
+                          // if we select the same as we already had before, don't do anything
+                          return;
+                        }
+                        _resetTempData();
+                        newRec.minigameId = value;
+                        miniGameSelected = true;
+                        // ----- UGLY hack for now to make sure the selected metric type is available -----
+                        // TODO: Make a way to workaround for this so ID can be string (evaluate if this now works)
+                        _metricDropdownValue = minigames
+                            .firstWhere((e) => e.id == newRec.minigameId)
+                            .availableMetrics[0]
+                            .id;
+                        tempSelectedMetric = minigames
+                            .firstWhere((e) => e.id == newRec.minigameId)
+                            .availableMetrics
+                            .firstWhere((m) => m.id == _metricDropdownValue);
+                        // ----- end of UGLY hack for now to make sure the selected metric type is available -----
+                      });
+                    },
+                  ),
           ),
           // GOALS
           Container(
@@ -200,37 +219,40 @@ class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
                                   // Dropdown(Metric)
                                   Container(
                                     width: formWidth / 2.1,
-                                    child: DropdownButtonFormField(
-                                      key: widget._metricKey,
-                                      value: _metricDropdownValue,
-                                      items: availableMinigames
-                                          .firstWhere(
-                                              (e) => e.id == newRec.minigameId)
-                                          .availableMetrics
-                                          .map(
-                                            (metric) => DropdownMenuItem(
-                                              child: Text(metric.nameAndUnit()),
-                                              value: metric.id,
+                                    child: _loadingMinigames
+                                        ? CircularProgressIndicator()
+                                        : DropdownButtonFormField(
+                                            key: widget._metricKey,
+                                            value: _metricDropdownValue,
+                                            items: minigames
+                                                .firstWhere((e) =>
+                                                    e.id == newRec.minigameId)
+                                                .availableMetrics
+                                                .map(
+                                                  (metric) => DropdownMenuItem(
+                                                    child: Text(
+                                                        metric.nameAndUnit()),
+                                                    value: metric.id,
+                                                  ),
+                                                )
+                                                .toList(),
+                                            decoration: InputDecoration(
+                                              hintText: 'Add metric',
+                                              labelText: 'Metric',
                                             ),
-                                          )
-                                          .toList(),
-                                      decoration: InputDecoration(
-                                        hintText: 'Add metric',
-                                        labelText: 'Metric',
-                                      ),
-                                      onChanged: (value) {
-                                        setState(() {
-                                          // Selecting metric from the (value) which should map to the ID // TODO: verify that it does map to the id
-                                          tempSelectedMetric =
-                                              availableMinigames
-                                                  .firstWhere((e) =>
-                                                      e.id == newRec.minigameId)
-                                                  .availableMetrics
-                                                  .firstWhere(
-                                                      (m) => m.id == value);
-                                        });
-                                      },
-                                    ),
+                                            onChanged: (value) {
+                                              setState(() {
+                                                // Selecting metric from the (value) which should map to the ID // TODO: verify that it does map to the id
+                                                tempSelectedMetric = minigames
+                                                    .firstWhere((e) =>
+                                                        e.id ==
+                                                        newRec.minigameId)
+                                                    .availableMetrics
+                                                    .firstWhere(
+                                                        (m) => m.id == value);
+                                              });
+                                            },
+                                          ),
                                   ),
                                   // TextFormField(int value)
                                   Container(
@@ -321,7 +343,7 @@ class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
               title: "Deadline",
               onChanged: (value) {
                 setState(() {
-                  newRec.deadline = value;
+                  newRec.deadline = (value as DateTime).toIso8601String();
                 });
               },
             ),
@@ -372,47 +394,51 @@ class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
         width: formWidth,
         height: formHeight,
         // padding: EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // MINIGAME TITLE
-            miniGameSelected
-                ? Container(
-                    padding: EdgeInsets.only(top: 4, bottom: 4),
-                    child: SelectableText(
-                        availableMinigames
-                            .firstWhere((e) => e.id == newRec.minigameId)
-                            .name,
-                        style: Theme.of(context).textTheme.headline6),
-                  )
-                : Container(),
-            // DESCRIPTION
-            miniGameSelected
-                ? Container(
-                    padding: EdgeInsets.only(top: 4, bottom: 4),
-                    child: SelectableText(
-                        "Description: " +
-                            availableMinigames
-                                .firstWhere((e) => e.id == newRec.minigameId)
-                                .description,
-                        style: Theme.of(context).textTheme.bodyText1),
-                  )
-                : Container(),
-            // TAGS
-            miniGameSelected
-                ? Container(
-                    padding: EdgeInsets.only(top: 4, bottom: 4),
-                    child: SelectableText(
-                        "Tags: " +
-                            availableMinigames
-                                .firstWhere((e) => e.id == newRec.minigameId)
-                                .getTagsAsStringList(),
-                        style: Theme.of(context).textTheme.bodyText1),
-                  )
-                : Container(),
-          ],
-        ),
+        child: _loadingMinigames
+            ? Container()
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // MINIGAME TITLE
+                  miniGameSelected
+                      ? Container(
+                          padding: EdgeInsets.only(top: 4, bottom: 4),
+                          child: SelectableText(
+                              minigames
+                                  .firstWhere((e) => e.id == newRec.minigameId)
+                                  .name,
+                              style: Theme.of(context).textTheme.headline6),
+                        )
+                      : Container(),
+                  // DESCRIPTION
+                  miniGameSelected
+                      ? Container(
+                          padding: EdgeInsets.only(top: 4, bottom: 4),
+                          child: SelectableText(
+                              "Description: " +
+                                  minigames
+                                      .firstWhere(
+                                          (e) => e.id == newRec.minigameId)
+                                      .description,
+                              style: Theme.of(context).textTheme.bodyText1),
+                        )
+                      : Container(),
+                  // TAGS
+                  miniGameSelected
+                      ? Container(
+                          padding: EdgeInsets.only(top: 4, bottom: 4),
+                          child: SelectableText(
+                              "Tags: " +
+                                  minigames
+                                      .firstWhere(
+                                          (e) => e.id == newRec.minigameId)
+                                      .getTagsAsStringList(),
+                              style: Theme.of(context).textTheme.bodyText1),
+                        )
+                      : Container(),
+                ],
+              ),
       );
     }
 

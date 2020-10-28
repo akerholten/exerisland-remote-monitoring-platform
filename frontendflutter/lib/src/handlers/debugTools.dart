@@ -2,7 +2,8 @@ import 'package:frontendflutter/src/model_classes/metric.dart';
 import 'package:frontendflutter/src/model_classes/minigame.dart';
 
 class DebugTools {
-  static List<Minigame> getListOfMinigames() {
+  // System.Obsolete() do not use!
+  static List<Minigame> obsoleteDebugListOfMinigames() {
     List<Minigame> minigames = new List<Minigame>();
 
     for (int i = 0; i <= 10; i++) {
