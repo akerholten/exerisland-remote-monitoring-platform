@@ -12,3 +12,11 @@ class PatientDashboardArguments {
 
   PatientDashboardArguments(this.id);
 }
+
+class PatientSessionArguments {
+  final String patientShortId;
+
+  final int sessionId;
+
+  PatientSessionArguments(this.patientShortId, this.sessionId);
+}

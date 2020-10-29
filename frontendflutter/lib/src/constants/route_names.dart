@@ -5,5 +5,6 @@ class Routes {
   static const String ForgotPassword = '/forgotpassword';
   static const String Dashboard = '/dashboard';
   static const String SpecificPersonDashboard = '/id';
+  static const String SpecificSessionDashboard = '/session';
   static const String Test = '/test';
 }

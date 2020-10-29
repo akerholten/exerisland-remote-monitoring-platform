@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:frontendflutter/src/components/alerts.dart';
+import 'package:frontendflutter/src/components/taskCompletionList.dart';
+import 'package:frontendflutter/src/constants/constants.dart';
 import 'package:frontendflutter/src/constants/hwsession.dart';
+import 'package:frontendflutter/src/handlers/tools.dart';
+import 'package:frontendflutter/src/model_classes/activity.dart';
 import 'package:frontendflutter/src/model_classes/patient.dart';
 import 'package:frontendflutter/src/model_classes/session.dart';
+import 'package:frontendflutter/src/pages/errorPage.dart';
 
 class SessionPage extends StatefulWidget {
   final bool personalPage;
@@ -17,8 +23,12 @@ class SessionPage extends StatefulWidget {
 }
 
 class _SessionPageState extends State<SessionPage> {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
   Session session;
-  bool _loading;
+  Patient patient;
+  Activity _selectedActivity;
+  bool _loading = false;
   bool _sessionNotFound = false;
 
   void _getSessionDataAsync() async {
@@ -56,12 +66,100 @@ class _SessionPageState extends State<SessionPage> {
         return;
       }
       session = tempSession;
+      patient = tempPatient;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    if (_sessionNotFound) {
+      return ErrorPage(title: "404 page not found");
+    }
+
+    if (session == null) {
+      _getSessionDataAsync();
+    }
+
+    return Scaffold(
+      key: scaffoldKey,
+      appBar: AppBar(
+        // automaticallyImplyLeading: false,
+        title: _loading
+            ? Text(Constants.applicationName)
+            : Text(patient.firstName + " " + patient.lastName),
+        actions: [
+          // LOGOUT ICON
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () => Tools.promptUserLogout(context),
+          )
+        ],
+      ),
+      body: Center(
+        child: _loading // if we are loading the patients data currently
+            ? CircularProgressIndicator()
+            : SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Container(
+                    alignment: Alignment.topCenter,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                          maxWidth: Constants.pageMaxWidth,
+                          maxHeight: Constants.pageMaxHeight * 1.3),
+                      child: Flexible(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            // Recent activity list -- minigames, etc
+                            Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.all(8),
+                                    alignment: Alignment.topCenter,
+                                    height: Constants.pageMaxHeight * 0.9,
+                                    width: (Constants.pageMaxWidth * 0.9) / 2,
+                                    child: TaskCompletionList(
+                                      // TODO: change to RecentActivityList when that is created
+                                      patient: patient,
+                                      personalPage: widget.personalPage,
+                                      onRecommendationAdded: (value) =>
+                                          Alerts.showWarning(
+                                              "method not implemented"),
+                                    ),
+                                  ),
+                                ]),
+                            // Metric list of selected activity
+                            // TODO: This could potentially have a "button" in the future
+                            // to view all metrics over all activities combined also
+                            Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.all(8),
+                                    alignment: Alignment.topCenter,
+                                    height: Constants.pageMaxHeight * 0.9,
+                                    width: (Constants.pageMaxWidth * 0.9) / 2,
+                                    child: TaskCompletionList(
+                                      // TODO: change to MetricList (that takes in a List<Metric> to view)
+                                      patient: patient,
+                                      personalPage: widget.personalPage,
+                                      onRecommendationAdded: (value) =>
+                                          Alerts.showWarning(
+                                              "method not implemented"),
+                                    ),
+                                  ),
+                                ]),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+      ),
+    );
   }
 }

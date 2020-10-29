@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontendflutter/src/constants/route_names.dart';
 import 'package:frontendflutter/src/model_classes/patient.dart';
 import '../components/alerts.dart';
 import '../constants/constants.dart';
@@ -7,12 +8,16 @@ import '../handlers/tools.dart';
 
 class SessionInformationList extends StatefulWidget {
   @required
+  final bool personalPage;
+
+  @required
   final Patient patient;
 
   @required
   final double dataTableMaxWidth;
 
-  SessionInformationList({this.patient, this.dataTableMaxWidth});
+  SessionInformationList(
+      {this.patient, this.dataTableMaxWidth, this.personalPage});
 
   @override
   _SessionInformationListState createState() => _SessionInformationListState();
@@ -78,8 +83,24 @@ class _SessionInformationListState extends State<SessionInformationList> {
             shrinkWrap: true,
             children: (widget.patient.sessions
                 .map((session) => FlatButton(
-                      onPressed: (() => Alerts.showWarning(
-                          "Method not implemented yet")), // TODO: make this go to the session id page
+                      onPressed: (() {
+                        if (widget.personalPage) {
+                          Navigator.of(context).pushNamed(
+                              Routes.Dashboard +
+                                  "/" +
+                                  Routes.SpecificSessionDashboard,
+                              arguments: PatientSessionArguments(
+                                  widget.patient.shortID, session.id));
+                        } else {
+                          Navigator.of(context).pushNamed(
+                              Routes.SpecificPersonDashboard +
+                                  "/" +
+                                  widget.patient.shortID +
+                                  Routes.SpecificSessionDashboard,
+                              arguments: PatientSessionArguments(
+                                  widget.patient.shortID, session.id));
+                        }
+                      }), // TODO: make this go to the session id page
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

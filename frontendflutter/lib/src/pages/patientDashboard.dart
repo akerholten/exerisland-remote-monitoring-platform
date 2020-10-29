@@ -154,6 +154,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
                                       width: (Constants.pageMaxWidth * 0.9) / 2,
                                       child: Card(
                                         child: SessionInformationList(
+                                          personalPage: widget.personalPage,
                                           patient: patient,
                                           dataTableMaxWidth:
                                               (Constants.pageMaxWidth * 0.9) /

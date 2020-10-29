@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontendflutter/src/model_classes/patient.dart';
 import 'package:frontendflutter/src/pages/errorPage.dart';
+import 'package:frontendflutter/src/pages/sessionPage.dart';
 import 'src/components/alerts.dart';
 import 'src/handlers/tools.dart';
 import 'src/constants/constants.dart';
@@ -86,9 +87,11 @@ class MyApp extends StatelessWidget {
           );
         }
         // ----- DASHBOARD ROUTE -----
+        // TODO: change to contains and take into account when looking at specific session for personal user
         if (settings.name == Routes.Dashboard) {
           Tools.verifyCookieLogin(context);
 
+          // Routing accordingly based on logged in or not and what type of logged in user
           if (window.localStorage.containsKey('userType')) {
             if (window.localStorage['userType'] == 'patient') {
               return MaterialPageRoute(
@@ -113,6 +116,136 @@ class MyApp extends StatelessWidget {
               return TherapistDashboard();
             },
             settings: RouteSettings(name: settings.name),
+          );
+        }
+        // ----- SPECIFIC PERSONAL SESSION DASHBOARD ROUTE -----
+        // TODO: this currently does not totally work as intended, the link becomes the same
+        // as for obersvers point-of-view
+        if (settings.name.contains(
+            Routes.Dashboard + "/" + Routes.SpecificSessionDashboard)) {
+          Tools.verifyCookieLogin(context);
+          // Cast the arguments to the correct type: ScreenArguments.
+          PatientSessionArguments args = settings.arguments;
+
+          // Check in-case we are not logged in anymore
+          if (window.localStorage.containsKey('userType')) {
+            if (window.localStorage['userType'] == '') {
+              return MaterialPageRoute(
+                  builder: (context) {
+                    return LoginPage();
+                  },
+                  settings: RouteSettings(name: Routes.Login));
+            }
+          }
+
+          if (args == null || args.sessionId <= -1) {
+            // URL looks like this http://localhost:3000/#/dashboard/session/SOMESESSIONID
+            // meaning that the split will give us: [#, dashboard, session, SOMESESSIONID]
+            var argArray = settings.name.split("/");
+
+            if (argArray.length <= 2) {
+              return MaterialPageRoute(
+                builder: (context) {
+                  return ErrorPage(title: "404 page not found");
+                },
+                settings: RouteSettings(name: settings.name),
+              );
+            }
+
+            // Collecting args from URL (does that work?)
+            args = new PatientSessionArguments("", int.parse(argArray[3]));
+
+            //   if (args.patientShortId.length < 1 ||
+            //       args.patientShortId.length > 20) {
+            //     return MaterialPageRoute(
+            //       builder: (context) {
+            //         return ErrorPage(title: "404 page not found");
+            //       },
+            //       settings: RouteSettings(name: settings.name),
+            //     );
+            //   }
+            // }
+
+            // Then, extract the required data from the arguments and
+            // pass the data to the correct screen.
+            return MaterialPageRoute(
+              builder: (context) {
+                return SessionPage(
+                  personalPage: true,
+                  sessionId: args.sessionId,
+                );
+              },
+              settings: RouteSettings(
+                  name: Routes.Dashboard +
+                      "/" +
+                      Routes.SpecificSessionDashboard +
+                      "/" +
+                      args.sessionId.toString()),
+            );
+          }
+        }
+        // ----- SPECIFIC PATIENT SESSION ROUTE -----
+        if (settings.name.contains(Routes.SpecificSessionDashboard)) {
+          Tools.verifyCookieLogin(context);
+          // Cast the arguments to the correct type: ScreenArguments.
+          PatientSessionArguments args = settings.arguments;
+
+          // Check in-case we are not logged in anymore
+          if (window.localStorage.containsKey('userType')) {
+            if (window.localStorage['userType'] == '') {
+              return MaterialPageRoute(
+                  builder: (context) {
+                    return LoginPage();
+                  },
+                  settings: RouteSettings(name: Routes.Login));
+            }
+          }
+
+          if (args == null || args.patientShortId.length < 1) {
+            // URL looks like this http://localhost:3000/#/id/SOMEID/session/SOMESESSIONID
+            // meaning that the split will give us: [#, id, SOMEID, session, SOMESESSIONID]
+            var argArray = settings.name.split("/");
+
+            if (argArray.length <= 2) {
+              return MaterialPageRoute(
+                builder: (context) {
+                  return ErrorPage(title: "404 page not found");
+                },
+                settings: RouteSettings(name: settings.name),
+              );
+            }
+
+            // Collecting args from URL (does that work?)
+            args = new PatientSessionArguments(
+                argArray[2], int.parse(argArray[4]));
+
+            if (args.patientShortId.length < 1 ||
+                args.patientShortId.length > 20) {
+              return MaterialPageRoute(
+                builder: (context) {
+                  return ErrorPage(title: "404 page not found");
+                },
+                settings: RouteSettings(name: settings.name),
+              );
+            }
+          }
+
+          // Then, extract the required data from the arguments and
+          // pass the data to the correct screen.
+          return MaterialPageRoute(
+            builder: (context) {
+              return SessionPage(
+                patientShortId: args.patientShortId,
+                sessionId: args.sessionId,
+              );
+            },
+            settings: RouteSettings(
+                name: Routes.SpecificPersonDashboard +
+                    "/" +
+                    args.patientShortId +
+                    Routes.SpecificSessionDashboard +
+                    "/" +
+                    args.sessionId.toString()),
           );
         }
         // ----- SPECIFIC PERSON DASHBOARD ROUTE -----
