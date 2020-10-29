@@ -93,10 +93,11 @@ class _SessionInformationListState extends State<SessionInformationList> {
                                   widget.patient.shortID, session.id));
                         } else {
                           Navigator.of(context).pushNamed(
-                              Routes.SpecificPersonDashboard +
-                                  "/" +
+                              Routes.SpecificSessionDashboard +
+                                  "?user=" +
                                   widget.patient.shortID +
-                                  Routes.SpecificSessionDashboard,
+                                  "&session=" +
+                                  session.id.toString(),
                               arguments: PatientSessionArguments(
                                   widget.patient.shortID, session.id));
                         }
