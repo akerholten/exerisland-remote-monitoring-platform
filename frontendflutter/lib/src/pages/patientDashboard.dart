@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontendflutter/src/components/alerts.dart';
+import 'package:frontendflutter/src/constants/hwsession.dart';
 import 'package:frontendflutter/src/handlers/observerHandler.dart';
 import 'package:frontendflutter/src/handlers/patientHandler.dart';
 import 'package:frontendflutter/src/model_classes/activity.dart';
@@ -48,9 +49,9 @@ class _PatientDashboardState extends State<PatientDashboard> {
     Patient tempPatient = new Patient();
 
     if (widget.personalPage) {
-      tempPatient = await PatientHandler.getPersonalInfo();
+      tempPatient = await HWSession().getPersonalInfo();
     } else {
-      tempPatient = await ObserverHandler.getPatient(widget.shortId);
+      tempPatient = await HWSession().getPatient(widget.shortId);
     }
 
     // if not found

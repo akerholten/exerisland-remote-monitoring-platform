@@ -50,9 +50,9 @@ class ObserverHandler {
     }
   }
 
-  static Future<Patient> getPatient(String id) async {
+  static Future<Patient> getPatient(String shortId) async {
     final http.Response response = await http.get(
-      Constants.backendURL + "/getPatient/" + id,
+      Constants.backendURL + "/getPatient/" + shortId,
     );
 
     print("Trying to fetch a specific patient... ");
