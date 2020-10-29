@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontendflutter/src/components/alerts.dart';
+import 'package:frontendflutter/src/components/sessionPage/activityList.dart';
 import 'package:frontendflutter/src/components/sessionPage/metricList.dart';
 import 'package:frontendflutter/src/components/taskCompletionList.dart';
 import 'package:frontendflutter/src/constants/constants.dart';
@@ -119,14 +120,13 @@ class _SessionPageState extends State<SessionPage> {
                                     alignment: Alignment.topCenter,
                                     height: Constants.pageMaxHeight * 0.9,
                                     width: (Constants.pageMaxWidth * 0.9) / 2,
-                                    child: TaskCompletionList(
-                                      // TODO: change to RecentActivityList when that is created
-                                      patient: patient,
-                                      personalPage: widget.personalPage,
-                                      onRecommendationAdded: (value) =>
-                                          Alerts.showWarning(
-                                              "method not implemented"),
-                                    ),
+                                    child: ActivityList(
+                                        // TODO: change to RecentActivityList when that is created
+                                        activities: session.activities,
+                                        onActivityChosen: (value) =>
+                                            setState(() {
+                                              _selectedActivity = value;
+                                            })),
                                   ),
                                 ]),
                             // Metric list of selected activity

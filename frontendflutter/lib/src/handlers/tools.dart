@@ -85,4 +85,17 @@ class Tools {
     }
     return duration.inSeconds.toString() + " seconds ago";
   }
+
+  static String listOfStringsToString(List<String> strings) {
+    String rtrString = "";
+
+    strings.forEach((string) {
+      if (rtrString != "") {
+        rtrString += ", ";
+      }
+      rtrString += string;
+    });
+
+    return rtrString;
+  }
 }
