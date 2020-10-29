@@ -120,8 +120,8 @@ class _ActivityListState extends State<ActivityList> {
                           padding: EdgeInsets.all(8),
                           child: Card(
                             child: FlatButton(
-                              onPressed: (() => widget.onActivityChosen(
-                                  activity)), // TODO: Selecting specific activity here
+                              onPressed: (() =>
+                                  widget.onActivityChosen(activity)),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -138,9 +138,7 @@ class _ActivityListState extends State<ActivityList> {
                                         child: _loading
                                             ? CircularProgressIndicator()
                                             : SelectableText(
-                                                minigame
-                                                    .name, // TODO: Replace with correct function
-                                                // recommendation.minigameId] // dont know if this will work now
+                                                minigame.name,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .headline6,
@@ -197,10 +195,8 @@ class _ActivityListState extends State<ActivityList> {
                                               ? SelectableText(
                                                   "Duration: No data")
                                               : SelectableText("Duration: " +
-                                                  durationMetric.value
-                                                      .toString() +
-                                                  " seconds"),
-                                          // TODO: improve the way this is shown, create helper function for seconds to HH:MM:SS format
+                                                  Tools.secondsToHHMMSS(
+                                                      durationMetric.value)),
                                         )
                                       ]),
                                 ],

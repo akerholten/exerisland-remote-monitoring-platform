@@ -12,6 +12,12 @@ var minigamesList = []Minigame{
 		},
 		AvailableMetrics: []Metric{
 			Metric{
+				Id:    "Duration",
+				Name:  "Duration",
+				Value: 0,
+				Unit:  "seconds",
+			},
+			Metric{
 				Id:    "Arm_Movement",
 				Name:  "Arm movement",
 				Value: 0,
@@ -45,6 +51,12 @@ var minigamesList = []Minigame{
 			"Physical", "Cognitive", "Arms", "Legs",
 		},
 		AvailableMetrics: []Metric{
+			Metric{
+				Id:    "Duration",
+				Name:  "Duration",
+				Value: 0,
+				Unit:  "seconds",
+			},
 			Metric{
 				Id:    "Arm_Movement",
 				Name:  "Arm movement",

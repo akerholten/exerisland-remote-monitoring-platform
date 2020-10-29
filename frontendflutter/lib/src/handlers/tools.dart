@@ -98,4 +98,29 @@ class Tools {
 
     return rtrString;
   }
+
+  static String secondsToHHMMSS(int seconds) {
+    String rtrString = "";
+
+    int h = seconds ~/ 3600;
+    int m = (seconds % 3600) ~/ 60;
+    int s = seconds % 60;
+
+    if (h < 10) {
+      rtrString += "0";
+    }
+    rtrString += h.toString() + ":";
+
+    if (m < 10) {
+      rtrString += "0";
+    }
+    rtrString += m.toString() + ":";
+
+    if (s < 10) {
+      rtrString += "0";
+    }
+    rtrString += s.toString();
+
+    return rtrString;
+  }
 }

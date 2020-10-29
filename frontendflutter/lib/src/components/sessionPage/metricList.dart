@@ -16,15 +16,10 @@ class MetricList extends StatefulWidget {
 }
 
 class _MetricListState extends State<MetricList> {
-  List<String> columnTitles = [
-    'Metric',
-    'Value',
-  ];
-
   @override
   Widget build(BuildContext context) {
     double tableItemWidth =
-        (widget.dataTableMaxWidth * 0.75) / columnTitles.length;
+        (widget.dataTableMaxWidth * 0.75) / 2; // 2 == columnTitles.length
     double tableItemHeight = 70;
 
     ScrollController _controller = new ScrollController();
@@ -35,23 +30,34 @@ class _MetricListState extends State<MetricList> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: (columnTitles.map(
-                (item) => Container(
-                  alignment: Alignment.center,
-                  height: tableItemHeight,
-                  width: tableItemWidth,
-                  child: SelectableText(
-                    item,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline6
-                        .copyWith(fontSize: 16),
-                  ),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Container(
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.only(left: 5),
+                height: tableItemHeight,
+                width: tableItemWidth,
+                child: SelectableText(
+                  "Metric",
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline6
+                      .copyWith(fontSize: 16),
                 ),
-              )).toList(),
-            ),
+              ),
+              Container(
+                alignment: Alignment.centerRight,
+                padding: EdgeInsets.only(right: 5),
+                height: tableItemHeight,
+                width: tableItemWidth,
+                child: SelectableText(
+                  "Value",
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline6
+                      .copyWith(fontSize: 16),
+                ),
+              ),
+            ]),
             Container(
               height: 1,
               width: double.maxFinite,
@@ -77,45 +83,42 @@ class _MetricListState extends State<MetricList> {
                   controller: _controller,
                   shrinkWrap: true,
                   children: (widget.metrics
-                      .map((metric) => FlatButton(
-                            // TODO: Possibly remove flatbutton?
-                            onPressed: (() {
-                              Alerts.showWarning(
-                                  "Not implemented yet, or uncertain if this even should do anything?");
-                            }),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                      alignment: Alignment.center,
-                                      height: tableItemHeight,
-                                      width: tableItemWidth,
-                                      child: SelectableText(metric.name),
-                                    ),
-                                    Container(
-                                      alignment: Alignment.center,
-                                      height: tableItemHeight,
-                                      width: tableItemWidth,
-                                      child: SelectableText(
-                                          metric.value.toString() +
-                                              " " +
-                                              metric.unit),
-                                      // TODO: Possibly make a helper function that creates a better text
-                                      // based on the metric.unit type (e.g. duration, completion, etc etc)
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  height: 1,
-                                  width: double.maxFinite,
-                                  color: Theme.of(context).dividerColor,
-                                ),
-                              ],
-                            ),
+                      .map((metric) => Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  // METRIC NAME
+                                  Container(
+                                    alignment: Alignment.centerLeft,
+                                    padding: EdgeInsets.only(left: 5),
+                                    height: tableItemHeight,
+                                    width: tableItemWidth,
+                                    child: SelectableText(metric.name),
+                                  ),
+                                  // METRIC VALUE
+                                  Container(
+                                    alignment: Alignment.centerRight,
+                                    padding: EdgeInsets.only(right: 5),
+                                    height: tableItemHeight,
+                                    width: tableItemWidth,
+                                    child: SelectableText(
+                                        metric.value.toString() +
+                                            " " +
+                                            metric.unit),
+                                    // TODO: Possibly make a helper function that creates a better text
+                                    // based on the metric.unit type (e.g. duration, completion, etc etc)
+                                  ),
+                                ],
+                              ),
+                              Container(
+                                height: 1,
+                                width: double.maxFinite,
+                                color: Theme.of(context).dividerColor,
+                              ),
+                            ],
                           ))
                       .toList()),
                 ),
