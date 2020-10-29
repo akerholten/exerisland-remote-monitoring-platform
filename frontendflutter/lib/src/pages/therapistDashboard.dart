@@ -14,8 +14,8 @@ class TherapistDashboard extends StatefulWidget {
 class _TherapistDashboardState extends State<TherapistDashboard> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   int patientCount = 0;
-  double dataTableMaxWidth = 1600;
-  double dataTableMaxHeight = 900;
+  // double dataTableMaxWidth = 1600;
+  // double Constants.pageMaxHeight = 900;
 
   Patient newPatient = new Patient();
   List<Patient> patients;
@@ -69,7 +69,8 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    double tableItemWidth = (dataTableMaxWidth * 0.75) / columnTitles.length;
+    double tableItemWidth =
+        (Constants.pageMaxWidth * 0.75) / columnTitles.length;
     double tableItemHeight = 70;
 
     ScrollController _controller = new ScrollController();
@@ -115,8 +116,8 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
       return Container(
         padding: EdgeInsets.only(bottom: 16, left: 16, right: 16),
         child: SizedBox(
-          height: dataTableMaxHeight,
-          width: dataTableMaxWidth,
+          height: Constants.pageMaxHeight,
+          width: Constants.pageMaxWidth,
           child: Scrollbar(
             controller: _controller,
             isAlwaysShown: true,
@@ -228,8 +229,8 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
                   EdgeInsets.only(left: 130, right: 130, top: 30, bottom: 30),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
-                    maxWidth: dataTableMaxWidth,
-                    maxHeight: dataTableMaxHeight * 1.3),
+                    maxWidth: Constants.pageMaxWidth,
+                    maxHeight: Constants.pageMaxHeight * 1.3),
                 child: Flexible(
                   child: Column(
                     // mainAxisAlignment: MainAxisAlignment.start,

@@ -29,9 +29,6 @@ class PatientDashboard extends StatefulWidget {
 class _PatientDashboardState extends State<PatientDashboard> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   int patientCount = 0;
-  double pageMaxWidth =
-      1600; // TODO: change into consts and use from somewhere else? same as in therapistDashboard
-  double pageMaxHeight = 900;
 
   Patient patient;
   bool _loading;
@@ -54,10 +51,9 @@ class _PatientDashboardState extends State<PatientDashboard> {
       tempPatient = await HWSession().getPatient(widget.shortId);
     }
 
-    // if not found
-
     setState(() {
       _loading = false;
+      // if not found
       if (tempPatient == null) {
         _patientNotFound = true;
         return;
@@ -192,8 +188,8 @@ class _PatientDashboardState extends State<PatientDashboard> {
                     alignment: Alignment.topCenter,
                     child: ConstrainedBox(
                       constraints: BoxConstraints(
-                          maxWidth: pageMaxWidth,
-                          maxHeight: pageMaxHeight * 1.3),
+                          maxWidth: Constants.pageMaxWidth,
+                          maxHeight: Constants.pageMaxHeight * 1.3),
                       child: Flexible(
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -205,8 +201,8 @@ class _PatientDashboardState extends State<PatientDashboard> {
                                     Container(
                                       padding: EdgeInsets.all(8),
                                       alignment: Alignment.topCenter,
-                                      height: pageMaxHeight * 0.9,
-                                      width: (pageMaxWidth * 0.9) / 2,
+                                      height: Constants.pageMaxHeight * 0.9,
+                                      width: (Constants.pageMaxWidth * 0.9) / 2,
                                       child: TaskCompletionList(
                                         patient: patient,
                                         personalPage: widget.personalPage,
@@ -221,21 +217,24 @@ class _PatientDashboardState extends State<PatientDashboard> {
                                     Container(
                                       // SessionList
                                       padding: EdgeInsets.all(8),
-                                      height: (pageMaxHeight * 0.9) / 2,
-                                      width: (pageMaxWidth * 0.9) / 2,
+                                      height:
+                                          (Constants.pageMaxHeight * 0.9) / 2,
+                                      width: (Constants.pageMaxWidth * 0.9) / 2,
                                       child: Card(
                                         child: SessionInformationList(
                                           patient: patient,
                                           dataTableMaxWidth:
-                                              (pageMaxWidth * 0.9) / 2,
+                                              (Constants.pageMaxWidth * 0.9) /
+                                                  2,
                                         ),
                                       ),
                                     ),
                                     Container(
                                       // ActivityGraph
                                       padding: EdgeInsets.all(8),
-                                      height: (pageMaxHeight * 0.9) / 2,
-                                      width: (pageMaxWidth * 0.9) / 2,
+                                      height:
+                                          (Constants.pageMaxHeight * 0.9) / 2,
+                                      width: (Constants.pageMaxWidth * 0.9) / 2,
                                       child: Card(
                                         child: ActivityGraph(
                                           patient: patient,
