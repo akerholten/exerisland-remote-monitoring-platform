@@ -121,79 +121,12 @@ class MyApp extends StatelessWidget {
             settings: RouteSettings(name: settings.name),
           );
         }
-        // ----- SPECIFIC PERSONAL SESSION DASHBOARD ROUTE -----
-        // TODO: this currently does not totally work as intended, the link becomes the same
-        // as for obersvers point-of-view
-        // if (settings.name.contains(
-        //     Routes.Dashboard + "/" + Routes.SpecificSessionDashboard)) {
-        //   Tools.verifyCookieLogin(context);
-        //   // Cast the arguments to the correct type: ScreenArguments.
-        //   PatientSessionArguments args = settings.arguments;
-
-        //   // Check in-case we are not logged in anymore
-        //   if (window.localStorage.containsKey('userType')) {
-        //     if (window.localStorage['userType'] == '') {
-        //       return MaterialPageRoute(
-        //           builder: (context) {
-        //             return LoginPage();
-        //           },
-        //           settings: RouteSettings(name: Routes.Login));
-        //     }
-        //   }
-
-        //   if (args == null || args.sessionId <= -1) {
-        //     // URL looks like this http://localhost:3000/#/dashboard/session/SOMESESSIONID
-        //     // meaning that the split will give us: [#, dashboard, session, SOMESESSIONID]
-        //     var argArray = settings.name.split("/");
-
-        //     if (argArray.length <= 2) {
-        //       return MaterialPageRoute(
-        //         builder: (context) {
-        //           return ErrorPage(title: "404 page not found");
-        //         },
-        //         settings: RouteSettings(name: settings.name),
-        //       );
-        //     }
-
-        //     // Collecting args from URL (does that work?)
-        //     args = new PatientSessionArguments("", int.parse(argArray[3]));
-
-        //     //   if (args.patientShortId.length < 1 ||
-        //     //       args.patientShortId.length > 20) {
-        //     //     return MaterialPageRoute(
-        //     //       builder: (context) {
-        //     //         return ErrorPage(title: "404 page not found");
-        //     //       },
-        //     //       settings: RouteSettings(name: settings.name),
-        //     //     );
-        //     //   }
-        //     // }
-
-        //     // Then, extract the required data from the arguments and
-        //     // pass the data to the correct screen.
-        //     return MaterialPageRoute(
-        //       builder: (context) {
-        //         return SessionPage(
-        //           personalPage: true,
-        //           sessionId: args.sessionId,
-        //         );
-        //       },
-        //       settings: RouteSettings(
-        //           name: Routes.Dashboard +
-        //               "/" +
-        //               Routes.SpecificSessionDashboard +
-        //               "/" +
-        //               args.sessionId.toString()),
-        //     );
-        //   }
-        // }
         // ----- SPECIFIC PATIENT SESSION ROUTE -----
         if (settings.name.contains(Routes.SpecificSessionDashboard)) {
           Tools.verifyCookieLogin(context);
           // Cast the arguments to the correct type: ScreenArguments.
           PatientSessionArguments args = settings.arguments;
 
-          print("We going 1");
           // Check in-case we are not logged in anymore
           if (window.localStorage.containsKey('userType')) {
             if (window.localStorage['userType'] == '') {
@@ -204,52 +137,24 @@ class MyApp extends StatelessWidget {
                   settings: RouteSettings(name: Routes.Login));
             }
           }
-          print("We going 2");
 
           if (args == null || args.patientShortId.length < 1) {
-            // URL looks like this http://localhost:3000/#/id/SOMEID/session/SOMESESSIONID
-            // meaning that the split will give us: [#, id, SOMEID, session, SOMESESSIONID]
             // URL looks like this http://localhost:3000/#/session?user=SOMEUSERID&session=SOMESESSIONID
 
-            // [session, user=SOMEUSERID&session=SOMESESSIONID]
+            // split = [session, user=SOMEUSERID&session=SOMESESSIONID]
             var argArray = settings.name.split("?");
 
-            // [user=SOMEUSERID, session=SOMESESSIONID]
+            // split = [user=SOMEUSERID, session=SOMESESSIONID]
             var arguments = argArray[1].split("&");
 
-            // SOMEUSERID
+            // split = SOMEUSERID
             String shortUserId = arguments[0].split("=")[1];
 
-            // SOMESESSIONID
+            // split = SOMESESSIONID
             int sessionId = int.parse(arguments[1].split("=")[1]);
 
-            // print(settings.name);
-            // print(settings.arguments);
-            // print(argArray);
-            // print(argArray[0]);
-            // print(argArray[1]);
-            // print(argArray[2]);
-            // print(argArray[3]);
-            // print(argArray[4]);
-
-            // if (argArray.length <= 4) {
-            //   print("You say what");
-            //   return MaterialPageRoute(
-            //     builder: (context) {
-            //       return ErrorPage(title: "404 page not found");
-            //     },
-            //     settings: RouteSettings(name: settings.name),
-            //   );
-            // }
-
-            // int sessionID = int.parse(argArray[4].split("?=")[1]);
-            // Collecting args from URL (does that work?)
-
-            print(sessionId);
             args = new PatientSessionArguments(shortUserId, sessionId);
-            print("We going 4");
           }
-          print("We going 5");
 
           // Then, extract the required data from the arguments and
           // pass the data to the correct screen.
@@ -333,26 +238,6 @@ class MyApp extends StatelessWidget {
           settings: RouteSettings(name: settings.name),
         );
       },
-      // routes: {
-      //   '/': (context) => MyHomePage(title: Constants.applicationName),
-      //   Routes.Login: (context) => LoginPage(),
-      //   Routes.Signup: (context) => SignupPage(),
-      //   Routes.ForgotPassword: (context) => ForgotPasswordPage(),
-
-      //   // PROTECTED ROUTES (Always checks cookie)
-      //   Routes.Dashboard: (context) {
-      //     Tools.verifyCookieLogin(context);
-
-      //     // TODO: Do an if check to see if the person is therapist or not,
-      //     // if not, then go to specificPersonDashboard of that person here
-      //     return TherapistDashboard();
-      //   }, // TODO: Solve difference between showing therapist and patient dashboard when going here
-      //   Routes.SpecificPersonDashboard: (context) {
-      //     Tools.verifyCookieLogin(context);
-      //     // TODO: Solve handling ID to retrieve correct person
-      //     return PatientDashboard();
-      //   }
-      // },
     );
   }
 }
