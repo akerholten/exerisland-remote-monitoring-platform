@@ -107,7 +107,7 @@ class _SessionPageState extends State<SessionPage> {
                       constraints: BoxConstraints(
                           maxWidth: Constants.pageMaxWidth,
                           maxHeight: Constants.pageMaxHeight * 1.3),
-                      child: Flexible(
+                      child: Container(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
