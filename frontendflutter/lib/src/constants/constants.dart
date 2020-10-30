@@ -1,6 +1,12 @@
 class Constants {
   static const String applicationName = "VR Health and Wellness Monitoring";
-  static const String backendURL = "http://localhost:8080";
+
+  // RELEASE URL
+  static const String backendURL = "https://rehab-monitoring.herokuapp.com";
+
+  // DEVELOP URL
+  // static const String backendURL = "http://localhost:8080";
+
   static const String dateFormat = "dd/MM/yyyy";
 
   static const double pageMaxWidth = 1600;

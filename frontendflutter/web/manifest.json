@@ -1,6 +1,6 @@
 {
-    "name": "frontendflutter",
-    "short_name": "frontendflutter",
+    "name": "VR Health and Wellness Monitoring",
+    "short_name": "Rehab-Monitoring",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
