@@ -81,12 +81,17 @@ func CreateCookie(w http.ResponseWriter, id string, urlString string) (string, e
 	// Checks that err == nil such that nothing went wrong
 	if encoded, err := CookieManager().secureCookieInstance.Encode(constants.CookieName, cookieData); err == nil {
 		tokenCookie := http.Cookie{
-			Name:     constants.CookieName,
-			Value:    encoded,
-			Domain:   u.Hostname(),
-			Expires:  time.Now().Add(constants.CookieExpiration),
-			Secure:   false, // TODO: Should this be true? maybe? // WAS false
+			Name:    constants.CookieName,
+			Value:   encoded,
+			Domain:  u.Hostname(),
+			Expires: time.Now().Add(constants.CookieExpiration),
+			// DEVELOP
+			Secure:   false,
 			HttpOnly: true,
+			// RELEASE
+			// Secure:   true,
+			// HttpOnly: true,
+			// SameSite: http.SameSiteNoneMode,
 		}
 
 		http.SetCookie(w, &tokenCookie)
@@ -108,12 +113,18 @@ func DeleteClientCookie(w http.ResponseWriter, urlString string) error {
 	}
 	if encoded, err := CookieManager().secureCookieInstance.Encode(constants.CookieName, cookieData); err == nil {
 		tokenCookie := http.Cookie{
-			Name:     constants.CookieName,
-			Value:    encoded,
-			Domain:   u.Hostname(),
-			Expires:  time.Now(),
+			Name:    constants.CookieName,
+			Value:   encoded,
+			Domain:  u.Hostname(),
+			Expires: time.Now(),
+
+			// DEVELOP
 			Secure:   false,
 			HttpOnly: false,
+			// RELEASE
+			// Secure:   true,
+			// HttpOnly: true,
+			// SameSite: http.SameSiteNoneMode,
 		}
 
 		http.SetCookie(w, &tokenCookie)

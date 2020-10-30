@@ -73,7 +73,10 @@ class _SessionInformationListState extends State<SessionInformationList> {
     }
 
     Widget tableRows() {
-      return Expanded(
+      return
+          // Column(
+          // children: [
+          Expanded(
         child: Scrollbar(
           controller: _controller,
           isAlwaysShown: true,
@@ -153,6 +156,8 @@ class _SessionInformationListState extends State<SessionInformationList> {
                 .toList()),
           ),
         ),
+        //   )
+        // ],
       );
     }
 

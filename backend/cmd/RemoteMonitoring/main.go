@@ -80,7 +80,19 @@ func main() {
 	//Csrf := csrf.Protect(securecookie.GenerateRandomKey(32),csrf.Secure(false))
 
 	// go http.ListenAndServe(fmt.Sprintf(":http://%s:%d", RemoteMonitoring.ServerAddress, RemoteMonitoring.Port), certManager.HTTPHandler(nil))
-	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%s", os.Getenv("SERVER_ADDRESS"), os.Getenv("PORT")), gorillaHandlers.CORS(originsOk, headersOk, methodsOk, allowCreds)(router)))
+
+	addr := os.Getenv("SERVER_ADDRESS")
+	if addr == "" {
+		addr = "localhost"
+	}
+
+	port := os.Getenv("PORT")
+
+	if port == "" {
+		port = "8080"
+	}
+
+	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%s", addr, port), gorillaHandlers.CORS(originsOk, headersOk, methodsOk, allowCreds)(router)))
 	// log.Fatal(server.ListenAndServeTLS("", ""))
 }
 
