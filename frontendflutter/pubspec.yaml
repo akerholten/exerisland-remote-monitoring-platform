@@ -1,5 +1,5 @@
 name: frontendflutter
-description: A new Flutter project.
+description: VRHealthandWellnessRemoteMonitoring
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -44,13 +44,16 @@ dependencies:
   # For cookies in requests
   requests: ^3.3.0
 
+# For JSON annotations (model classes)
+  build_runner: ^1.0.0
+  json_serializable: ^3.2.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   
   # For JSON annotations (model classes)
-  build_runner: ^1.0.0
-  json_serializable: ^3.2.0
+  # build_runner: ^1.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

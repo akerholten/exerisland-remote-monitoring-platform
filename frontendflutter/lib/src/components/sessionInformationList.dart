@@ -76,11 +76,17 @@ class _SessionInformationListState extends State<SessionInformationList> {
       return
           // Column(
           // children: [
-          Expanded(
-        child: Scrollbar(
-          controller: _controller,
-          isAlwaysShown: true,
-          child: ListView(
+
+          Container(
+        padding: EdgeInsets.only(bottom: 16, left: 16, right: 16),
+        child: Container(
+          height: Constants.pageMaxHeight * 0.35,
+          child:
+              // Scrollbar(
+              //   controller: _controller,
+              //   isAlwaysShown: true,
+              //   child:
+              ListView(
             physics: const AlwaysScrollableScrollPhysics(),
             controller: _controller,
             shrinkWrap: true,
@@ -156,6 +162,7 @@ class _SessionInformationListState extends State<SessionInformationList> {
                 .toList()),
           ),
         ),
+        // ),
         //   )
         // ],
       );

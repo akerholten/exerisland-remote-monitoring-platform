@@ -18,3 +18,7 @@ tools:
 .PHONY: build
 build:
 	flutter build web
+
+.PHONY: debug-release
+debug-release:
+	flutter run -d chrome --web-port 3000 --profile --verbose

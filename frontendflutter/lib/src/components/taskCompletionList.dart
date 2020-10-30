@@ -134,7 +134,7 @@ class _TaskCompletionListState extends State<TaskCompletionList> {
             ],
           ),
           // Rows of tasks and their info
-          Expanded(
+          Container(
             child: Scrollbar(
               controller: _controller,
               isAlwaysShown: true,

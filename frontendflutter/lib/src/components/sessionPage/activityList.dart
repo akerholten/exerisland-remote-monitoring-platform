@@ -91,7 +91,7 @@ class _ActivityListState extends State<ActivityList> {
                   ],
                 ),
                 // Rows of tasks and their info
-                Expanded(
+                Container(
                   child: Scrollbar(
                     controller: _controller,
                     isAlwaysShown: true,

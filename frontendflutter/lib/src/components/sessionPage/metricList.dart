@@ -69,7 +69,7 @@ class _MetricListState extends State<MetricList> {
     }
 
     Widget tableRows() {
-      return Expanded(
+      return Container(
         child: Scrollbar(
           controller: _controller,
           isAlwaysShown: true,
