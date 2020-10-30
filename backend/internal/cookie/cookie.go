@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"time"
 
 	"github.com/gorilla/securecookie"
@@ -78,20 +79,35 @@ func CreateCookie(w http.ResponseWriter, id string, urlString string) (string, e
 		UserID: userID,
 		Token:  token,
 	}
+
+	isInRelease := os.Getenv("IS_RELEASE")
+
 	// Checks that err == nil such that nothing went wrong
 	if encoded, err := CookieManager().secureCookieInstance.Encode(constants.CookieName, cookieData); err == nil {
-		tokenCookie := http.Cookie{
-			Name:    constants.CookieName,
-			Value:   encoded,
-			Domain:  u.Hostname(),
-			Expires: time.Now().Add(constants.CookieExpiration),
-			// DEVELOP
-			Secure:   false,
-			HttpOnly: true,
-			// RELEASE
-			// Secure:   true,
-			// HttpOnly: true,
-			// SameSite: http.SameSiteNoneMode,
+		var tokenCookie http.Cookie
+
+		if isInRelease == "True" {
+			tokenCookie = http.Cookie{
+				Name:    constants.CookieName,
+				Value:   encoded,
+				Domain:  u.Hostname(),
+				Expires: time.Now().Add(constants.CookieExpiration),
+
+				// RELEASE
+				Secure:   true,
+				HttpOnly: true,
+				SameSite: http.SameSiteNoneMode,
+			}
+		} else {
+			tokenCookie = http.Cookie{
+				Name:    constants.CookieName,
+				Value:   encoded,
+				Domain:  u.Hostname(),
+				Expires: time.Now().Add(constants.CookieExpiration),
+				// DEVELOP
+				Secure:   false,
+				HttpOnly: true,
+			}
 		}
 
 		http.SetCookie(w, &tokenCookie)
@@ -111,20 +127,34 @@ func DeleteClientCookie(w http.ResponseWriter, urlString string) error {
 		UserID: "",
 		Token:  "",
 	}
-	if encoded, err := CookieManager().secureCookieInstance.Encode(constants.CookieName, cookieData); err == nil {
-		tokenCookie := http.Cookie{
-			Name:    constants.CookieName,
-			Value:   encoded,
-			Domain:  u.Hostname(),
-			Expires: time.Now(),
 
-			// DEVELOP
-			Secure:   false,
-			HttpOnly: false,
-			// RELEASE
-			// Secure:   true,
-			// HttpOnly: true,
-			// SameSite: http.SameSiteNoneMode,
+	isInRelease := os.Getenv("IS_RELEASE")
+
+	if encoded, err := CookieManager().secureCookieInstance.Encode(constants.CookieName, cookieData); err == nil {
+		var tokenCookie http.Cookie
+		if isInRelease == "True" {
+			tokenCookie = http.Cookie{
+				Name:    constants.CookieName,
+				Value:   encoded,
+				Domain:  u.Hostname(),
+				Expires: time.Now(),
+
+				// RELEASE
+				Secure:   true,
+				HttpOnly: true,
+				SameSite: http.SameSiteNoneMode,
+			}
+		} else {
+			tokenCookie = http.Cookie{
+				Name:    constants.CookieName,
+				Value:   encoded,
+				Domain:  u.Hostname(),
+				Expires: time.Now(),
+
+				// DEVELOP
+				Secure:   false,
+				HttpOnly: false,
+			}
 		}
 
 		http.SetCookie(w, &tokenCookie)
