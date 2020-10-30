@@ -211,6 +211,12 @@ func GetPatientsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// if len(patients) == 0 {
+	// 	log.Printf("Could not fetch patients from this user, because there were none")
+	// 	w.WriteHeader(http.StatusNoContent)
+	// 	return
+	// }
+
 	// Marshal it into json and return
 	patientsJson, err := json.Marshal(patients)
 	if err != nil {

@@ -37,6 +37,11 @@ class ObserverHandler {
     if (response.statusCode == 200 || response.statusCode == 202) {
       List<Patient> tempList = new List<Patient>();
 
+      // if there are no patients on backend
+      if (response.body == "null") {
+        return null;
+      }
+
       var jsonData = jsonDecode(response.body) as List;
 
       jsonData.forEach((element) {

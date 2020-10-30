@@ -42,15 +42,15 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
     List<Patient> tempPatients = new List<Patient>();
     tempPatients = await ObserverHandler.getAllPatients();
 
-    print(tempPatients);
     setState(() {
       _loading = false;
       // In case it returns null, we don't want the screen to continuosly
       // spam the backend each update for patients it can't retrieve
       if (tempPatients == null) {
-        return;
+        patients = new List<Patient>();
+      } else {
+        patients = tempPatients;
       }
-      patients = tempPatients;
     });
   }
 
@@ -116,92 +116,92 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
     Widget tableRows() {
       return Container(
         padding: EdgeInsets.only(bottom: 16, left: 16, right: 16),
-        child:
-            // SizedBox(
-            //   height: Constants.pageMaxHeight,
-            //   width: Constants.pageMaxWidth,
-            //   child:
-            // Scrollbar(
-            //   controller: _controller,
-            //   isAlwaysShown: true,
-            //   child:
-            ListView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          controller: _controller,
-          shrinkWrap: true,
-          children: (patients
-              .map((patient) => FlatButton(
-                    onPressed: () => Navigator.of(context).pushNamed(
-                        Routes.SpecificPersonDashboard,
-                        arguments: PatientDashboardArguments(patient
-                            .shortID)), // TODO: make this actually go to the id of the person
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              alignment: Alignment.center,
-                              height: tableItemHeight,
-                              width: tableItemWidth,
-                              child: SelectableText(
-                                  patient.firstName + " " + patient.lastName),
-                            ),
-                            Container(
-                              alignment: Alignment.center,
-                              height: tableItemHeight,
-                              width: tableItemWidth,
-                              child: SelectableText(patient.email),
-                            ),
-                            Container(
-                              alignment: Alignment.center,
-                              height: tableItemHeight,
-                              width: tableItemWidth,
-                              child: SelectableText(patient.note),
-                            ),
-                            Container(
-                              alignment: Alignment.center,
-                              height: tableItemHeight,
-                              width: tableItemWidth,
-                              child: SelectableText(
-                                  Tools.birthDateToAge(patient.birthDate)
-                                      .toString()),
-                            ),
-                            Container(
-                              alignment: Alignment.center,
-                              height: tableItemHeight,
-                              width: tableItemWidth,
-                              child: SelectableText(
-                                  patient.recommendationsCompleted.toString() +
-                                      "/" +
-                                      patient.recommendationsCount.toString()),
-                            ),
-                            Container(
-                              alignment: Alignment.center,
-                              height: tableItemHeight,
-                              width: tableItemWidth,
-                              child: SelectableText(
-                                  (patient.recentActivityDate == null ||
-                                          patient.recentActivityDate == "")
-                                      ? "Never"
-                                      : Tools.durationAgoString(DateTime.now()
-                                          .difference(DateTime.parse(
-                                              patient.recentActivityDate)))),
-                            ),
-                          ],
-                        ),
-                        Container(
-                          height: 1,
-                          width: double.maxFinite,
-                          color: Theme.of(context).dividerColor,
-                        ),
-                      ],
-                    ),
-                  ))
-              .toList()),
+        child: Container(
+          height: Constants.pageMaxHeight,
+          // width: Constants.pageMaxWidth,
+          child:
+              //   Scrollbar(
+              // controller: _controller,
+              // isAlwaysShown: true,
+              // child:
+              ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            controller: _controller,
+            shrinkWrap: true,
+            children: (patients
+                .map((patient) => FlatButton(
+                      onPressed: () => Navigator.of(context).pushNamed(
+                          Routes.SpecificPersonDashboard,
+                          arguments: PatientDashboardArguments(patient
+                              .shortID)), // TODO: make this actually go to the id of the person
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                alignment: Alignment.center,
+                                height: tableItemHeight,
+                                width: tableItemWidth,
+                                child: SelectableText(
+                                    patient.firstName + " " + patient.lastName),
+                              ),
+                              Container(
+                                alignment: Alignment.center,
+                                height: tableItemHeight,
+                                width: tableItemWidth,
+                                child: SelectableText(patient.email),
+                              ),
+                              Container(
+                                alignment: Alignment.center,
+                                height: tableItemHeight,
+                                width: tableItemWidth,
+                                child: SelectableText(patient.note),
+                              ),
+                              Container(
+                                alignment: Alignment.center,
+                                height: tableItemHeight,
+                                width: tableItemWidth,
+                                child: SelectableText(
+                                    Tools.birthDateToAge(patient.birthDate)
+                                        .toString()),
+                              ),
+                              Container(
+                                alignment: Alignment.center,
+                                height: tableItemHeight,
+                                width: tableItemWidth,
+                                child: SelectableText(patient
+                                        .recommendationsCompleted
+                                        .toString() +
+                                    "/" +
+                                    patient.recommendationsCount.toString()),
+                              ),
+                              Container(
+                                alignment: Alignment.center,
+                                height: tableItemHeight,
+                                width: tableItemWidth,
+                                child: SelectableText(
+                                    (patient.recentActivityDate == null ||
+                                            patient.recentActivityDate == "")
+                                        ? "Never"
+                                        : Tools.durationAgoString(DateTime.now()
+                                            .difference(DateTime.parse(
+                                                patient.recentActivityDate)))),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            height: 1,
+                            width: double.maxFinite,
+                            color: Theme.of(context).dividerColor,
+                          ),
+                        ],
+                      ),
+                    ))
+                .toList()),
+          ),
         ),
-        // ),
         // ),
       );
     }
@@ -219,76 +219,81 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
           )
         ],
       ),
-      body: Center(
-        child:
-            // SingleChildScrollView(
-            //   scrollDirection: Axis.vertical,
-            //   child: SingleChildScrollView(
-            //     scrollDirection: Axis.horizontal,
-            //     child:
-            Container(
-          alignment: Alignment.topCenter,
-          padding: EdgeInsets.only(left: 130, right: 130, top: 30, bottom: 30),
-          // child:
-          // ConstrainedBox(
-          //   constraints: BoxConstraints(
-          //       maxWidth: Constants.pageMaxWidth,
-          //       maxHeight: Constants.pageMaxHeight * 1.3),
-          child: Container(
-            //Flexible(
-            child: Column(
-              // mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                  padding: EdgeInsets.all(16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Container(
+        alignment: Alignment.topCenter,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Container(
+              alignment: Alignment.topCenter,
+              padding:
+                  EdgeInsets.only(left: 130, right: 130, top: 30, bottom: 30),
+              child: Container(
+                // height: Constants.pageMaxHeight,
+                width: Constants.pageMaxWidth,
+                //   constraints: BoxConstraints(
+                //       maxWidth: Constants.pageMaxWidth,
+                //       maxHeight: Constants.pageMaxHeight * 1.3),
+                child: Container(
+                  //Flexible(
+                  child: Column(
+                    // mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      SelectableText(
-                        'Patients',
-                        style: Theme.of(context).textTheme.headline4,
-                      ),
-                      FlatButton(
-                        padding: EdgeInsets.only(
-                            left: 54, right: 54, bottom: 20, top: 20),
-                        color: Theme.of(context).primaryColor,
-                        textColor: Colors.white,
-                        onPressed: _showAddNewPatientModal,
-                        child: Text(
-                          'Add patient',
-                          style: Theme.of(context)
-                              .textTheme
-                              .button
-                              .copyWith(fontSize: 16),
+                      Container(
+                        padding: EdgeInsets.all(16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SelectableText(
+                              'Patients',
+                              style: Theme.of(context).textTheme.headline4,
+                            ),
+                            FlatButton(
+                              padding: EdgeInsets.only(
+                                  left: 54, right: 54, bottom: 20, top: 20),
+                              color: Theme.of(context).primaryColor,
+                              textColor: Colors.white,
+                              onPressed: _showAddNewPatientModal,
+                              child: Text(
+                                'Add patient',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .button
+                                    .copyWith(fontSize: 16),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
+                      patients.length == 0
+                          ? Container(
+                              alignment: Alignment.center,
+                              padding: EdgeInsets.only(top: 250),
+                              child:
+                                  _loading // if loading in patients from backend
+                                      ? CircularProgressIndicator()
+                                      : SelectableText(
+                                          'You have no patients yet',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline4,
+                                        ),
+                            )
+                          : Card(
+                              child: Column(children: [
+                                tableHeader(),
+                                tableRows(),
+                              ]),
+                            ),
                     ],
                   ),
                 ),
-                patients.length == 0
-                    ? Container(
-                        alignment: Alignment.center,
-                        padding: EdgeInsets.only(top: 250),
-                        child: _loading // if loading in patients from backend
-                            ? CircularProgressIndicator()
-                            : SelectableText(
-                                'You have no patients yet',
-                                style: Theme.of(context).textTheme.headline4,
-                              ),
-                      )
-                    : Card(
-                        child: Column(children: [
-                          tableHeader(),
-                          tableRows(),
-                        ]),
-                      ),
-              ],
+              ),
             ),
           ),
         ),
       ),
-      // ),
-      //   ),
       // ),
     );
   }
