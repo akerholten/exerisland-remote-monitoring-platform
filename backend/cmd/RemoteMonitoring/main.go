@@ -30,11 +30,12 @@ func main() {
 
 	// Setting up CORS settings
 	// see https://stackoverflow.com/questions/40985920/making-golang-gorilla-cors-handler-work
-	// RemoteMonitoring_ORIGIN_ALLOWED is like `scheme://dns[:port]`, or `*` (insecure)
+	// ORIGIN_ALLOWED is like `scheme://dns[:port]`, or `*` (insecure)
 
-	log.Printf("Origin allowed is: %s", os.Getenv("RemoteMonitoring_ORIGIN_ALLOWED"))
+	log.Printf("Origin allowed is: %s", os.Getenv("ORIGIN_ALLOWED"))
+
 	headersOk := gorillaHandlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization", "Access-Control-Allow-Credentials", "Access-Control-Allow-Origin"})
-	originsOk := gorillaHandlers.AllowedOrigins([]string{os.Getenv("RemoteMonitoring_ORIGIN_ALLOWED"), "http://localhost:3000"}) //os.Getenv("RemoteMonitoring_ORIGIN_ALLOWED")
+	originsOk := gorillaHandlers.AllowedOrigins([]string{os.Getenv("ORIGIN_ALLOWED"), "http://localhost:3000"}) //os.Getenv("RemoteMonitoring_ORIGIN_ALLOWED")
 	allowCreds := gorillaHandlers.AllowCredentials()
 	methodsOk := gorillaHandlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
 	// exposedHeaders := gorillaHandlers.ExposedHeaders([]string{"*"})

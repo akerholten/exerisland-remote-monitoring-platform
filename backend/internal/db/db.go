@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 
 	firebase "firebase.google.com/go"
 	firebaseDB "firebase.google.com/go/db"
@@ -49,7 +50,7 @@ func InitConfig() *firebase.Config {
 	fmt.Println("Setting up config for firebase...")
 
 	config := &firebase.Config{
-		DatabaseURL: "https://vr-health-remotemonitoring.firebaseio.com/", // TODO: move to static global variable?
+		DatabaseURL: os.Getenv("DATABASE_URL"), // TODO: move to static global variable?
 	}
 	return config
 }
