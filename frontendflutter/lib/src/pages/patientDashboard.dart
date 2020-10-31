@@ -92,7 +92,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
     //   _debugFillData();
     // }
 
-    ScrollController _controller = new ScrollController();
+    // ScrollController _controller = new ScrollController();
 
     return Scaffold(
       key: scaffoldKey,
@@ -109,46 +109,50 @@ class _PatientDashboardState extends State<PatientDashboard> {
           )
         ],
       ),
-      body: Center(
+      body: Container(
+        alignment: Alignment.topCenter,
         child: _loading // if we are loading the patients data currently
-            ? CircularProgressIndicator()
+            ? Center(child: CircularProgressIndicator())
             : SingleChildScrollView(
                 scrollDirection: Axis.vertical,
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Container(
                     alignment: Alignment.topCenter,
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                          maxWidth: Constants.pageMaxWidth,
-                          maxHeight: Constants.pageMaxHeight * 1.3),
+                    padding: EdgeInsets.only(
+                        left: 130, right: 130, top: 30, bottom: 30),
+                    child: Container(
+                      width: Constants.pageMaxWidth,
+                      // height: Constants.pageMaxHeight * 1.3,
                       child: Container(
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              // Task completion list
-                              // Column(
-                              //     mainAxisAlignment: MainAxisAlignment.start,
-                              //     children: [
-                              //       Container(
-                              //         padding: EdgeInsets.all(8),
-                              //         alignment: Alignment.topCenter,
-                              //         height: Constants.pageMaxHeight * 0.9,
-                              //         width: (Constants.pageMaxWidth * 0.9) / 2,
-                              //         child: TaskCompletionList(
-                              //           patient: patient,
-                              //           personalPage: widget.personalPage,
-                              //           onRecommendationAdded: (value) =>
-                              //               _addRecommendationToDatabase(value),
-                              //         ),
-                              //       ),
-                              //     ]),
+                              //Task completion list
+                              Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.all(8),
+                                      alignment: Alignment.topCenter,
+                                      height: Constants.pageMaxHeight * 0.9,
+                                      width: (Constants.pageMaxWidth * 0.9) / 2,
+                                      child: TaskCompletionList(
+                                        patient: patient,
+                                        personalPage: widget.personalPage,
+                                        onRecommendationAdded: (value) =>
+                                            _addRecommendationToDatabase(value),
+                                      ),
+                                    ),
+                                  ]),
                               Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Container(
                                       // SessionList
                                       padding: EdgeInsets.all(8),
+                                      height:
+                                          (Constants.pageMaxHeight * 0.9) / 2,
                                       width: (Constants.pageMaxWidth * 0.9) / 2,
                                       child: Card(
                                         child: SessionInformationList(
@@ -160,18 +164,18 @@ class _PatientDashboardState extends State<PatientDashboard> {
                                         ),
                                       ),
                                     ),
-                                    //   // ActivityGraph
-                                    // Container(
-                                    //   padding: EdgeInsets.all(8),
-                                    //   height:
-                                    //       (Constants.pageMaxHeight * 0.9) / 2,
-                                    //   width: (Constants.pageMaxWidth * 0.9) / 2,
-                                    //   child: Card(
-                                    //     child: ActivityGraph(
-                                    //       patient: patient,
-                                    //     ),
-                                    //   ),
-                                    // ),
+                                    // ActivityGraph
+                                    Container(
+                                      padding: EdgeInsets.all(8),
+                                      height:
+                                          (Constants.pageMaxHeight * 0.9) / 2,
+                                      width: (Constants.pageMaxWidth * 0.9) / 2,
+                                      child: Card(
+                                        child: ActivityGraph(
+                                          patient: patient,
+                                        ),
+                                      ),
+                                    ),
                                   ])
                             ]),
                       ),

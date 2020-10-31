@@ -80,7 +80,7 @@ class _SessionInformationListState extends State<SessionInformationList> {
           Container(
         padding: EdgeInsets.only(bottom: 16, left: 16, right: 16),
         child: Container(
-          height: Constants.pageMaxHeight * 0.35,
+          height: Constants.pageMaxHeight * 0.325, // magic numbers
           child:
               // Scrollbar(
               //   controller: _controller,

@@ -94,15 +94,18 @@ class _SessionPageState extends State<SessionPage> {
           )
         ],
       ),
-      body: Center(
+      body: Container(
+        alignment: Alignment.topCenter,
         child: _loading // if we are loading the session data currently
-            ? CircularProgressIndicator()
+            ? Center(child: CircularProgressIndicator())
             : SingleChildScrollView(
                 scrollDirection: Axis.vertical,
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Container(
                     alignment: Alignment.topCenter,
+                    padding: EdgeInsets.only(
+                        left: 18, right: 10, top: 10, bottom: 10),
                     child: ConstrainedBox(
                       constraints: BoxConstraints(
                           maxWidth: Constants.pageMaxWidth,

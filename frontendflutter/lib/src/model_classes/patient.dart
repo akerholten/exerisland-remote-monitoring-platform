@@ -88,4 +88,12 @@ class Patient {
 
     return count;
   }
+
+  double getTasksCompletedPercentage() {
+    if (recommendations.length == 0) {
+      return 0.0;
+    } else {
+      return getTotalTaskCompleted() / recommendations.length;
+    }
+  }
 }
