@@ -71,110 +71,131 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    double appWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         // automaticallyImplyLeading: false, // remove this if we want back button on app bar
         title: Text(Constants.applicationName),
       ),
-      body: Form(
-        key: _formKey,
-        child: Scrollbar(
-          child: Align(
-            alignment: Alignment.center,
-            child: Card(
-              color: Colors.white,
-              child: SingleChildScrollView(
-                padding: EdgeInsets.all(16),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: 400),
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 32, right: 32),
-                    child: Column(
-                      children: [
-                        ...[
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: SelectableText(
-                              'Login',
-                              style: Theme.of(context).textTheme.headline4,
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                          TextFormField(
-                            decoration: InputDecoration(
-                              hintText: 'Enter email',
-                              labelText: 'Email',
-                            ),
-                            onChanged: (value) {
-                              setState(() {
-                                email = value;
-                              });
-                            },
-                          ),
-                          TextFormField(
-                            obscureText: true, // hides text as this is password
-                            decoration: InputDecoration(
-                              hintText: 'Enter password',
-                              labelText: 'Password',
-                            ),
-                            onChanged: (value) {
-                              setState(() {
-                                password = value;
-                              });
-                            },
-                          ),
-                          Flex(
-                              direction: Axis.horizontal,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Container(
+        alignment: Alignment.center,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Container(
+              alignment: Alignment.center,
+              width: appWidth,
+              child: Form(
+                key: _formKey,
+                child: Scrollbar(
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Card(
+                      color: Colors.white,
+                      child: SingleChildScrollView(
+                        padding: EdgeInsets.all(16),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(maxWidth: 400),
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 32, right: 32),
+                            child: Column(
                               children: [
-                                FlatButton(
-                                  child: Text("Forgot your password?"),
-                                  onPressed: () {
-                                    Navigator.of(context)
-                                        .pushNamed(Routes.ForgotPassword);
-                                  },
-                                  textColor: Theme.of(context).primaryColor,
-                                ),
-                                FlatButton(
-                                  child: Text("Sign up"),
-                                  onPressed: () {
-                                    Navigator.of(context)
-                                        .pushNamed(Routes.Signup);
-                                  },
-                                  textColor: Theme.of(context).primaryColor,
-                                ),
-                              ]),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: _loading
-                                ? CircularProgressIndicator()
-                                : FlatButton(
-                                    padding: EdgeInsets.only(
-                                        left: 64,
-                                        right: 64,
-                                        bottom: 20,
-                                        top: 20),
-                                    color: Theme.of(context).primaryColor,
-                                    textColor: Colors.white,
-                                    onPressed: _tryLogin,
-                                    child: Text(
-                                      'Log in',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .button
-                                          .copyWith(fontSize: 16),
+                                ...[
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: SelectableText(
+                                      'Login',
+                                      style:
+                                          Theme.of(context).textTheme.headline4,
+                                      textAlign: TextAlign.left,
                                     ),
                                   ),
+                                  TextFormField(
+                                    decoration: InputDecoration(
+                                      hintText: 'Enter email',
+                                      labelText: 'Email',
+                                    ),
+                                    onChanged: (value) {
+                                      setState(() {
+                                        email = value;
+                                      });
+                                    },
+                                  ),
+                                  TextFormField(
+                                    obscureText:
+                                        true, // hides text as this is password
+                                    decoration: InputDecoration(
+                                      hintText: 'Enter password',
+                                      labelText: 'Password',
+                                    ),
+                                    onChanged: (value) {
+                                      setState(() {
+                                        password = value;
+                                      });
+                                    },
+                                  ),
+                                  Flex(
+                                      direction: Axis.horizontal,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        FlatButton(
+                                          child: Text("Forgot your password?"),
+                                          onPressed: () {
+                                            Navigator.of(context).pushNamed(
+                                                Routes.ForgotPassword);
+                                          },
+                                          textColor:
+                                              Theme.of(context).primaryColor,
+                                        ),
+                                        FlatButton(
+                                          child: Text("Sign up"),
+                                          onPressed: () {
+                                            Navigator.of(context)
+                                                .pushNamed(Routes.Signup);
+                                          },
+                                          textColor:
+                                              Theme.of(context).primaryColor,
+                                        ),
+                                      ]),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: _loading
+                                        ? CircularProgressIndicator()
+                                        : FlatButton(
+                                            padding: EdgeInsets.only(
+                                                left: 64,
+                                                right: 64,
+                                                bottom: 20,
+                                                top: 20),
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            textColor: Colors.white,
+                                            onPressed: _tryLogin,
+                                            child: Text(
+                                              'Log in',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .button
+                                                  .copyWith(fontSize: 16),
+                                            ),
+                                          ),
+                                  ),
+                                ].expand(
+                                  (widget) => [
+                                    widget,
+                                    SizedBox(
+                                      height: 24,
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
                           ),
-                        ].expand(
-                          (widget) => [
-                            widget,
-                            SizedBox(
-                              height: 24,
-                            )
-                          ],
-                        )
-                      ],
+                        ),
+                      ),
                     ),
                   ),
                 ),

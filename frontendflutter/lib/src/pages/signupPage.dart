@@ -95,146 +95,166 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   Widget build(BuildContext context) {
+    double appWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
         // automaticallyImplyLeading: false,
         title: Text(Constants.applicationName),
       ),
-      body: Form(
-        child: Scrollbar(
-          child: Align(
-            alignment: Alignment.center,
-            child: Card(
-              color: Colors.white,
-              child: SingleChildScrollView(
-                padding: EdgeInsets.all(16),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: 400),
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 32, right: 32),
-                    child: Column(
-                      children: [
-                        ...[
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: SelectableText(
-                              'Sign up',
-                              style: Theme.of(context).textTheme.headline4,
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                          TextFormField(
-                            decoration: InputDecoration(
-                              hintText: 'Enter email',
-                              labelText: 'Email',
-                            ),
-                            onChanged: (value) {
-                              setState(() {
-                                email = value;
-                              });
-                            },
-                          ),
-                          TextFormField(
-                            decoration: InputDecoration(
-                              hintText: 'Enter first name',
-                              labelText: 'First name',
-                            ),
-                            onChanged: (value) {
-                              setState(() {
-                                firstName = value;
-                              });
-                            },
-                          ),
-                          TextFormField(
-                            decoration: InputDecoration(
-                              hintText: 'Enter last name',
-                              labelText: 'Last name',
-                            ),
-                            onChanged: (value) {
-                              setState(() {
-                                lastName = value;
-                              });
-                            },
-                          ),
-                          TextFormField(
-                            obscureText: true, // hides text as this is password
-                            decoration: InputDecoration(
-                              hintText: 'Enter password',
-                              labelText: 'Password',
-                            ),
-                            onChanged: (value) {
-                              setState(() {
-                                password = value;
-                              });
-                            },
-                          ),
-                          TextFormField(
-                            obscureText: true, // hides text as this is password
-                            decoration: InputDecoration(
-                              hintText: 'Repeat password',
-                              labelText: 'Repeat password',
-                            ),
-                            onChanged: (value) {
-                              setState(() {
-                                repeatPassword = value;
-                              });
-                            },
-                          ),
-                          TextFormField(
-                            decoration: InputDecoration(
-                              hintText: 'Organization ID',
-                              labelText: 'Organization ID',
-                            ),
-                            onChanged: (value) {
-                              setState(() {
-                                organizationID = value;
-                              });
-                            },
-                          ),
-                          Flex(
-                              direction: Axis.horizontal,
-                              mainAxisAlignment: MainAxisAlignment.end,
+      body: Container(
+        alignment: Alignment.center,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Container(
+              alignment: Alignment.center,
+              width: appWidth,
+              child: Form(
+                child: Scrollbar(
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Card(
+                      color: Colors.white,
+                      child: SingleChildScrollView(
+                        padding: EdgeInsets.all(16),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(maxWidth: 400),
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 32, right: 32),
+                            child: Column(
                               children: [
-                                FlatButton(
-                                  child: Text("Back to login"),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  textColor: Theme.of(context).primaryColor,
-                                ),
-                              ]),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: _loading
-                                ? CircularProgressIndicator()
-                                : FlatButton(
-                                    child: Text(
-                                      'Register',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .button
-                                          .copyWith(fontSize: 16),
+                                ...[
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: SelectableText(
+                                      'Sign up',
+                                      style:
+                                          Theme.of(context).textTheme.headline4,
+                                      textAlign: TextAlign.left,
                                     ),
-                                    padding: EdgeInsets.only(
-                                        left: 64,
-                                        right: 64,
-                                        bottom: 20,
-                                        top: 20),
-                                    color: Theme.of(context).primaryColor,
-                                    textColor: Colors.white,
-                                    onPressed: _trySignup,
                                   ),
+                                  TextFormField(
+                                    decoration: InputDecoration(
+                                      hintText: 'Enter email',
+                                      labelText: 'Email',
+                                    ),
+                                    onChanged: (value) {
+                                      setState(() {
+                                        email = value;
+                                      });
+                                    },
+                                  ),
+                                  TextFormField(
+                                    decoration: InputDecoration(
+                                      hintText: 'Enter first name',
+                                      labelText: 'First name',
+                                    ),
+                                    onChanged: (value) {
+                                      setState(() {
+                                        firstName = value;
+                                      });
+                                    },
+                                  ),
+                                  TextFormField(
+                                    decoration: InputDecoration(
+                                      hintText: 'Enter last name',
+                                      labelText: 'Last name',
+                                    ),
+                                    onChanged: (value) {
+                                      setState(() {
+                                        lastName = value;
+                                      });
+                                    },
+                                  ),
+                                  TextFormField(
+                                    obscureText:
+                                        true, // hides text as this is password
+                                    decoration: InputDecoration(
+                                      hintText: 'Enter password',
+                                      labelText: 'Password',
+                                    ),
+                                    onChanged: (value) {
+                                      setState(() {
+                                        password = value;
+                                      });
+                                    },
+                                  ),
+                                  TextFormField(
+                                    obscureText:
+                                        true, // hides text as this is password
+                                    decoration: InputDecoration(
+                                      hintText: 'Repeat password',
+                                      labelText: 'Repeat password',
+                                    ),
+                                    onChanged: (value) {
+                                      setState(() {
+                                        repeatPassword = value;
+                                      });
+                                    },
+                                  ),
+                                  TextFormField(
+                                    decoration: InputDecoration(
+                                      hintText: 'Organization ID',
+                                      labelText: 'Organization ID',
+                                    ),
+                                    onChanged: (value) {
+                                      setState(() {
+                                        organizationID = value;
+                                      });
+                                    },
+                                  ),
+                                  Flex(
+                                      direction: Axis.horizontal,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        FlatButton(
+                                          child: Text("Back to login"),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          textColor:
+                                              Theme.of(context).primaryColor,
+                                        ),
+                                      ]),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: _loading
+                                        ? CircularProgressIndicator()
+                                        : FlatButton(
+                                            child: Text(
+                                              'Register',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .button
+                                                  .copyWith(fontSize: 16),
+                                            ),
+                                            padding: EdgeInsets.only(
+                                                left: 64,
+                                                right: 64,
+                                                bottom: 20,
+                                                top: 20),
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            textColor: Colors.white,
+                                            onPressed: _trySignup,
+                                          ),
+                                  ),
+                                ].expand(
+                                  (widget) => [
+                                    widget,
+                                    SizedBox(
+                                      height: 24,
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
                           ),
-                        ].expand(
-                          (widget) => [
-                            widget,
-                            SizedBox(
-                              height: 24,
-                            )
-                          ],
-                        )
-                      ],
+                        ),
+                      ),
                     ),
                   ),
                 ),
