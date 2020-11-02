@@ -139,7 +139,7 @@ class _SessionInformationListState extends State<SessionInformationList> {
                                 height: tableItemHeight,
                                 width: tableItemWidth,
                                 child: SelectableText(
-                                    session.activities.length.toString()),
+                                    session.activities?.length.toString()),
                               ),
                               Container(
                                 alignment: Alignment.center,
