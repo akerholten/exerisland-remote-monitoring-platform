@@ -44,9 +44,12 @@ dependencies:
   # For cookies in requests
   requests: ^3.3.0
 
-# For JSON annotations (model classes)
+  # For JSON annotations (model classes)
   build_runner: ^1.0.0
   json_serializable: ^3.2.0
+
+  # For charts 
+  charts_flutter: ^0.9.0
 
 dev_dependencies:
   flutter_test:
