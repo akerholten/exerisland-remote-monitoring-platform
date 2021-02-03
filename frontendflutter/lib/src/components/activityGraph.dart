@@ -10,7 +10,6 @@ import 'package:fl_chart/fl_chart.dart';
 
 // TODO: get available metricIDs based on data stored on this local user
 // TODO: get available minigameIDs based on data stored on this local user
-// TODO: text on x and y axis and formatting of graph to look better on page
 class ActivityGraph extends StatefulWidget {
   @required
   final Patient patient;
@@ -21,10 +20,7 @@ class ActivityGraph extends StatefulWidget {
   _ActivityGraphState createState() => _ActivityGraphState();
 }
 
-// TODO: Create class for returning a FlChart graph
-// TODO: Create class functionality for returning LineChartBarData with spots and titles depending on metric and timeframe feeden into it
 List<String> availableTimeFrames = ["Activity", "Daily", "Weekly", "Monthly"];
-List<FlSpot> spotsWritten = [FlSpot(1, 1), FlSpot(2, 4), FlSpot(6, 2)];
 
 class _ActivityGraphState extends State<ActivityGraph> {
   String metricID = "Arm_Movement"; // TODO: Dropdown menu for this selection
@@ -32,6 +28,7 @@ class _ActivityGraphState extends State<ActivityGraph> {
       "Platform_Minigame"; // TODO: Dropdown menu for this selection
   String chosenTimeFrame = "Activity"; // TODO: Dropdown menu for this selection
   Metric chosenMetric;
+  Minigame chosenMinigame;
   bool _loading = false;
 
   void _getMetricData() async {
@@ -41,10 +38,9 @@ class _ActivityGraphState extends State<ActivityGraph> {
 
     List<Minigame> minigames = await HWSession().getMinigames();
 
-    chosenMetric = minigames
-        .firstWhere((m) => m.id == minigameID)
-        .availableMetrics
-        .firstWhere((e) => e.id == metricID);
+    chosenMinigame = minigames.firstWhere((m) => m.id == minigameID);
+    chosenMetric =
+        chosenMinigame.availableMetrics.firstWhere((e) => e.id == metricID);
 
     setState(() {
       _loading = false;
@@ -57,12 +53,6 @@ class _ActivityGraphState extends State<ActivityGraph> {
       _getMetricData();
     }
     // ScrollController _controller = new ScrollController();
-    // List<LineChartBarData> lines = [
-    //   LineChartBarData(spots: spotsWritten, isCurved: true)
-    // ];
-    // chartData = new LineChartData(
-    //     lineBarsData: lines,
-    //     titlesData: FlTitlesData(show: true, leftTitles: SideTitles()));
 
     return Container(
       child: Center(
@@ -95,12 +85,6 @@ class _ActivityGraphState extends State<ActivityGraph> {
                 ),
               ],
             ),
-            // ConstrainedBox(
-            //   constraints: BoxConstraints(maxWidth: 900, maxHeight: 700),
-            //   // padding: EdgeInsets.all(8),
-            //   child: SimpleTimeSeriesChart
-            //       .withSampleData(), // TODO: Replace with actual functionality when created
-            // ),
             // ACTUAL GRAPH
             Container(
               constraints: BoxConstraints(
@@ -112,16 +96,13 @@ class _ActivityGraphState extends State<ActivityGraph> {
                   : LinearChart(
                       patient: widget.patient,
                       chosenMetric: chosenMetric,
-                      minigameID: minigameID,
+                      chosenMinigame: chosenMinigame,
                       chosenTimeFrame: chosenTimeFrame,
-                    ), // TODO: Replace with actual functionality when created
+                    ),
             )
           ],
         ),
       ),
-      //   SelectableText(
-      //       "WIP: Graph over different metrics might be possible to show here in the future"),
-      // ),
     );
   }
 }

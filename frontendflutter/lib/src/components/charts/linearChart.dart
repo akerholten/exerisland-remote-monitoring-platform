@@ -2,17 +2,21 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:frontendflutter/src/constants/constants.dart';
 import 'package:frontendflutter/src/model_classes/metric.dart';
+import 'package:frontendflutter/src/model_classes/minigame.dart';
 import 'package:frontendflutter/src/model_classes/patient.dart';
 import 'package:intl/intl.dart' as intl;
 
 class LinearChart extends StatelessWidget {
   final Patient patient;
   final Metric chosenMetric;
-  final String minigameID;
+  final Minigame chosenMinigame;
   final String chosenTimeFrame;
 
   LinearChart(
-      {this.patient, this.chosenMetric, this.minigameID, this.chosenTimeFrame});
+      {this.patient,
+      this.chosenMetric,
+      this.chosenMinigame,
+      this.chosenTimeFrame});
 
   @override
   Widget build(BuildContext context) {
@@ -32,25 +36,49 @@ class LinearChart extends StatelessWidget {
 
       int count = 0;
 
-      if (chosenTimeFrame == "Activity") {
-        patient.sessions?.forEach((session) {
-          session.activities?.forEach((activity) {
-            // If the minigameID is a match we check if it has the metric we are looking for
-            if (activity.minigameID == minigameID) {
-              activity.metrics?.forEach((metric) {
-                // If metric exist, we append it to the list of points that will be drawn
-                if (metric.id == chosenMetric.id) {
-                  count++;
-                  dataPoints
-                      .add(FlSpot(count.toDouble(), metric.value.toDouble()));
-                  bottomTitles.add(intl.DateFormat(Constants.dateFormat)
-                      .format(DateTime.parse(session.createdAt)));
+      switch (chosenTimeFrame) {
+        case "Activity":
+          {
+            patient.sessions?.forEach((session) {
+              session.activities?.forEach((activity) {
+                // If the minigameID is a match we check if it has the metric we are looking for
+                if (activity.minigameID == chosenMinigame.id) {
+                  activity.metrics?.forEach((metric) {
+                    // If metric exist, we append it to the list of points that will be drawn
+                    if (metric.id == chosenMetric.id) {
+                      count++;
+                      dataPoints.add(
+                          FlSpot(count.toDouble(), metric.value.toDouble()));
+                      bottomTitles.add(intl.DateFormat(Constants.dateFormat)
+                          .format(DateTime.parse(session.createdAt)));
+                    }
+                  });
                 }
               });
-            }
-          });
-        });
+            });
+            break;
+          }
+        case "Daily":
+          {
+            // TODO: Similar as "Activity"
+            break;
+          }
+        case "Weekly":
+          {
+            // TODO: Similar as "Activity"
+            break;
+          }
+        case "Monthly":
+          {
+            // TODO: Similar as "Activity"
+            break;
+          }
+        default:
+          {
+            break;
+          }
       }
+      if (chosenTimeFrame == "Activity") {}
     }
 
     // calling the getData functionality
@@ -121,7 +149,11 @@ class LinearChart extends StatelessWidget {
             showTitle: true,
             textStyle:
                 Theme.of(context).textTheme.headline6.copyWith(fontSize: 14),
-            titleText: chosenMetric.name + " in " + chosenMetric.unit,
+            titleText: chosenMetric.name +
+                " in " +
+                chosenMetric.unit +
+                " for " +
+                chosenMinigame.name,
             margin: 4),
         leftTitle: AxisTitle(
             showTitle: true,
