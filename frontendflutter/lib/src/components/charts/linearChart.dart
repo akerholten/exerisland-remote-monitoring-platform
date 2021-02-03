@@ -117,11 +117,17 @@ class LinearChart extends StatelessWidget {
         ),
       ),
       axisTitleData: FlAxisTitleData(
-        leftTitle: AxisTitle(
+        topTitle: AxisTitle(
             showTitle: true,
             textStyle:
                 Theme.of(context).textTheme.headline6.copyWith(fontSize: 14),
             titleText: chosenMetric.name + " in " + chosenMetric.unit,
+            margin: 4),
+        leftTitle: AxisTitle(
+            showTitle: true,
+            textStyle:
+                Theme.of(context).textTheme.headline6.copyWith(fontSize: 14),
+            titleText: chosenMetric.unit,
             margin: 4),
         bottomTitle: AxisTitle(
             showTitle: true,
