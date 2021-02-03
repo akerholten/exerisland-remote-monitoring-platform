@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:frontendflutter/src/components/charts/linearChart.dart';
 import 'package:frontendflutter/src/components/charts/timeSeriesChart.dart';
 import 'package:frontendflutter/src/constants/constants.dart';
+import 'package:frontendflutter/src/constants/hwsession.dart';
+import 'package:frontendflutter/src/model_classes/metric.dart';
+import 'package:frontendflutter/src/model_classes/minigame.dart';
 import 'package:frontendflutter/src/model_classes/patient.dart';
 import 'package:fl_chart/fl_chart.dart';
 
@@ -19,24 +23,46 @@ class ActivityGraph extends StatefulWidget {
 
 // TODO: Create class for returning a FlChart graph
 // TODO: Create class functionality for returning LineChartBarData with spots and titles depending on metric and timeframe feeden into it
-List<String> availableTimeFrames = ["Session", "Daily", "Weekly", "Monthly"];
+List<String> availableTimeFrames = ["Activity", "Daily", "Weekly", "Monthly"];
 List<FlSpot> spotsWritten = [FlSpot(1, 1), FlSpot(2, 4), FlSpot(6, 2)];
 
 class _ActivityGraphState extends State<ActivityGraph> {
-  String metricID; // TODO: Dropdown menu for this selection
-  String minigameID; // TODO: Dropdown menu for this selection
-  String chosenTimeFrame; // TODO: Dropdown menu for this selection
-  LineChartData chartData;
+  String metricID = "Arm_Movement"; // TODO: Dropdown menu for this selection
+  String minigameID =
+      "Platform_Minigame"; // TODO: Dropdown menu for this selection
+  String chosenTimeFrame = "Activity"; // TODO: Dropdown menu for this selection
+  Metric chosenMetric;
+  bool _loading = false;
+
+  void _getMetricData() async {
+    setState(() {
+      _loading = true;
+    });
+
+    List<Minigame> minigames = await HWSession().getMinigames();
+
+    chosenMetric = minigames
+        .firstWhere((m) => m.id == minigameID)
+        .availableMetrics
+        .firstWhere((e) => e.id == metricID);
+
+    setState(() {
+      _loading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (chosenMetric == null) {
+      _getMetricData();
+    }
     // ScrollController _controller = new ScrollController();
-    List<LineChartBarData> lines = [
-      LineChartBarData(spots: spotsWritten, isCurved: true)
-    ];
-    chartData = new LineChartData(
-        lineBarsData: lines,
-        titlesData: FlTitlesData(show: true, leftTitles: SideTitles()));
+    // List<LineChartBarData> lines = [
+    //   LineChartBarData(spots: spotsWritten, isCurved: true)
+    // ];
+    // chartData = new LineChartData(
+    //     lineBarsData: lines,
+    //     titlesData: FlTitlesData(show: true, leftTitles: SideTitles()));
 
     return Container(
       child: Center(
@@ -77,12 +103,19 @@ class _ActivityGraphState extends State<ActivityGraph> {
             // ),
             // ACTUAL GRAPH
             Container(
-                constraints: BoxConstraints(
-                    maxWidth: Constants.pageMaxWidth * 0.4,
-                    maxHeight: Constants.pageMaxHeight * 0.35),
-                padding: EdgeInsets.all(8),
-                child: LineChart(
-                    chartData)), // TODO: Replace with actual functionality when created
+              constraints: BoxConstraints(
+                  maxWidth: Constants.pageMaxWidth * 0.4,
+                  maxHeight: Constants.pageMaxHeight * 0.35),
+              padding: EdgeInsets.all(8),
+              child: _loading
+                  ? CircularProgressIndicator()
+                  : LinearChart(
+                      patient: widget.patient,
+                      chosenMetric: chosenMetric,
+                      minigameID: minigameID,
+                      chosenTimeFrame: chosenTimeFrame,
+                    ), // TODO: Replace with actual functionality when created
+            )
           ],
         ),
       ),

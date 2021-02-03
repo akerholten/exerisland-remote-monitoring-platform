@@ -24,6 +24,8 @@ class HWSession {
       _minigames = await MiscHandler.getListOfMinigames();
     }
 
+    print("Minigames was returned");
+
     return _minigames;
   }
 
