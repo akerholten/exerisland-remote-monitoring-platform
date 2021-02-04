@@ -35,6 +35,8 @@ class LinearChart extends StatelessWidget {
       bottomTitles = new List<String>();
 
       int count = 0;
+      DateTime prevDate;
+      int currentTotalValue = 0;
 
       switch (chosenTimeFrame) {
         case "Activity":
@@ -60,7 +62,40 @@ class LinearChart extends StatelessWidget {
           }
         case "Daily":
           {
-            // TODO: Similar as "Activity"
+            {
+              patient.sessions?.forEach((session) {
+                DateTime currentSessionDate = DateTime.parse(session.createdAt);
+                session.activities?.forEach((activity) {
+                  // If the minigameID is a match we check if it has the metric we are looking for
+                  if (activity.minigameID == chosenMinigame.id) {
+                    activity.metrics?.forEach((metric) {
+                      // If metric exist, we append it to the list of points that will be drawn
+                      if (metric.id == chosenMetric.id) {
+                        // If it is the same date, we update the existing datapoint with the added value
+                        if (prevDate != null &&
+                            currentSessionDate.day == prevDate.day &&
+                            currentSessionDate.month == prevDate.month &&
+                            currentSessionDate.year == prevDate.year) {
+                          currentTotalValue += metric.value;
+                          dataPoints[count - 1] = dataPoints[count - 1]
+                              .copyWith(y: currentTotalValue.toDouble());
+                        } else {
+                          // They are not same date, this is a new datapoint
+                          prevDate = currentSessionDate;
+                          currentTotalValue = metric.value;
+                          count++;
+
+                          dataPoints.add(FlSpot(
+                              count.toDouble(), currentTotalValue.toDouble()));
+                          bottomTitles.add(intl.DateFormat(Constants.dateFormat)
+                              .format(DateTime.parse(session.createdAt)));
+                        }
+                      }
+                    });
+                  }
+                });
+              });
+            }
             break;
           }
         case "Weekly":
@@ -84,6 +119,9 @@ class LinearChart extends StatelessWidget {
     // calling the getData functionality
     getData();
 
+    if (dataPoints.length <= 0) {
+      return Center(child: SelectableText("No data found"));
+    }
     // The lines to be drawn on chart
     List<LineChartBarData> lines = [
       LineChartBarData(

@@ -20,18 +20,19 @@ class ActivityGraph extends StatefulWidget {
   _ActivityGraphState createState() => _ActivityGraphState();
 }
 
+// TODO: Possibly add an 'x average' and 'x total' option for daily/weekly/monthly? Or a tick box for avg/total when those are chosen
 List<String> availableTimeFrames = ["Activity", "Daily", "Weekly", "Monthly"];
 
 class _ActivityGraphState extends State<ActivityGraph> {
-  String metricID = ""; //Arm_Movement TODO: Dropdown menu for this selection
-  String minigameID =
-      ""; //Platform_Minigame TODO: Dropdown menu for this selection
-  String chosenTimeFrame = "Activity"; // TODO: Dropdown menu for this selection
+  String metricID;
+  String minigameID = "";
+  String chosenTimeFrame = "Activity";
   Metric chosenMetric;
   Minigame chosenMinigame;
 
   List<Minigame> availableMinigames;
 
+  GlobalKey<FormFieldState> metricFormKey;
   bool _loading = false;
 
   void _getMinigameData() async {
@@ -54,11 +55,11 @@ class _ActivityGraphState extends State<ActivityGraph> {
       minigameID = id;
       chosenMinigame = availableMinigames.firstWhere((m) => m.id == minigameID,
           orElse: () => null);
-    });
 
-    if (metricID != "") {
-      _chooseMetric(metricID);
-    }
+      if (metricID != "") {
+        _chooseMetric(metricID);
+      }
+    });
   }
 
   void _chooseMetric(String id) {
@@ -66,6 +67,20 @@ class _ActivityGraphState extends State<ActivityGraph> {
       metricID = id;
       chosenMetric = chosenMinigame.availableMetrics
           .firstWhere((e) => e.id == metricID, orElse: () => null);
+
+      if (chosenMetric == null) {
+        print("Chosen metric was null");
+        // metricFormKey.currentState.reset();
+        // chosenMetric = chosenMinigame.availableMetrics[0];
+        // metricID = chosenMetric.id;
+        metricID = null;
+      }
+    });
+  }
+
+  void _chooseTimeFrame(String selection) {
+    setState(() {
+      chosenTimeFrame = selection;
     });
   }
 
@@ -85,7 +100,7 @@ class _ActivityGraphState extends State<ActivityGraph> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // TOP BAR
+            // TOP BAR // TODO: Possibly have a title over selection options?
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -94,7 +109,7 @@ class _ActivityGraphState extends State<ActivityGraph> {
                 //   padding: EdgeInsets.all(8),
                 //   child: SelectableText("Metric statistics"),
                 // ),
-                // TODO: Minigame Selection
+                // Minigame Selection
                 Container(
                   padding: EdgeInsets.all(8),
                   child: ConstrainedBox(
@@ -123,18 +138,22 @@ class _ActivityGraphState extends State<ActivityGraph> {
                     ),
                   ),
                 ),
-                // TODO: Metric Selection
+                // Metric Selection
                 Container(
                   padding: EdgeInsets.all(8),
                   child: ConstrainedBox(
                     constraints: BoxConstraints(maxHeight: 60, maxWidth: 200),
                     child: DropdownButtonFormField(
+                      key: metricFormKey,
+                      value: metricID,
                       style: Theme.of(context)
                           .textTheme
                           .bodyText1
                           .copyWith(fontSize: 14),
                       iconSize: 20,
-                      items: chosenMinigame == null
+                      items: (chosenMinigame == null ||
+                              chosenMinigame.availableMetrics == null ||
+                              chosenMinigame.availableMetrics.length <= 0)
                           ? null
                           : chosenMinigame.availableMetrics
                               .map(
@@ -154,7 +173,7 @@ class _ActivityGraphState extends State<ActivityGraph> {
                     ),
                   ),
                 ),
-                // TODO: Timeframe selection
+                // Timeframe Selection
                 Container(
                   padding: EdgeInsets.all(8),
                   child: ConstrainedBox(
@@ -179,7 +198,7 @@ class _ActivityGraphState extends State<ActivityGraph> {
                         labelText: 'Timeframe',
                       ),
                       onChanged: (value) {
-                        _chooseMetric(value);
+                        _chooseTimeFrame(value);
                       },
                     ),
                   ),
