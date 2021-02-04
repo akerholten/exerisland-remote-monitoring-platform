@@ -21,6 +21,7 @@ class ActivityGraph extends StatefulWidget {
 }
 
 // TODO: Possibly add an 'x average' and 'x total' option for daily/weekly/monthly? Or a tick box for avg/total when those are chosen
+// TODO: Also consider having a way to view a maximum amount of data points or something? To view specific ranges, e.g. 10 days, 10 weeks, 20 months etc
 List<String> availableTimeFrames = ["Activity", "Daily", "Weekly", "Monthly"];
 
 class _ActivityGraphState extends State<ActivityGraph> {

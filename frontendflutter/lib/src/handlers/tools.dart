@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../constants/route_names.dart';
 import '../components/alerts.dart';
 import 'loginHandler.dart';
+import 'package:intl/intl.dart' as intl;
 
 import 'dart:html';
 
@@ -122,5 +123,53 @@ class Tools {
     rtrString += s.toString();
 
     return rtrString;
+  }
+
+  static void swap<T>(T one, T two) {
+    var temp = one;
+    one = two;
+    two = temp;
+  }
+
+  static bool isFromSameWeek(DateTime first, DateTime second) {
+    int firstDayOfWeek = DateTime.monday;
+    // sort dates
+    if (first.difference(second) > Duration.zero) {
+      var temp = first;
+      first = second;
+      second = temp;
+    }
+
+    var daysDiff = second.difference(first).inDays;
+    if (daysDiff >= 7) {
+      return false;
+    }
+
+    const int totalDaysInWeek = 7;
+    var adjustedDayOfWeekFirst =
+        first.weekday + (first.weekday < firstDayOfWeek ? totalDaysInWeek : 0);
+    var adjustedDayOfWeekSecond = second.weekday +
+        (second.weekday < firstDayOfWeek ? totalDaysInWeek : 0);
+
+    return adjustedDayOfWeekSecond >= adjustedDayOfWeekFirst;
+  }
+
+  /// Calculates number of weeks for a given year as per https://en.wikipedia.org/wiki/ISO_week_date#Weeks_per_year
+  static int numOfWeeks(int year) {
+    DateTime dec28 = DateTime(year, 12, 28);
+    int dayOfDec28 = int.parse(intl.DateFormat("D").format(dec28));
+    return ((dayOfDec28 - dec28.weekday + 10) / 7).floor();
+  }
+
+  /// Calculates week number from a date as per https://en.wikipedia.org/wiki/ISO_week_date#Calculation
+  static int weekNumber(DateTime date) {
+    int dayOfYear = int.parse(intl.DateFormat("D").format(date));
+    int woy = ((dayOfYear - date.weekday + 10) / 7).floor();
+    if (woy < 1) {
+      woy = numOfWeeks(date.year - 1);
+    } else if (woy > numOfWeeks(date.year)) {
+      woy = 1;
+    }
+    return woy;
   }
 }

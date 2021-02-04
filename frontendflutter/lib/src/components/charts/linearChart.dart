@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:frontendflutter/src/constants/constants.dart';
+import 'package:frontendflutter/src/handlers/tools.dart';
 import 'package:frontendflutter/src/model_classes/metric.dart';
 import 'package:frontendflutter/src/model_classes/minigame.dart';
 import 'package:frontendflutter/src/model_classes/patient.dart';
@@ -100,12 +101,85 @@ class LinearChart extends StatelessWidget {
           }
         case "Weekly":
           {
-            // TODO: Similar as "Activity"
+            {
+              int prevWeek;
+              int prevYear;
+              patient.sessions?.forEach((session) {
+                DateTime currentSessionDate = DateTime.parse(session.createdAt);
+                session.activities?.forEach((activity) {
+                  // If the minigameID is a match we check if it has the metric we are looking for
+                  if (activity.minigameID == chosenMinigame.id) {
+                    activity.metrics?.forEach((metric) {
+                      // If metric exist, we append it to the list of points that will be drawn
+                      if (metric.id == chosenMetric.id) {
+                        // If it is the same date, we update the existing datapoint with the added value
+                        if (prevWeek != null &&
+                            Tools.weekNumber(currentSessionDate) == prevWeek &&
+                            currentSessionDate.year == prevYear) {
+                          currentTotalValue += metric.value;
+                          dataPoints[count - 1] = dataPoints[count - 1]
+                              .copyWith(y: currentTotalValue.toDouble());
+                        } else {
+                          // They are not same date, this is a new datapoint
+                          prevWeek = Tools.weekNumber(currentSessionDate);
+                          prevYear = currentSessionDate.year;
+                          currentTotalValue = metric.value;
+                          count++;
+
+                          dataPoints.add(FlSpot(
+                              count.toDouble(), currentTotalValue.toDouble()));
+                          bottomTitles.add("Week " +
+                              prevWeek.toString() +
+                              " " +
+                              currentSessionDate.year.toString());
+                        }
+                      }
+                    });
+                  }
+                });
+              });
+            }
             break;
           }
         case "Monthly":
           {
-            // TODO: Similar as "Activity"
+            {
+              int prevMonth;
+              int prevYear;
+              patient.sessions?.forEach((session) {
+                DateTime currentSessionDate = DateTime.parse(session.createdAt);
+                session.activities?.forEach((activity) {
+                  // If the minigameID is a match we check if it has the metric we are looking for
+                  if (activity.minigameID == chosenMinigame.id) {
+                    activity.metrics?.forEach((metric) {
+                      // If metric exist, we append it to the list of points that will be drawn
+                      if (metric.id == chosenMetric.id) {
+                        // If it is the same date, we update the existing datapoint with the added value
+                        if (prevMonth != null &&
+                            currentSessionDate.month == prevMonth &&
+                            currentSessionDate.year == prevYear) {
+                          currentTotalValue += metric.value;
+                          dataPoints[count - 1] = dataPoints[count - 1]
+                              .copyWith(y: currentTotalValue.toDouble());
+                        } else {
+                          // They are not same date, this is a new datapoint
+                          prevMonth = currentSessionDate.month;
+                          prevYear = currentSessionDate.year;
+                          currentTotalValue = metric.value;
+                          count++;
+
+                          dataPoints.add(FlSpot(
+                              count.toDouble(), currentTotalValue.toDouble()));
+                          bottomTitles.add(prevMonth.toString() +
+                              "/" +
+                              currentSessionDate.year.toString());
+                        }
+                      }
+                    });
+                  }
+                });
+              });
+            }
             break;
           }
         default:
