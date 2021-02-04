@@ -103,7 +103,7 @@ class _ActivityGraphState extends State<ActivityGraph> {
                       style: Theme.of(context)
                           .textTheme
                           .bodyText1
-                          .copyWith(fontSize: 12),
+                          .copyWith(fontSize: 14),
                       iconSize: 20,
                       items: availableMinigames
                           .map(
@@ -132,7 +132,7 @@ class _ActivityGraphState extends State<ActivityGraph> {
                       style: Theme.of(context)
                           .textTheme
                           .bodyText1
-                          .copyWith(fontSize: 12),
+                          .copyWith(fontSize: 14),
                       iconSize: 20,
                       items: chosenMinigame == null
                           ? null
@@ -157,7 +157,32 @@ class _ActivityGraphState extends State<ActivityGraph> {
                 // TODO: Timeframe selection
                 Container(
                   padding: EdgeInsets.all(8),
-                  child: SelectableText("Timeframe"),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(maxHeight: 60, maxWidth: 200),
+                    child: DropdownButtonFormField(
+                      value: "Activity",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1
+                          .copyWith(fontSize: 14),
+                      iconSize: 20,
+                      items: availableTimeFrames
+                          .map(
+                            (timeFrame) => DropdownMenuItem(
+                              child: Text(timeFrame),
+                              value: timeFrame,
+                            ),
+                          )
+                          .toList(),
+                      decoration: InputDecoration(
+                        hintText: 'Select timeframe',
+                        labelText: 'Timeframe',
+                      ),
+                      onChanged: (value) {
+                        _chooseMetric(value);
+                      },
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -165,10 +190,10 @@ class _ActivityGraphState extends State<ActivityGraph> {
             Container(
               constraints: BoxConstraints(
                   maxWidth: Constants.pageMaxWidth * 0.4,
-                  maxHeight: Constants.pageMaxHeight * 0.35),
+                  maxHeight: Constants.pageMaxHeight * 0.34),
               padding: EdgeInsets.all(8),
               child: (chosenMetric == null || chosenMinigame == null)
-                  ? CircularProgressIndicator()
+                  ? Container()
                   : LinearChart(
                       patient: widget.patient,
                       chosenMetric: chosenMetric,
