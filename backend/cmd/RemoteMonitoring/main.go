@@ -59,6 +59,7 @@ func main() {
 	router.HandleFunc("/getPersonalInfo", handlers.GetPersonalInfoHandler).Methods(http.MethodGet)
 
 	// Patient Unity Handlers
+	router.HandleFunc("/generateNewUser", handlers.GenerateNewUser).Methods(http.MethodGet)
 	router.HandleFunc("/uploadSession", handlers.UploadSession).Methods(http.MethodPost).Headers("Content-Type", "application/json; charset=utf-8")
 
 	// Open Handlers without authentication

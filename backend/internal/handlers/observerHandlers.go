@@ -16,7 +16,7 @@ import (
 )
 
 func AddPatientHandler(w http.ResponseWriter, r *http.Request) {
-	log.Printf("Got a signup request...")
+	log.Printf("Got a signup request ...")
 	defer r.Body.Close()
 	if r.Header.Get("Content-Type") != "application/json; charset=utf-8" {
 		w.WriteHeader(http.StatusBadRequest)

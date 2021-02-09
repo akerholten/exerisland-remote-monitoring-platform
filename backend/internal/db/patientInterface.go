@@ -82,6 +82,110 @@ type Recommendation struct {
 	SessionIDs  []string `json:"sessionIDs" valid:"-"`                  // Session linked to completing this recommendation (might not be needed)
 }
 
+func AddToPatientTableWithoutData(ctx context.Context) (string, string, error) {
+
+	// ----- GENERATE LONG ID -----
+	patientTable := DBClient().Database.NewRef(TablePatient)
+
+	i := 0
+	var newKey string
+	var err error
+	for {
+		newKey, err = tools.GetNewLongUniqueID(i) // Comment out when done debugging
+		if err != nil {
+			log.Panicf("Error: %v", err)
+			return "", "", err
+		}
+
+		// Check if the ID already exist in database
+		newTableEntry := patientTable.Child(newKey)
+
+		var existPatient Patient
+
+		err = newTableEntry.Get(ctx, &existPatient)
+		if err != nil {
+			return "", "", err
+		}
+
+		// If it doesn't exist, we can safely create it so we break loop
+		if len(existPatient.FirstName) <= 1 {
+			break
+		}
+
+		i++
+
+		if i == 5 {
+			return "", "", fmt.Errorf("\nCould not fill Patient DB with new object, looped through %d times\n", i)
+		}
+	}
+
+	// ----- GENERATE SHORT ID -----
+	patientShortIdTable := DBClient().Database.NewRef(TablePatientShortID)
+
+	i = 0
+	var newShortKey string
+	for {
+		newShortKey = tools.GetNewShortUniqueID(constants.PatientShortIDLength, int64(i)) // Comment out when done debugging
+		if err != nil {
+			log.Panicf("Error: %v", err)
+			return "", "", err
+		}
+
+		// Check if the ID already exist in database
+		newTableEntry := patientShortIdTable.Child(newShortKey)
+
+		var existPatient PatientShortIDTableEntry
+
+		err = newTableEntry.Get(ctx, &existPatient)
+		if err != nil {
+			return "", "", err
+		}
+
+		// If it doesn't exist, we can safely create it so we break loop
+		if len(existPatient.PatientID) <= 1 {
+			break
+		}
+
+		i++
+
+		if i == 5 {
+			return "", "", fmt.Errorf("\nCould not fill Patient Short ID table DB with new object, looped through %d times\n", i)
+		}
+	}
+
+	// Set user data to generated short ID
+	patient := Patient{
+		FirstName: "User",
+		LastName:  newShortKey,
+		Email:     newShortKey + "@" + constants.WebsiteDomain,
+		BirthDate: time.Now().Format(time.RFC3339),
+		Note:      newShortKey,
+		ShortID:   newShortKey,
+		// Sessions: user.
+		// Recommendations: user.
+	}
+
+	err = patientTable.Child(newKey).Set(ctx, patient)
+	if err != nil {
+		log.Panicf("Error when setting new data %v", err)
+		return "", "", err
+	}
+
+	patientShortIDEntry := PatientShortIDTableEntry{
+		PatientID: newKey,
+	}
+
+	err = patientShortIdTable.Child(newShortKey).Set(ctx, patientShortIDEntry)
+	if err != nil {
+		log.Panicf("Error when setting new data %v", err)
+		return "", "", err
+	}
+
+	// Everything went okay
+	log.Printf("New patient added at key %s", newKey)
+	return newKey, newShortKey, nil
+}
+
 func AddToPatientTable(user PatientSignupData, ctx context.Context) (string, string, error) {
 
 	// TODO: Implement similarly to observerInterface adding to observertable

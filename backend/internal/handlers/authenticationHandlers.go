@@ -181,7 +181,7 @@ func ManualLoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if len(form.Email) < 8 {
+	if len(form.Email) < 4 {
 		w.WriteHeader(http.StatusUnauthorized)
 		_, err := w.Write([]byte("Wrong email or password"))
 		if err != nil {
@@ -201,8 +201,15 @@ func ManualLoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	valid, err := validator.ValidateStruct(form)
 	if err != nil || !valid {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+		// Hacky fix to allow people to login without using websitedomain email if registered through Unity endpoint
+		form.Email = form.Email + "@" + constants.WebsiteDomain
+
+		valid, err = validator.ValidateStruct(form)
+
+		if err != nil || !valid {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 	}
 
 	ctx := context.Background()

@@ -9,9 +9,9 @@ import (
 )
 
 type Observer struct {
-	FirstName string   `json:"firstName" valid:"printableascii, required"`
-	LastName  string   `json:"lastName" valid:"printableascii, required"`
-	Patients  []string `json:",omitempty" valid:",optional"` // PatientIDs
+	FirstName string   `json:"firstName" valid:"printableascii, optional"`
+	LastName  string   `json:"lastName" valid:"printableascii, optional"`
+	Patients  []string `json:"patients,omitempty" valid:",optional"` // PatientIDs
 }
 
 type GetPatientForm struct {
@@ -84,8 +84,26 @@ func GetObserver(clientCookie CookieData, ctx context.Context) (*Observer, error
 		return nil, err
 	}
 
-	// If user did not exist
-	if len(observer.FirstName) <= 1 {
+	// If user did not exist, currently also needs to check patients because a bug causes duplicate entries of observers
+	// one contains the names, and one contains the patients
+	if len(observer.FirstName) <= 1 && len(observer.Patients) <= 0 {
+		return nil, nil // TODO: possibly notfound error to be logged or something
+	}
+
+	return &observer, nil
+}
+
+func GetObserverFromUserID(userID string, ctx context.Context) (*Observer, error) {
+	// Getting the actual observer entry
+	var observer Observer
+	err := DBClient().Database.NewRef(TableObserver).Child(userID).Get(ctx, &observer)
+	if err != nil {
+		return nil, err
+	}
+
+	// If user did not exist, currently also needs to check patients because a bug causes duplicate entries of observers
+	// one contains the names, and one contains the patients
+	if len(observer.FirstName) <= 1 && len(observer.Patients) <= 0 {
 		return nil, nil // TODO: possibly notfound error to be logged or something
 	}
 
@@ -93,6 +111,9 @@ func GetObserver(clientCookie CookieData, ctx context.Context) (*Observer, error
 }
 
 func AddPatientToObserver(clientCookie CookieData, patientId string, shortId string, ctx context.Context) error {
+	// ---- This piece of code has issues, see #138 ----
+	// See: https://gitlab.com/akerholten/vr-health-and-wellness-remote-monitoring/-/issues/138
+
 	observerData, err := GetObserver(clientCookie, ctx)
 	if err != nil {
 		return err
@@ -104,10 +125,11 @@ func AddPatientToObserver(clientCookie CookieData, patientId string, shortId str
 	fmt.Printf("%+v\n", observerData)
 	// was for debug
 	for key, obj := range observerData.Patients {
-		log.Printf("\nThe patients for this guy: id: %d, value: %s", key, obj)
+		fmt.Printf("\nThe patients for this guy: id: %d, value: %s", key, obj)
 	}
 	// Appending the new object to the array
 	// observerData.Patients = append(observerData.Patients, patientId)
+	// ---- End of code with issues ----
 
 	var retrieveId string
 	observerPatientRef := DBClient().Database.NewRef(TableObserver).Child(clientCookie.UserID).Child("patients").Child(shortId)
@@ -134,6 +156,48 @@ func AddPatientToObserver(clientCookie CookieData, patientId string, shortId str
 	// 		return errors.New("User with that ID already exist for this observer")
 	// 	}
 	// }
+
+	err = observerPatientRef.Set(ctx, patientId)
+	if err != nil {
+		log.Panicf("Error when setting new data %v", err)
+		return err
+	}
+
+	// everything was successful so we return nil
+	return nil
+}
+
+func AddPatientToObserverWithId(observerID string, patientId string, shortId string, ctx context.Context) error {
+	// ---- This piece of code does not work due to issue #138 ----
+	// See: https://gitlab.com/akerholten/vr-health-and-wellness-remote-monitoring/-/issues/138
+
+	// observerData, err := GetObserverFromUserID(observerID, ctx)
+	// if err != nil {
+	// 	return err
+	// }
+
+	// if observerData == nil {
+	// 	return errors.New("Could not find observer user data")
+	// }
+
+	// fmt.Printf("%+v\n", observerData)
+	// // was for debug
+	// for key, obj := range observerData.Patients {
+	// 	log.Printf("\nThe patients for this guy: id: %d, value: %s", key, obj)
+	// }
+
+	// ---- End of not working code ----
+
+	var retrieveId string
+	observerPatientRef := DBClient().Database.NewRef(TableObserver).Child(observerID).Child("patients").Child(shortId)
+
+	err := observerPatientRef.Get(ctx, &retrieveId)
+	if err != nil {
+		return err
+	}
+	if len(retrieveId) > 1 {
+		return errors.New("Patient already added to this observer")
+	}
 
 	err = observerPatientRef.Set(ctx, patientId)
 	if err != nil {

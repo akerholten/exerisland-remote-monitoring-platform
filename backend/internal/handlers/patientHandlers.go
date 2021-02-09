@@ -4,6 +4,7 @@ import (
 	"HealthWellnessRemoteMonitoring/internal/constants"
 	"HealthWellnessRemoteMonitoring/internal/cookie"
 	"HealthWellnessRemoteMonitoring/internal/db"
+	"HealthWellnessRemoteMonitoring/internal/tools"
 	"context"
 	"encoding/json"
 	"io/ioutil"
@@ -118,4 +119,60 @@ func UploadSession(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Success"))
+}
+
+// Easy endpoint for creating a user without any data presented to it
+// For creating a user from a Unity Request (will return a shortID used for identification)
+func GenerateNewUser(w http.ResponseWriter, r *http.Request) {
+	log.Printf("Got a request to create a new user ...")
+	defer r.Body.Close()
+
+	ctx := context.Background()
+
+	// Creating new user ...
+	longId, shortId, err := db.AddToPatientTableWithoutData(ctx)
+	if err != nil {
+		log.Panicf("Error: %v", err)
+	}
+	if longId == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Unsuccessful"))
+		return
+	}
+	if shortId == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Unsuccessful"))
+		return
+	}
+
+	loginUserData := db.SignupUser{
+		Email:     shortId + "@" + constants.WebsiteDomain,
+		FirstName: "User",
+		LastName:  shortId,
+		Password:  tools.ConvertPlainPassword(shortId+"@"+constants.WebsiteDomain, shortId),
+		UserType:  constants.PatientType,
+		UserID:    longId,
+		// OrganizationID: "",
+	}
+
+	// Add login information
+	err = db.AddToUserTable(loginUserData, ctx)
+	if err != nil {
+		log.Panicf("\nUser was not added to user table, error: %v\n", err)
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Unsuccessful"))
+		return
+	}
+
+	// Add user to admin observer
+	err = db.AddPatientToObserverWithId(constants.AdminUserID, longId, shortId, ctx)
+	if err != nil {
+		log.Panicf("\nUser was not added to admin observer, error: %v\n", err)
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Unsuccessful"))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(shortId))
 }

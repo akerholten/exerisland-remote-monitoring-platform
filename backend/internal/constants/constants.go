@@ -14,4 +14,13 @@ const (
 	CookieName = "HealthWellnessMonitoring"
 	// CookieExpiration ...
 	CookieExpiration = time.Hour * 24 * 7
+
+	// WebsiteDomain
+	WebsiteDomain = "rehab-monitoring.com"
+)
+
+// ADMIN consts
+const (
+	// AdminUserID
+	AdminUserID = "1jeFtbh6k1HxAPDgHT95ymzWhNa" //"1jeFtUuzcCnHqk5iB3ikzrreLv9" // TODO: Add this after creating an admin user
 )
