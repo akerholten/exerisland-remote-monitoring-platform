@@ -23,10 +23,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  intl: ^0.16.1 # For testForm.dart, can be removed later
+
+  # For dates and time
+  intl: ^0.16.1
 
   # For several widgets: https://docs.getwidget.dev/getting-started/
-  getwidget: ^1.1.0
+  getwidget: ^1.2.4
 
   # For toasts: https://www.woolha.com/tutorials/flutter-show-toast-message-example
   fluttertoast: ^7.1.1
@@ -48,14 +50,13 @@ dependencies:
   build_runner: ^1.0.0
   json_serializable: ^3.2.0
 
-  # For charts 
+  # For charts
   charts_flutter: ^0.9.0
   fl_chart: ^0.12.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  
   # For JSON annotations (model classes)
   # build_runner: ^1.0.0
 

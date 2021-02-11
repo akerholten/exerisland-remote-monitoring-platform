@@ -37,12 +37,12 @@ class Alerts {
     // set up the buttons
     Widget cancelButton = FlatButton(
       child: Text("No"),
-      onPressed: () => Navigator.of(context).pop(),
+      onPressed: () => Navigator.maybeOf(context).pop(),
     );
     Widget continueButton = FlatButton(
       child: Text("Yes"),
       onPressed: () {
-        Navigator.of(context).pop();
+        Navigator.maybeOf(context).pop();
         function();
       },
     );

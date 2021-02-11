@@ -94,14 +94,14 @@ class _SessionInformationListState extends State<SessionInformationList> {
                 .map((session) => FlatButton(
                       onPressed: (() {
                         if (widget.personalPage) {
-                          Navigator.of(context).pushNamed(
+                          Navigator.maybeOf(context).pushNamed(
                               Routes.Dashboard +
                                   "/" +
                                   Routes.SpecificSessionDashboard,
                               arguments: PatientSessionArguments(
                                   widget.patient.shortID, session.id));
                         } else {
-                          Navigator.of(context).pushNamed(
+                          Navigator.maybeOf(context).pushNamed(
                               Routes.SpecificSessionDashboard +
                                   "?user=" +
                                   widget.patient.shortID +

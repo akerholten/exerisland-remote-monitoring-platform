@@ -130,7 +130,7 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
             shrinkWrap: true,
             children: (patients
                 .map((patient) => FlatButton(
-                      onPressed: () => Navigator.of(context).pushNamed(
+                      onPressed: () => Navigator.maybeOf(context).pushNamed(
                           Routes.SpecificPersonDashboard,
                           arguments: PatientDashboardArguments(patient
                               .shortID)), // TODO: make this actually go to the id of the person

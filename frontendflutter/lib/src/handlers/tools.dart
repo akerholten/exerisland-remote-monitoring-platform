@@ -35,7 +35,7 @@ class Tools {
 
     if (!loggedIn) {
       Alerts.showError("Session no longer available, log in again to continue");
-      Navigator.of(context).pushReplacementNamed(Routes.Login);
+      Navigator.maybeOf(context).pushReplacementNamed(Routes.Login);
     }
   }
 
@@ -44,7 +44,7 @@ class Tools {
 
     if (loggedIn) {
       // TODO: Check if user is observer or patient here? And then push correct accordingly
-      Navigator.of(context).pushReplacementNamed(Routes.Dashboard);
+      Navigator.maybeOf(context).pushReplacementNamed(Routes.Dashboard);
     }
   }
 
@@ -52,7 +52,7 @@ class Tools {
     bool loggedOut = await LoginHandler.logout();
 
     if (loggedOut) {
-      Navigator.of(context).pushReplacementNamed(Routes.Login);
+      Navigator.maybeOf(context).pushReplacementNamed(Routes.Login);
     }
   }
 

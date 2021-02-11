@@ -21,7 +21,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    double appWidth = MediaQuery.of(context).size.width;
+    double appWidth = MediaQuery.maybeOf(context).size.width;
 
     return Scaffold(
       key: scaffoldKey,
@@ -79,7 +79,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                         FlatButton(
                                           child: Text("Back to login"),
                                           onPressed: () {
-                                            Navigator.of(context).pop();
+                                            Navigator.maybeOf(context).pop();
                                           },
                                           textColor:
                                               Theme.of(context).primaryColor,

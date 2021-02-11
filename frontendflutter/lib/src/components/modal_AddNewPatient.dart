@@ -50,7 +50,7 @@ class AddNewPatientModalState extends State<AddNewPatientModal> {
     }
 
     widget.onPatientAdded();
-    Navigator.of(context).pop();
+    Navigator.maybeOf(context).pop();
     // TODO: also must retrieve the data of patients over again, such that the new patient is seen in list
   }
 
@@ -200,7 +200,7 @@ class AddNewPatientModalState extends State<AddNewPatientModal> {
                                       color: Theme.of(context).errorColor,
                                       textColor: Colors.white,
                                       onPressed: (() =>
-                                          {Navigator.of(context).pop()}),
+                                          {Navigator.maybeOf(context).pop()}),
                                     ),
                                   ),
                                   _loading

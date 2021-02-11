@@ -112,7 +112,7 @@ class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
     }
 
     widget.onRecommendationAdded(newRec);
-    Navigator.of(context).pop();
+    Navigator.maybeOf(context).pop();
     Alerts.showInfo("Recommendation added succesfully");
 
     Alerts.showWarning("Method not implemented yet, TODO: upload to db");
@@ -368,7 +368,7 @@ class AddNewRecommendationModalState extends State<AddNewRecommendationModal> {
               ),
               color: Theme.of(context).errorColor,
               textColor: Colors.white,
-              onPressed: (() => {Navigator.of(context).pop()}),
+              onPressed: (() => {Navigator.maybeOf(context).pop()}),
             ),
           ),
           SizedBox(

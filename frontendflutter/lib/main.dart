@@ -268,7 +268,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (loggedIn) {
       // TODO: Check if user is observer or patient here? And then push correct accordingly
-      Navigator.of(context).pushReplacementNamed(Routes.Dashboard);
+      Navigator.maybeOf(context).pushReplacementNamed(Routes.Dashboard);
     }
   }
 

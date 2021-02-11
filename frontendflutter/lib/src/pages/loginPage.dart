@@ -21,7 +21,7 @@ class _LoginPageState extends State<LoginPage> {
 
     if (loggedIn) {
       // TODO: Check if user is observer or patient here? And then push correct accordingly
-      Navigator.of(context).pushReplacementNamed(Routes.Dashboard);
+      Navigator.maybeOf(context).pushReplacementNamed(Routes.Dashboard);
     }
   }
 
@@ -44,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
 
     if (loggedIn) {
       // TODO: Navigate to overview page
-      Navigator.of(context).pushReplacementNamed(Routes.Dashboard);
+      Navigator.maybeOf(context).pushReplacementNamed(Routes.Dashboard);
     } else {
       Alerts.showError("Unable to log in with email and password combination");
     }
@@ -71,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    double appWidth = MediaQuery.of(context).size.width;
+    double appWidth = MediaQuery.maybeOf(context).size.width;
 
     return Scaffold(
       appBar: AppBar(
@@ -144,8 +144,9 @@ class _LoginPageState extends State<LoginPage> {
                                         FlatButton(
                                           child: Text("Forgot your password?"),
                                           onPressed: () {
-                                            Navigator.of(context).pushNamed(
-                                                Routes.ForgotPassword);
+                                            Navigator.maybeOf(context)
+                                                .pushNamed(
+                                                    Routes.ForgotPassword);
                                           },
                                           textColor:
                                               Theme.of(context).primaryColor,

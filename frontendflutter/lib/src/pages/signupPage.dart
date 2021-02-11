@@ -52,7 +52,7 @@ class _SignupPageState extends State<SignupPage> {
       return;
     }
 
-    Navigator.of(context).pushNamed(Routes.Login);
+    Navigator.maybeOf(context).pushNamed(Routes.Login);
   }
 
   bool _verifyInput() {
@@ -95,7 +95,7 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   Widget build(BuildContext context) {
-    double appWidth = MediaQuery.of(context).size.width;
+    double appWidth = MediaQuery.maybeOf(context).size.width;
 
     return Scaffold(
       key: scaffoldKey,
@@ -213,7 +213,7 @@ class _SignupPageState extends State<SignupPage> {
                                         FlatButton(
                                           child: Text("Back to login"),
                                           onPressed: () {
-                                            Navigator.of(context).pop();
+                                            Navigator.maybeOf(context).pop();
                                           },
                                           textColor:
                                               Theme.of(context).primaryColor,
