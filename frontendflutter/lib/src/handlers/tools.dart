@@ -64,8 +64,14 @@ class Tools {
   }
 
   static int birthDateToAge(String birthDate) {
-    return (DateTime.now().difference(DateTime.parse(birthDate)).inDays ~/ 365)
-        .toInt();
+    try {
+      return (DateTime.now().difference(DateTime.parse(birthDate)).inDays ~/
+              365)
+          .toInt();
+    } on FormatException catch (e) {
+      print("error caught on birthDateToAge: $e");
+      return 0;
+    }
   }
 
   static void resetLoginVariables() {
