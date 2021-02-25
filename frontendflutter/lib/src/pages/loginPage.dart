@@ -55,10 +55,12 @@ class _LoginPageState extends State<LoginPage> {
         r"^[ÆØÅæøåA-Za-z0-9a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[ÆØÅæøåA-Za-z0-9a-zA-Z0-9](?:[ÆØÅæøåa-zA-Z0-9-]{0,253}[ÆØÅæøåa-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$");
 
     RegExp nameRegExp = new RegExp(r"^[ÆØÅæøåa-zA-Z0-9]*$");
-    if (!emailRegExp.hasMatch(email)) {
-      Alerts.showError("Invalid email");
-      return false;
-    }
+
+    // Commented out because currently it should be allowed to login with a simple ID and not a full email for experiment purposes
+    // if (!emailRegExp.hasMatch(email)) {
+    //   Alerts.showError("Invalid email");
+    //   return false;
+    // }
 
     // Verify anything with password?
     // if (password.length < 8) {
