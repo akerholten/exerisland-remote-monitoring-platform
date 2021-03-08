@@ -31,6 +31,7 @@ class LinearChart extends StatelessWidget {
       const Color(0xff02d39a),
     ];
 
+    // TODO: add daily avg, weekly avg, monthly avg?
     getData() {
       dataPoints = new List<FlSpot>();
       bottomTitles = new List<String>();
@@ -52,8 +53,9 @@ class LinearChart extends StatelessWidget {
                       count++;
                       dataPoints.add(
                           FlSpot(count.toDouble(), metric.value.toDouble()));
-                      bottomTitles.add(intl.DateFormat(Constants.dateFormat)
-                          .format(DateTime.parse(session.createdAt)));
+                      bottomTitles.add(count
+                          .toString()); //intl.DateFormat(Constants.dateFormat).format(DateTime.parse(session.createdAt))
+                      //TODO: Consider using date or not
                     }
                   });
                 }
@@ -239,7 +241,8 @@ class LinearChart extends StatelessWidget {
             getTextStyles: (value) =>
                 Theme.of(context).textTheme.subtitle1.copyWith(fontSize: 12),
             getTitles: (value) {
-              return bottomTitles.elementAt(value.toInt());
+              return bottomTitles.elementAt(value.toInt() -
+                  1); // it is offset by 1 because value starts at 1 and not 0
             }),
         leftTitles: SideTitles(
           showTitles: true,

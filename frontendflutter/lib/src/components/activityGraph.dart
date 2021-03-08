@@ -14,7 +14,13 @@ class ActivityGraph extends StatefulWidget {
   @required
   final Patient patient;
 
-  ActivityGraph({this.patient});
+  @required
+  final double width;
+
+  @required
+  final double height;
+
+  ActivityGraph({this.patient, this.height, this.width});
 
   @override
   _ActivityGraphState createState() => _ActivityGraphState();
@@ -209,8 +215,8 @@ class _ActivityGraphState extends State<ActivityGraph> {
             // ACTUAL GRAPH
             Container(
               constraints: BoxConstraints(
-                  maxWidth: Constants.pageMaxWidth * 0.4,
-                  maxHeight: Constants.pageMaxHeight * 0.34),
+                  maxWidth: widget.width, //Constants.pageMaxWidth * 0.4
+                  maxHeight: widget.height), //Constants.pageMaxHeight * 0.34)
               padding: EdgeInsets.all(8),
               child: (chosenMetric == null || chosenMinigame == null)
                   ? Container()

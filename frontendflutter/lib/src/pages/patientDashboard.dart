@@ -128,32 +128,46 @@ class _PatientDashboardState extends State<PatientDashboard> {
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              //Task completion list
+                              // //Task completion list
+                              // Column(
+                              //     mainAxisAlignment: MainAxisAlignment.start,
+                              //     children: [
+                              //       Container(
+                              //         padding: EdgeInsets.all(8),
+                              //         alignment: Alignment.topCenter,
+                              //         height: Constants.pageMaxHeight * 0.9,
+                              //         width: (Constants.pageMaxWidth * 0.9) / 2,
+                              //         child: TaskCompletionList(
+                              //           patient: patient,
+                              //           personalPage: widget.personalPage,
+                              //           onRecommendationAdded: (value) =>
+                              //               _addRecommendationToDatabase(value),
+                              //         ),
+                              //       ),
+                              //     ]),
                               Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
+                                    // ActivityGraph
                                     Container(
                                       padding: EdgeInsets.all(8),
-                                      alignment: Alignment.topCenter,
-                                      height: Constants.pageMaxHeight * 0.9,
-                                      width: (Constants.pageMaxWidth * 0.9) / 2,
-                                      child: TaskCompletionList(
-                                        patient: patient,
-                                        personalPage: widget.personalPage,
-                                        onRecommendationAdded: (value) =>
-                                            _addRecommendationToDatabase(value),
+                                      height: (Constants.pageMaxHeight * 0.7),
+                                      width: (Constants.pageMaxWidth * 0.9),
+                                      child: Card(
+                                        child: ActivityGraph(
+                                          patient: patient,
+                                          height:
+                                              Constants.pageMaxHeight * 0.58,
+                                          width: Constants.pageMaxWidth * 0.8,
+                                        ),
                                       ),
                                     ),
-                                  ]),
-                              Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
                                     Container(
                                       // SessionList
                                       padding: EdgeInsets.all(8),
                                       height:
                                           (Constants.pageMaxHeight * 0.9) / 2,
-                                      width: (Constants.pageMaxWidth * 0.9) / 2,
+                                      width: (Constants.pageMaxWidth * 0.9),
                                       child: Card(
                                         child: SessionInformationList(
                                           personalPage: widget.personalPage,
@@ -161,18 +175,6 @@ class _PatientDashboardState extends State<PatientDashboard> {
                                           dataTableMaxWidth:
                                               (Constants.pageMaxWidth * 0.9) /
                                                   2,
-                                        ),
-                                      ),
-                                    ),
-                                    // ActivityGraph
-                                    Container(
-                                      padding: EdgeInsets.all(8),
-                                      height:
-                                          (Constants.pageMaxHeight * 0.9) / 2,
-                                      width: (Constants.pageMaxWidth * 0.9) / 2,
-                                      child: Card(
-                                        child: ActivityGraph(
-                                          patient: patient,
                                         ),
                                       ),
                                     ),
