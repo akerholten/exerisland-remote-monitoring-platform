@@ -247,6 +247,64 @@ func GetPatients(clientCookie CookieData, ctx context.Context) ([]SimplePatientD
 	return returnPatients, nil
 }
 
+func GetPatientsWithFullData(clientCookie CookieData, ctx context.Context) ([]Patient, error) {
+	var returnPatients []Patient
+
+	observerPatientsRef := DBClient().Database.NewRef(TableObserver).Child(clientCookie.UserID).Child("patients")
+
+	existingObserverPatients, err := observerPatientsRef.OrderByKey().GetOrdered(ctx)
+	if err != nil {
+		return returnPatients, err
+	}
+
+	// Do the key need to be returned in order to query for this exact patient later on?
+	for _, r := range existingObserverPatients {
+		var currentPatient Patient
+		var simplePatientData SimplePatientData
+		var id string
+
+		if err := r.Unmarshal(&id); err != nil {
+			return returnPatients, err
+		}
+
+		// TODO: Implement a get patient function that also gets all the sessions and recommendations and fills this
+		// up for the patient before returned
+		patientInfoRef := DBClient().Database.NewRef(TablePatient).Child(id)
+		err = patientInfoRef.Get(ctx, &simplePatientData)
+		if err != nil {
+			return returnPatients, err
+		}
+
+		if len(simplePatientData.Email) < 1 {
+			log.Printf("This patient's mail was invalid, meaning the user most likely is invalid, skipping")
+			continue
+		}
+
+		currentPatient = Patient{
+			FirstName:          simplePatientData.FirstName,
+			LastName:           simplePatientData.LastName,
+			Email:              simplePatientData.Email,
+			BirthDate:          simplePatientData.BirthDate,
+			Note:               simplePatientData.Note,
+			ShortID:            simplePatientData.ShortID,
+			RecentActivityDate: simplePatientData.RecentActivityDate,
+		}
+
+		// Retrieving and filling sessions / activities data
+		tempSessions, err := getPatientSessions(patientInfoRef, ctx)
+		if err != nil {
+			return nil, err
+		}
+
+		currentPatient.Sessions = *tempSessions
+
+		returnPatients = append(returnPatients, currentPatient)
+	}
+
+	// everything was successful so we return nil
+	return returnPatients, nil
+}
+
 func GetPatientWithShortId(clientCookie CookieData, shortId string, ctx context.Context) (*Patient, error) {
 	observerPatientRef := DBClient().Database.NewRef(TableObserver).Child(clientCookie.UserID).Child("patients").Child(shortId)
 
