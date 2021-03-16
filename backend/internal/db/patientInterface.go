@@ -333,34 +333,71 @@ func GetPatientInfoFromId(userId string, ctx context.Context) (*Patient, error) 
 	return &patient, nil
 }
 
-func AddSessionToPatient(userId string, session Session, ctx context.Context) error {
+func AddSessionToPatient(userId string, session Session, ctx context.Context) (string, error) {
 	patientRef := DBClient().Database.NewRef(TablePatient).Child(userId)
 	err := patientRef.Child("recentActivityDate").Set(ctx, time.Now().Format(time.RFC3339))
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	patientSessionsRef := patientRef.Child(TableSessions)
 
 	sessionRef, err := patientSessionsRef.Push(ctx, session)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	// For retrieving length of existing sessions
 	existingSessions, err := patientRef.Child(TableSessions).OrderByKey().GetOrdered(ctx)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	// Set the ID so that it can be received from front-end
 	// The ID will always be the index + 1, so it starts from 1
 	err = sessionRef.Child("id").Set(ctx, len(existingSessions))
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	log.Print("Added a new thing at " + sessionRef.Key)
+	// TODO: Possibly need to use sessionRef for filling in activity array within?
+
+	return sessionRef.Key, nil
+}
+
+func UpdateSessionOnPatient(userId string, sessionID string, session Session, ctx context.Context) error {
+	patientRef := DBClient().Database.NewRef(TablePatient).Child(userId)
+	err := patientRef.Child("recentActivityDate").Set(ctx, time.Now().Format(time.RFC3339))
+	if err != nil {
+		return err
+	}
+
+	patientSessionRef := patientRef.Child(TableSessions).Child(sessionID)
+
+	// to keep the id of where it is
+	var countedID int
+	patientSessionRef.Child("id").Get(ctx, &countedID)
+
+	err = patientSessionRef.Set(ctx, session) //.Push(ctx, session)
+	if err != nil {
+		return err
+	}
+
+	// For retrieving length of existing sessions
+	// existingSessions, err := patientRef.Child(TableSessions).OrderByKey().GetOrdered(ctx)
+	// if err != nil {
+	// 	return err
+	// }
+
+	// Set the ID so that it can be received from front-end
+	// The ID will always be the index + 1, so it starts from 1
+	err = patientSessionRef.Child("id").Set(ctx, countedID)
+	if err != nil {
+		return err
+	}
+
+	log.Print("Updated a thing at " + patientSessionRef.Key)
 	// TODO: Possibly need to use sessionRef for filling in activity array within?
 
 	return nil

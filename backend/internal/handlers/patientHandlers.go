@@ -111,7 +111,72 @@ func UploadSession(w http.ResponseWriter, r *http.Request) {
 
 	session.CreatedAt = time.Now().Format(time.RFC3339)
 
-	err = db.AddSessionToPatient(*userId, session, ctx)
+	sessionID, err := db.AddSessionToPatient(*userId, session, ctx)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(sessionID))
+}
+
+func UpdateSession(w http.ResponseWriter, r *http.Request) {
+	log.Printf("Got a request for uploading session from a patient ...")
+	defer r.Body.Close()
+
+	ctx := context.Background()
+
+	// Authentication ...
+	shortId := r.Header.Get("Personal-ID")
+
+	if shortId == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Unsuccessful"))
+		return
+	}
+
+	userId, err := db.GetUserIdFromShortId(shortId, ctx)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Unsuccessful"))
+		return
+	}
+
+	// Session ID
+	sessionID := r.Header.Get("Session-ID")
+	if sessionID == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Unsuccessful"))
+		return
+	}
+
+	var session db.Session
+
+	respBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+
+	err = json.Unmarshal(respBody, &session)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Printf("Error unmarshaling: %s, error: %v", string(respBody), err)
+		return
+	}
+	if len(session.Duration) < 1 {
+		log.Printf("Duration in session upload invalid, it was: %s", session.Duration)
+		// _, err := w.Write([]byte("Duration in session upload invalid"))
+		// if err != nil {
+		// 	log.Printf("Error when duration was invalid and writing bytes: %v", err)
+		// }
+		// return
+	}
+
+	session.CreatedAt = time.Now().Format(time.RFC3339)
+
+	err = db.UpdateSessionOnPatient(*userId, sessionID, session, ctx)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

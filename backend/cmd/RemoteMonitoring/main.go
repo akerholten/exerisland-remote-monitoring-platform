@@ -62,6 +62,7 @@ func main() {
 	// Patient Unity Handlers
 	router.HandleFunc("/generateNewUser", handlers.GenerateNewUser).Methods(http.MethodGet)
 	router.HandleFunc("/uploadSession", handlers.UploadSession).Methods(http.MethodPost).Headers("Content-Type", "application/json; charset=utf-8")
+	router.HandleFunc("/updateExistingSession", handlers.UpdateSession).Methods(http.MethodPost).Headers("Content-Type", "application/json; charset=utf-8")
 
 	// Open Handlers without authentication
 	router.HandleFunc("/getMinigames", handlers.GetMinigamesHandler).Methods(http.MethodGet)
