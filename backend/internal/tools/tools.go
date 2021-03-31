@@ -12,6 +12,7 @@ import (
 
 var (
 	base62Chars string = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+	// number      string = "0123456789"
 )
 
 // ConvertPlainPassword hashes a raw password and returns the hashed password
@@ -49,7 +50,7 @@ func GetNewShortUniqueID(length int, safetyCount int64) string {
 
 	rand.Seed(seed)
 	for i := 0; i < length; i++ {
-		newId = newId + string([]rune(base62Chars)[rand.Int()%36]) // 36 for only upper-case
+		newId = newId + string([]rune(base62Chars)[rand.Int()%10]) // 36 for only upper-case // % 10 for only numbers
 	}
 
 	return newId

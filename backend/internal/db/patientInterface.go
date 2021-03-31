@@ -148,7 +148,7 @@ func AddToPatientTableWithoutData(ctx context.Context) (string, string, error) {
 
 		i++
 
-		if i == 5 {
+		if i == 30 {
 			return "", "", fmt.Errorf("\nCould not fill Patient Short ID table DB with new object, looped through %d times\n", i)
 		}
 	}
@@ -266,7 +266,7 @@ func AddToPatientTable(user PatientSignupData, ctx context.Context) (string, str
 
 		i++
 
-		if i == 5 {
+		if i == 30 {
 			return "", "", fmt.Errorf("\nCould not fill Patient Short ID table DB with new object, looped through %d times\n", i)
 		}
 	}

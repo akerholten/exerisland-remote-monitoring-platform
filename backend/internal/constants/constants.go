@@ -3,7 +3,7 @@ package constants
 import "time"
 
 var (
-	PatientShortIDLength int    = 6
+	PatientShortIDLength int    = 3
 	ObserverType         string = "observer"
 	PatientType          string = "patient"
 )
