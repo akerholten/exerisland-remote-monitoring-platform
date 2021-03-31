@@ -24,6 +24,7 @@ class LinearChart extends StatelessWidget {
     // Receiving the datapoints existing on graph
     List<FlSpot> dataPoints;
     List<String> bottomTitles;
+    int currentMaxValue = 0;
 
     // STYLING
     List<Color> gradientColors = [
@@ -37,8 +38,15 @@ class LinearChart extends StatelessWidget {
       bottomTitles = new List<String>();
 
       int count = 0;
+      int sameDateCount = 0;
       DateTime prevDate;
       int currentTotalValue = 0;
+
+      checkAndUpdateMaxValue(int newValue) {
+        if (newValue > currentMaxValue) {
+          currentMaxValue = newValue;
+        }
+      }
 
       switch (chosenTimeFrame) {
         case "Activity":
@@ -51,6 +59,9 @@ class LinearChart extends StatelessWidget {
                     // If metric exist, we append it to the list of points that will be drawn
                     if (metric.id == chosenMetric.id) {
                       count++;
+
+                      checkAndUpdateMaxValue(metric.value);
+
                       dataPoints.add(
                           FlSpot(count.toDouble(), metric.value.toDouble()));
                       bottomTitles.add(count
@@ -80,10 +91,59 @@ class LinearChart extends StatelessWidget {
                             currentSessionDate.month == prevDate.month &&
                             currentSessionDate.year == prevDate.year) {
                           currentTotalValue += metric.value;
+
+                          checkAndUpdateMaxValue(currentTotalValue);
+
                           dataPoints[count - 1] = dataPoints[count - 1]
                               .copyWith(y: currentTotalValue.toDouble());
                         } else {
                           // They are not same date, this is a new datapoint
+                          prevDate = currentSessionDate;
+                          currentTotalValue = metric.value;
+                          count++;
+
+                          dataPoints.add(FlSpot(
+                              count.toDouble(), currentTotalValue.toDouble()));
+                          bottomTitles.add(intl.DateFormat(Constants.dateFormat)
+                              .format(DateTime.parse(session.createdAt)));
+                        }
+                      }
+                    });
+                  }
+                });
+              });
+            }
+            break;
+          }
+        case "Activity average (daily)":
+          {
+            {
+              patient.sessions?.forEach((session) {
+                DateTime currentSessionDate = DateTime.parse(session.createdAt);
+                session.activities?.forEach((activity) {
+                  // If the minigameID is a match we check if it has the metric we are looking for
+                  if (activity.minigameID == chosenMinigame.id) {
+                    activity.metrics?.forEach((metric) {
+                      // If metric exist, we append it to the list of points that will be drawn
+                      if (metric.id == chosenMetric.id) {
+                        // If it is the same date, we update the existing datapoint with the added value
+                        if (prevDate != null &&
+                            currentSessionDate.day == prevDate.day &&
+                            currentSessionDate.month == prevDate.month &&
+                            currentSessionDate.year == prevDate.year) {
+                          currentTotalValue += metric.value;
+                          sameDateCount += 1;
+
+                          checkAndUpdateMaxValue(
+                              (currentTotalValue / sameDateCount).toInt());
+
+                          dataPoints[count - 1] = dataPoints[count - 1]
+                              .copyWith(
+                                  y: (currentTotalValue / sameDateCount)
+                                      .toDouble());
+                        } else {
+                          // They are not same date, this is a new datapoint
+                          sameDateCount = 1;
                           prevDate = currentSessionDate;
                           currentTotalValue = metric.value;
                           count++;
@@ -119,10 +179,63 @@ class LinearChart extends StatelessWidget {
                             Tools.weekNumber(currentSessionDate) == prevWeek &&
                             currentSessionDate.year == prevYear) {
                           currentTotalValue += metric.value;
+
+                          checkAndUpdateMaxValue(currentTotalValue);
+
                           dataPoints[count - 1] = dataPoints[count - 1]
                               .copyWith(y: currentTotalValue.toDouble());
                         } else {
                           // They are not same date, this is a new datapoint
+                          prevWeek = Tools.weekNumber(currentSessionDate);
+                          prevYear = currentSessionDate.year;
+                          currentTotalValue = metric.value;
+                          count++;
+
+                          dataPoints.add(FlSpot(
+                              count.toDouble(), currentTotalValue.toDouble()));
+                          bottomTitles.add("Week " +
+                              prevWeek.toString() +
+                              " " +
+                              currentSessionDate.year.toString());
+                        }
+                      }
+                    });
+                  }
+                });
+              });
+            }
+            break;
+          }
+        case "Activity average (weekly)":
+          {
+            {
+              int prevWeek;
+              int prevYear;
+              patient.sessions?.forEach((session) {
+                DateTime currentSessionDate = DateTime.parse(session.createdAt);
+                session.activities?.forEach((activity) {
+                  // If the minigameID is a match we check if it has the metric we are looking for
+                  if (activity.minigameID == chosenMinigame.id) {
+                    activity.metrics?.forEach((metric) {
+                      // If metric exist, we append it to the list of points that will be drawn
+                      if (metric.id == chosenMetric.id) {
+                        // If it is the same date, we update the existing datapoint with the added value
+                        if (prevWeek != null &&
+                            Tools.weekNumber(currentSessionDate) == prevWeek &&
+                            currentSessionDate.year == prevYear) {
+                          currentTotalValue += metric.value;
+                          sameDateCount += 1;
+
+                          checkAndUpdateMaxValue(
+                              (currentTotalValue / sameDateCount).toInt());
+
+                          dataPoints[count - 1] = dataPoints[count - 1]
+                              .copyWith(
+                                  y: (currentTotalValue / sameDateCount)
+                                      .toDouble());
+                        } else {
+                          // They are not same date, this is a new datapoint
+                          sameDateCount = 1;
                           prevWeek = Tools.weekNumber(currentSessionDate);
                           prevYear = currentSessionDate.year;
                           currentTotalValue = metric.value;
@@ -161,6 +274,9 @@ class LinearChart extends StatelessWidget {
                             currentSessionDate.month == prevMonth &&
                             currentSessionDate.year == prevYear) {
                           currentTotalValue += metric.value;
+
+                          checkAndUpdateMaxValue(currentTotalValue);
+
                           dataPoints[count - 1] = dataPoints[count - 1]
                               .copyWith(y: currentTotalValue.toDouble());
                         } else {
@@ -184,12 +300,89 @@ class LinearChart extends StatelessWidget {
             }
             break;
           }
+        case "Activity average (monthly)":
+          {
+            {
+              int prevMonth;
+              int prevYear;
+              patient.sessions?.forEach((session) {
+                DateTime currentSessionDate = DateTime.parse(session.createdAt);
+                session.activities?.forEach((activity) {
+                  // If the minigameID is a match we check if it has the metric we are looking for
+                  if (activity.minigameID == chosenMinigame.id) {
+                    activity.metrics?.forEach((metric) {
+                      // If metric exist, we append it to the list of points that will be drawn
+                      if (metric.id == chosenMetric.id) {
+                        // If it is the same date, we update the existing datapoint with the added value
+                        if (prevMonth != null &&
+                            currentSessionDate.month == prevMonth &&
+                            currentSessionDate.year == prevYear) {
+                          currentTotalValue += metric.value;
+                          sameDateCount += 1;
+
+                          checkAndUpdateMaxValue(
+                              (currentTotalValue / sameDateCount).toInt());
+
+                          dataPoints[count - 1] = dataPoints[count - 1]
+                              .copyWith(
+                                  y: (currentTotalValue / sameDateCount)
+                                      .toDouble());
+                        } else {
+                          // They are not same date, this is a new datapoint
+                          sameDateCount = 1;
+                          prevMonth = currentSessionDate.month;
+                          prevYear = currentSessionDate.year;
+                          currentTotalValue = metric.value;
+                          count++;
+
+                          dataPoints.add(FlSpot(
+                              count.toDouble(), currentTotalValue.toDouble()));
+                          bottomTitles.add(prevMonth.toString() +
+                              "/" +
+                              currentSessionDate.year.toString());
+                        }
+                      }
+                    });
+                  }
+                });
+              });
+            }
+            break;
+          }
+
         default:
           {
             break;
           }
       }
-      if (chosenTimeFrame == "Activity") {}
+    }
+
+    getInterval() {
+      if (currentMaxValue >= 50000) {
+        return 5000;
+      }
+      if (currentMaxValue >= 10000) {
+        return 2000;
+      }
+      if (currentMaxValue >= 5000) {
+        return 500;
+      }
+      if (currentMaxValue >= 1000) {
+        return 200;
+      }
+      if (currentMaxValue >= 500) {
+        return 50;
+      }
+      if (currentMaxValue >= 100) {
+        return 20;
+      }
+      if (currentMaxValue >= 50) {
+        return 5;
+      }
+      if (currentMaxValue >= 10) {
+        return 2;
+      }
+      return 1;
     }
 
     // calling the getData functionality
@@ -246,6 +439,7 @@ class LinearChart extends StatelessWidget {
             }),
         leftTitles: SideTitles(
           showTitles: true,
+          interval: getInterval().toDouble(),
           getTextStyles: (value) =>
               Theme.of(context).textTheme.subtitle1.copyWith(
                     // color: Theme.of(context).hintColor,

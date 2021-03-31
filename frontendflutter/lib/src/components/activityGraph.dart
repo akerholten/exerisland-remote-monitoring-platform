@@ -28,7 +28,15 @@ class ActivityGraph extends StatefulWidget {
 
 // TODO: Possibly add an 'x average' and 'x total' option for daily/weekly/monthly? Or a tick box for avg/total when those are chosen
 // TODO: Also consider having a way to view a maximum amount of data points or something? To view specific ranges, e.g. 10 days, 10 weeks, 20 months etc
-List<String> availableTimeFrames = ["Activity", "Daily", "Weekly", "Monthly"];
+List<String> availableTimeFrames = [
+  "Activity",
+  "Daily",
+  "Activity average (daily)",
+  "Weekly",
+  "Activity average (weekly)",
+  "Monthly",
+  "Activity average (monthly)"
+];
 
 class _ActivityGraphState extends State<ActivityGraph> {
   String metricID;
@@ -120,7 +128,7 @@ class _ActivityGraphState extends State<ActivityGraph> {
                 Container(
                   padding: EdgeInsets.all(8),
                   child: ConstrainedBox(
-                    constraints: BoxConstraints(maxHeight: 60, maxWidth: 200),
+                    constraints: BoxConstraints(maxHeight: 60, maxWidth: 220),
                     child: DropdownButtonFormField(
                       style: Theme.of(context)
                           .textTheme
@@ -149,7 +157,7 @@ class _ActivityGraphState extends State<ActivityGraph> {
                 Container(
                   padding: EdgeInsets.all(8),
                   child: ConstrainedBox(
-                    constraints: BoxConstraints(maxHeight: 60, maxWidth: 200),
+                    constraints: BoxConstraints(maxHeight: 60, maxWidth: 220),
                     child: DropdownButtonFormField(
                       key: metricFormKey,
                       value: metricID,
@@ -184,7 +192,7 @@ class _ActivityGraphState extends State<ActivityGraph> {
                 Container(
                   padding: EdgeInsets.all(8),
                   child: ConstrainedBox(
-                    constraints: BoxConstraints(maxHeight: 60, maxWidth: 200),
+                    constraints: BoxConstraints(maxHeight: 60, maxWidth: 220),
                     child: DropdownButtonFormField(
                       value: "Activity",
                       style: Theme.of(context)
