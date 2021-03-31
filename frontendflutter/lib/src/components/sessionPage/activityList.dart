@@ -158,17 +158,19 @@ class _ActivityListState extends State<ActivityList> {
                                         ),
                                       ),
                                       // Description
-                                      Container(
-                                        padding: EdgeInsets.all(4),
-                                        child: SelectableText(
-                                          "Description: " +
-                                              minigame.description,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyText2
-                                              .copyWith(fontSize: 14),
-                                        ),
-                                      ),
+                                      // TODO: Fix this, it is commented out now because
+                                      // there are issues with padding/styling
+                                      // Container(
+                                      //   padding: EdgeInsets.all(4),
+                                      //   child: SelectableText(
+                                      //     "Description: " +
+                                      //         minigame.description,
+                                      //     style: Theme.of(context)
+                                      //         .textTheme
+                                      //         .bodyText2
+                                      //         .copyWith(fontSize: 14),
+                                      //   ),
+                                      // ),
                                     ],
                                   ),
                                   // RIGHT side column ("Minigame", and "Duration")

@@ -105,7 +105,7 @@ class AddNewPatientModalState extends State<AddNewPatientModal> {
                             child: Align(
                               alignment: Alignment.centerLeft,
                               child: SelectableText(
-                                'Register new patient',
+                                'Register new user',
                                 style: Theme.of(context).textTheme.headline4,
                                 textAlign: TextAlign.left,
                               ),
@@ -210,7 +210,7 @@ class AddNewPatientModalState extends State<AddNewPatientModal> {
                                           height: 50,
                                           child: FlatButton(
                                             child: Text(
-                                              'Register patient',
+                                              'Register user',
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .button

@@ -15,7 +15,7 @@ class PatientHandler {
       Constants.backendURL + "/getPersonalInfo",
     );
 
-    print("Trying to fetch a patients specific data ... ");
+    print("Trying to fetch a users specific data ... ");
     if (response.statusCode == 200 || response.statusCode == 202) {
       Patient patient = new Patient();
 
@@ -25,7 +25,7 @@ class PatientHandler {
 
       return patient;
     } else {
-      Alerts.showWarning("Could not retrieve patient");
+      Alerts.showWarning("Could not retrieve user");
       return null;
     }
   }

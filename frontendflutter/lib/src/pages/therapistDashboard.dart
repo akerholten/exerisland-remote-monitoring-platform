@@ -246,7 +246,7 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             SelectableText(
-                              'Patients',
+                              'Users',
                               style: Theme.of(context).textTheme.headline4,
                             ),
                             FlatButton(
@@ -256,7 +256,7 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
                               textColor: Colors.white,
                               onPressed: _showAddNewPatientModal,
                               child: Text(
-                                'Add patient',
+                                'Add user',
                                 style: Theme.of(context)
                                     .textTheme
                                     .button
@@ -274,7 +274,7 @@ class _TherapistDashboardState extends State<TherapistDashboard> {
                                   _loading // if loading in patients from backend
                                       ? CircularProgressIndicator()
                                       : SelectableText(
-                                          'You have no patients yet',
+                                          'You have no users yet',
                                           style: Theme.of(context)
                                               .textTheme
                                               .headline4,

@@ -20,10 +20,10 @@ class ObserverHandler {
             jsonEncode(form)); // TODO: Change to using form.toJson() somehow...
 
     if (response.statusCode == 200 || response.statusCode == 202) {
-      Alerts.showInfo("Patient was added successfully!");
+      Alerts.showInfo("User was added successfully!");
       return true;
     } else {
-      Alerts.showError("Something went wrong when trying to add new patient");
+      Alerts.showError("Something went wrong when trying to add new user");
       return false;
     }
   }
@@ -33,7 +33,7 @@ class ObserverHandler {
       Constants.backendURL + "/getAllPatients",
     );
 
-    print("Trying to fetch list of all patients... ");
+    print("Trying to fetch list of all users... ");
     if (response.statusCode == 200 || response.statusCode == 202) {
       List<Patient> tempList = new List<Patient>();
 
@@ -50,7 +50,7 @@ class ObserverHandler {
 
       return tempList;
     } else {
-      Alerts.showWarning("Could not retrieve list of patients");
+      Alerts.showWarning("Could not retrieve list of users");
       return null;
     }
   }
@@ -60,7 +60,7 @@ class ObserverHandler {
       Constants.backendURL + "/getPatient/" + shortId,
     );
 
-    print("Trying to fetch a specific patient... ");
+    print("Trying to fetch a specific user... ");
     if (response.statusCode == 200 || response.statusCode == 202) {
       Patient patient = new Patient();
 
@@ -70,7 +70,7 @@ class ObserverHandler {
 
       return patient;
     } else {
-      Alerts.showWarning("Could not retrieve patient");
+      Alerts.showWarning("Could not retrieve user");
       return null;
     }
   }
