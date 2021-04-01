@@ -131,6 +131,17 @@ class Tools {
     return rtrString;
   }
 
+  static String metersToStringLength(int meters) {
+    String rtrString = "";
+
+    if (meters > 2000) {
+      rtrString = (meters / 1000).toString() + " kilometers";
+    } else {
+      rtrString = meters.toString() + " meters";
+    }
+    return rtrString;
+  }
+
   static void swap<T>(T one, T two) {
     var temp = one;
     one = two;

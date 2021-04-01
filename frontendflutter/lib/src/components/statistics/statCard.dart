@@ -1,5 +1,6 @@
 // import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:frontendflutter/src/handlers/tools.dart';
 import 'package:frontendflutter/src/model_classes/minigame.dart';
 import 'package:frontendflutter/src/model_classes/patient.dart';
 
@@ -26,7 +27,10 @@ class StatCard extends StatelessWidget {
   @required
   final bool includeAllMinigames;
 
-  final Minigame chosenMinigame;
+  final String chosenMinigameId;
+
+  // Convert value can be: Time, Length (meters/kilometers), ms, more?
+  final String convertValue;
 
   // These below could be added and optional in the future for more different type of stats
   // final Minigame chosenMinigame;
@@ -40,12 +44,14 @@ class StatCard extends StatelessWidget {
       this.cardTitle,
       this.statType,
       this.includeAllMinigames: true,
-      this.chosenMinigame});
+      this.chosenMinigameId,
+      this.convertValue: "No"});
 
   @override
   Widget build(BuildContext context) {
     // Data to be received
     int currentValue = 0;
+    String outputString = "";
 
     getData() {
       int count = 0;
@@ -60,7 +66,7 @@ class StatCard extends StatelessWidget {
               session.activities?.forEach((activity) {
                 // If the minigameID is a match, or we use all minigames we check if it has the metric we are looking for
                 if (includeAllMinigames ||
-                    activity.minigameID == chosenMinigame.id) {
+                    activity.minigameID == chosenMinigameId) {
                   activity.metrics?.forEach((metric) {
                     // If metric exist, we append it to the list of points that will be drawn
                     if (metric.id == metricID) {
@@ -78,7 +84,7 @@ class StatCard extends StatelessWidget {
               session.activities?.forEach((activity) {
                 // If the minigameID is a match, or we use all minigames we check if it has the metric we are looking for
                 if (includeAllMinigames ||
-                    activity.minigameID == chosenMinigame.id) {
+                    activity.minigameID == chosenMinigameId) {
                   activity.metrics?.forEach((metric) {
                     // If metric exist, we append it to the list of points that will be drawn
                     if (metric.id == metricID) {
@@ -101,12 +107,15 @@ class StatCard extends StatelessWidget {
               session.activities?.forEach((activity) {
                 // If the minigameID is a match, or we use all minigames we check if it has the metric we are looking for
                 if (includeAllMinigames ||
-                    activity.minigameID == chosenMinigame.id) {
+                    activity.minigameID == chosenMinigameId) {
                   activity.metrics?.forEach((metric) {
                     // If metric exist, we append it to the list of points that will be drawn
                     if (metric.id == metricID) {
-                      if (metric.value < currentValue) {
-                        currentValue = metric.value;
+                      if (metric.value != 0) {
+                        // Avoiding values that have not been set by mistake
+                        if (metric.value < currentValue) {
+                          currentValue = metric.value;
+                        }
                       }
                     }
                   });
@@ -121,7 +130,7 @@ class StatCard extends StatelessWidget {
               session.activities?.forEach((activity) {
                 // If the minigameID is a match, or we use all minigames we check if it has the metric we are looking for
                 if (includeAllMinigames ||
-                    activity.minigameID == chosenMinigame.id) {
+                    activity.minigameID == chosenMinigameId) {
                   activity.metrics?.forEach((metric) {
                     // If metric exist, we append it to the list of points that will be drawn
                     if (metric.id == metricID) {
@@ -141,6 +150,18 @@ class StatCard extends StatelessWidget {
             break;
           }
       }
+
+      outputString = currentValue.toString();
+
+      if (convertValue == "Time") {
+        outputString = Tools.secondsToHHMMSS(currentValue);
+      }
+      if (convertValue == "Length") {
+        outputString = Tools.metersToStringLength(currentValue);
+      }
+      if (convertValue == "ms") {
+        outputString = currentValue.toString() + " ms";
+      }
     }
 
     // Calling get data to update value
@@ -151,14 +172,46 @@ class StatCard extends StatelessWidget {
       height: height,
       width: width,
       child: Card(
+        // color: Colors.lightBlue,
+        shadowColor: Colors.black,
+        // elevation: 2,
         // TODO: potentially think about and consider changing colors of the card to make it pop more
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Text(cardTitle, style: Theme.of(context).textTheme.subtitle1),
-            Text(currentValue.toString(),
-                style: Theme.of(context).textTheme.subtitle2)
-          ],
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Theme.of(context).primaryColor.withAlpha(30),
+                Colors.white,
+              ],
+              begin: const FractionalOffset(0.0, 0.0),
+              end: const FractionalOffset(0.0, 1.0),
+              stops: [0.0, 1.0],
+              tileMode: TileMode.clamp,
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                // padding: EdgeInsets.only(top: 16),
+                child: SelectableText(cardTitle,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle1
+                        .copyWith(fontSize: 16)),
+              ),
+              Container(
+                padding: EdgeInsets.only(bottom: 16),
+                child: SelectableText(outputString,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline6
+                        .copyWith(fontSize: 16)),
+              )
+            ],
+          ),
         ),
       ),
     );

@@ -99,8 +99,9 @@ class _PatientDashboardState extends State<PatientDashboard> {
     double width = (Constants.pageMaxWidth * 0.6);
 
     // TODO: can potentially remove this, as I don't think they are being utilized really
-    double statCardWidth = (Constants.pageMaxWidth / 6) * 0.9;
-    double statCardHeight = (height * 0.7) * 0.48;
+    int statCardHorizontalCount = 6;
+    double statCardWidth = (Constants.pageMaxWidth / statCardHorizontalCount);
+    double statCardHeight = (height * 0.7) * 0.47;
 
     return Scaffold(
       key: scaffoldKey,
@@ -199,8 +200,13 @@ class _PatientDashboardState extends State<PatientDashboard> {
                                       width: Constants.pageMaxWidth,
                                       child: Card(
                                         child: GridView.count(
-                                          crossAxisCount: 6,
+                                          crossAxisCount:
+                                              statCardHorizontalCount,
+                                          childAspectRatio:
+                                              (statCardWidth / statCardHeight),
+                                          shrinkWrap: true,
                                           children: [
+                                            // GENERAL STATS
                                             StatCard(
                                               height: statCardHeight,
                                               width: statCardWidth,
@@ -216,116 +222,123 @@ class _PatientDashboardState extends State<PatientDashboard> {
                                               patient: patient,
                                               metricID: "Duration",
                                               cardTitle:
-                                                  "Total time played in seconds",
+                                                  "Total time played\n(HH:MM:SS)",
                                               statType: "Total",
+                                              convertValue: "Time",
                                             ),
                                             StatCard(
                                               height: statCardHeight,
                                               width: statCardWidth,
                                               patient: patient,
-                                              metricID: "Calories_Burned",
-                                              cardTitle:
-                                                  "Total calories burned",
+                                              metricID: "Arm_Movement",
+                                              cardTitle: "Total arm movement",
                                               statType: "Total",
+                                              convertValue: "Length",
                                             ),
                                             StatCard(
                                               height: statCardHeight,
                                               width: statCardWidth,
                                               patient: patient,
-                                              metricID: "Duration",
+                                              metricID: "Score",
                                               cardTitle:
-                                                  "Total time played in seconds",
+                                                  "Total score collected across all minigames",
                                               statType: "Total",
+                                            ),
+                                            // PLATFORM MINIGAME STATS
+                                            StatCard(
+                                              height: statCardHeight,
+                                              width: statCardWidth,
+                                              patient: patient,
+                                              metricID: "Hittable_Hits",
+                                              cardTitle:
+                                                  "Hittables hit in \nPlatform Minigame",
+                                              statType: "Total",
+                                              chosenMinigameId:
+                                                  "Platform_Minigame",
+                                              includeAllMinigames: false,
                                             ),
                                             StatCard(
                                               height: statCardHeight,
                                               width: statCardWidth,
                                               patient: patient,
-                                              metricID: "Calories_Burned",
+                                              metricID: "Score",
                                               cardTitle:
-                                                  "Total calories burned",
+                                                  "Highscore\n(Platform Minigame)",
+                                              statType: "Highest",
+                                              chosenMinigameId:
+                                                  "Platform_Minigame",
+                                              includeAllMinigames: false,
+                                            ),
+                                            // REACTION TIME TRAINER STATS
+                                            StatCard(
+                                              height: statCardHeight,
+                                              width: statCardWidth,
+                                              patient: patient,
+                                              metricID: "WaterBubbles_Hit",
+                                              cardTitle:
+                                                  "Water bubbles reacted to in Reaction Time Trainer",
                                               statType: "Total",
+                                              chosenMinigameId:
+                                                  "ReactionTimeTrainer_Minigame",
+                                              includeAllMinigames: false,
                                             ),
                                             StatCard(
                                               height: statCardHeight,
                                               width: statCardWidth,
                                               patient: patient,
-                                              metricID: "Duration",
+                                              metricID: "Score",
                                               cardTitle:
-                                                  "Total time played in seconds",
-                                              statType: "Total",
+                                                  "Highscore\n(Reaction Time Trainer)",
+                                              statType: "Highest",
+                                              chosenMinigameId:
+                                                  "ReactionTimeTrainer_Minigame",
+                                              includeAllMinigames: false,
                                             ),
                                             StatCard(
                                               height: statCardHeight,
                                               width: statCardWidth,
                                               patient: patient,
-                                              metricID: "Calories_Burned",
+                                              metricID: "Average_ReactionTime",
                                               cardTitle:
-                                                  "Total calories burned",
-                                              statType: "Total",
+                                                  "Average reaction time in Reaction Time Trainer",
+                                              statType: "Average",
+                                              convertValue: "ms",
                                             ),
                                             StatCard(
                                               height: statCardHeight,
                                               width: statCardWidth,
                                               patient: patient,
-                                              metricID: "Duration",
+                                              metricID: "Average_ReactionTime",
                                               cardTitle:
-                                                  "Total time played in seconds",
-                                              statType: "Total",
+                                                  "Best average reaction time in Reaction Time Trainer",
+                                              statType: "Lowest",
+                                              convertValue: "ms",
                                             ),
-                                            StatCard(
-                                              height: statCardHeight,
-                                              width: statCardWidth,
-                                              patient: patient,
-                                              metricID: "Calories_Burned",
-                                              cardTitle:
-                                                  "Total calories burned",
-                                              statType: "Total",
-                                            ),
-                                            StatCard(
-                                              height: statCardHeight,
-                                              width: statCardWidth,
-                                              patient: patient,
-                                              metricID: "Duration",
-                                              cardTitle:
-                                                  "Total time played in seconds",
-                                              statType: "Total",
-                                            ),
-                                            StatCard(
-                                              height: statCardHeight,
-                                              width: statCardWidth,
-                                              patient: patient,
-                                              metricID: "Calories_Burned",
-                                              cardTitle:
-                                                  "Total calories burned",
-                                              statType: "Total",
-                                            ),
-                                            StatCard(
-                                              height: statCardHeight,
-                                              width: statCardWidth,
-                                              patient: patient,
-                                              metricID: "Duration",
-                                              cardTitle:
-                                                  "Total time played in seconds",
-                                              statType: "Total",
-                                            ),
-                                            StatCard(
-                                              height: statCardHeight,
-                                              width: statCardWidth,
-                                              patient: patient,
-                                              metricID: "Calories_Burned",
-                                              cardTitle:
-                                                  "Total calories burned",
-                                              statType: "Total",
-                                            ),
+                                            // DRONE SHOOTER STATS
                                             StatCard(
                                               height: statCardHeight,
                                               width: statCardWidth,
                                               patient: patient,
                                               metricID: "Duration",
                                               cardTitle:
-                                                  "Total time played in seconds",
+                                                  "Time spent shooting drones\n(HH:MM:SS)",
                                               statType: "Total",
+                                              convertValue: "Time",
+                                              chosenMinigameId:
+                                                  "DuckShooter_Minigame",
+                                              includeAllMinigames: false,
+                                            ),
+                                            StatCard(
+                                              height: statCardHeight,
+                                              width: statCardWidth,
+                                              patient: patient,
+                                              metricID: "Drones_Hit",
+                                              cardTitle:
+                                                  "Drones hit in Drone Shooter",
+                                              statType: "Total",
+                                              chosenMinigameId:
+                                                  "DuckShooter_Minigame",
+                                              includeAllMinigames: false,
                                             ),
                                           ],
                                         ),
