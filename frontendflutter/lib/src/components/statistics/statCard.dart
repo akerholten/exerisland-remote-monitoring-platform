@@ -180,7 +180,7 @@ class StatCard extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                Theme.of(context).primaryColor.withAlpha(30),
+                Theme.of(context).primaryColor.withAlpha(20),
                 Colors.white,
               ],
               begin: const FractionalOffset(0.0, 0.0),
@@ -193,7 +193,8 @@ class StatCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Container(
-                // padding: EdgeInsets.only(top: 16),
+                height: height / 3.1,
+                // padding: EdgeInsets.only(top: 20),
                 child: SelectableText(cardTitle,
                     textAlign: TextAlign.center,
                     style: Theme.of(context)
@@ -202,14 +203,19 @@ class StatCard extends StatelessWidget {
                         .copyWith(fontSize: 16)),
               ),
               Container(
-                padding: EdgeInsets.only(bottom: 16),
+                height: height / 3.1,
+                // padding: EdgeInsets.only(bottom: 48),
                 child: SelectableText(outputString,
                     textAlign: TextAlign.center,
                     style: Theme.of(context)
                         .textTheme
                         .headline6
-                        .copyWith(fontSize: 16)),
-              )
+                        .copyWith(fontSize: 18)),
+              ),
+              // Empty container for styling
+              Container(
+                  // height: height / 3.1,
+                  )
             ],
           ),
         ),
