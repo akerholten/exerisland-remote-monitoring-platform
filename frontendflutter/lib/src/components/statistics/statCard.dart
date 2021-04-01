@@ -52,6 +52,7 @@ class StatCard extends StatelessWidget {
     // Data to be received
     int currentValue = 0;
     String outputString = "";
+    bool valueAdded = false;
 
     getData() {
       int count = 0;
@@ -70,6 +71,7 @@ class StatCard extends StatelessWidget {
                   activity.metrics?.forEach((metric) {
                     // If metric exist, we append it to the list of points that will be drawn
                     if (metric.id == metricID) {
+                      valueAdded = true;
                       currentValue += metric.value;
                     }
                   });
@@ -89,6 +91,7 @@ class StatCard extends StatelessWidget {
                     // If metric exist, we append it to the list of points that will be drawn
                     if (metric.id == metricID) {
                       if (metric.value > currentValue) {
+                        valueAdded = true;
                         currentValue = metric.value;
                       }
                     }
@@ -114,6 +117,7 @@ class StatCard extends StatelessWidget {
                       if (metric.value != 0) {
                         // Avoiding values that have not been set by mistake
                         if (metric.value < currentValue) {
+                          valueAdded = true;
                           currentValue = metric.value;
                         }
                       }
@@ -134,6 +138,7 @@ class StatCard extends StatelessWidget {
                   activity.metrics?.forEach((metric) {
                     // If metric exist, we append it to the list of points that will be drawn
                     if (metric.id == metricID) {
+                      valueAdded = true;
                       count++;
                       currentValue += metric.value;
                     }
@@ -142,7 +147,9 @@ class StatCard extends StatelessWidget {
               });
             });
 
-            currentValue = currentValue ~/ count;
+            if (valueAdded) {
+              currentValue = currentValue ~/ count;
+            }
             break;
           }
         default:
