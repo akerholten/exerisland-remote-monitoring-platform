@@ -32,7 +32,6 @@ class LinearChart extends StatelessWidget {
       const Color(0xff02d39a),
     ];
 
-    // TODO: add daily avg, weekly avg, monthly avg?
     getData() {
       dataPoints = new List<FlSpot>();
       bottomTitles = new List<String>();
@@ -74,7 +73,7 @@ class LinearChart extends StatelessWidget {
             });
             break;
           }
-        case "Daily":
+        case "Daily total":
           {
             {
               patient.sessions?.forEach((session) {
@@ -161,7 +160,7 @@ class LinearChart extends StatelessWidget {
             }
             break;
           }
-        case "Weekly":
+        case "Weekly total":
           {
             {
               int prevWeek;
@@ -256,7 +255,7 @@ class LinearChart extends StatelessWidget {
             }
             break;
           }
-        case "Monthly":
+        case "Monthly total":
           {
             {
               int prevMonth;

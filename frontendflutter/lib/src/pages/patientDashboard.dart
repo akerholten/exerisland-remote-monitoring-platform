@@ -94,6 +94,9 @@ class _PatientDashboardState extends State<PatientDashboard> {
 
     // ScrollController _controller = new ScrollController();
 
+    double height = (Constants.pageMaxHeight * 0.57);
+    double width = (Constants.pageMaxWidth * 0.6);
+
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
@@ -148,37 +151,54 @@ class _PatientDashboardState extends State<PatientDashboard> {
                               Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    // ActivityGraph
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        // ActivityGraph
+                                        Container(
+                                          padding: EdgeInsets.all(8),
+                                          height: height,
+                                          width: width,
+                                          child: Card(
+                                            child: ActivityGraph(
+                                              patient: patient,
+                                              height: height * 0.8,
+                                              width: width *
+                                                  0.95, // TODO: look at this
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          // SessionList
+                                          padding: EdgeInsets.all(8),
+                                          height: height,
+                                          width: (Constants.pageMaxWidth * 0.4),
+                                          child: Card(
+                                            child: SessionInformationList(
+                                              personalPage: widget.personalPage,
+                                              patient: patient,
+                                              dataTableMaxWidth:
+                                                  (Constants.pageMaxWidth *
+                                                      0.4),
+                                              dataTableMaxHeight: height,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    // Statistics Tab with stat cards
                                     Container(
                                       padding: EdgeInsets.all(8),
-                                      height: (Constants.pageMaxHeight * 0.7),
-                                      width: (Constants.pageMaxWidth * 0.9),
+                                      height: height * 0.7,
+                                      width: Constants.pageMaxWidth,
                                       child: Card(
-                                        child: ActivityGraph(
-                                          patient: patient,
-                                          height:
-                                              Constants.pageMaxHeight * 0.58,
-                                          width: Constants.pageMaxWidth * 0.8,
+                                        child: SelectableText(
+                                          "Nothing here yet",
                                         ),
                                       ),
                                     ),
-                                    Container(
-                                      // SessionList
-                                      padding: EdgeInsets.all(8),
-                                      height:
-                                          (Constants.pageMaxHeight * 0.9) / 2,
-                                      width: (Constants.pageMaxWidth * 0.9),
-                                      child: Card(
-                                        child: SessionInformationList(
-                                          personalPage: widget.personalPage,
-                                          patient: patient,
-                                          dataTableMaxWidth:
-                                              (Constants.pageMaxWidth * 0.9) /
-                                                  2,
-                                        ),
-                                      ),
-                                    ),
-                                  ])
+                                  ]),
                             ]),
                       ),
                     ),

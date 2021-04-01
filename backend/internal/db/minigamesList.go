@@ -24,12 +24,6 @@ var minigamesList = []Minigame{
 				Unit:  "meters",
 			},
 			Metric{
-				Id:    "Game_Completion",
-				Name:  "Game completion",
-				Value: 0,
-				Unit:  "true/false",
-			},
-			Metric{
 				Id:    "Obstacle_Not_Dodged",
 				Name:  "Obstacles not dodged",
 				Value: 0,

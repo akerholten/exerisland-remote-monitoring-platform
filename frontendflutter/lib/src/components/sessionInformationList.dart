@@ -16,8 +16,14 @@ class SessionInformationList extends StatefulWidget {
   @required
   final double dataTableMaxWidth;
 
+  @required
+  final double dataTableMaxHeight;
+
   SessionInformationList(
-      {this.patient, this.dataTableMaxWidth, this.personalPage});
+      {this.patient,
+      this.dataTableMaxWidth,
+      this.dataTableMaxHeight,
+      this.personalPage});
 
   @override
   _SessionInformationListState createState() => _SessionInformationListState();
@@ -80,7 +86,7 @@ class _SessionInformationListState extends State<SessionInformationList> {
           Container(
         padding: EdgeInsets.only(bottom: 16, left: 16, right: 16),
         child: Container(
-          height: Constants.pageMaxHeight * 0.325, // magic numbers
+          height: widget.dataTableMaxHeight * 0.77, // magic numbers
           child:
               // Scrollbar(
               //   controller: _controller,
