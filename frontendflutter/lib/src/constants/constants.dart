@@ -1,5 +1,5 @@
 class Constants {
-  static const String applicationName = "VR Health and Wellness Monitoring";
+  static const String applicationName = "ExerIsland Dashboard";
 
   // RELEASE URL
   // static const String backendURL = "https://rehab-monitoring.herokuapp.com";
