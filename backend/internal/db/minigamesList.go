@@ -128,12 +128,6 @@ var minigamesList = []Minigame{
 				Unit:  "levels",
 			},
 			Metric{
-				Id:    "Game_Completion",
-				Name:  "Game completion",
-				Value: 0,
-				Unit:  "true/false",
-			},
-			Metric{
 				Id:    "Score",
 				Name:  "Score",
 				Value: 0,
