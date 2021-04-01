@@ -22,5 +22,5 @@ const (
 // ADMIN consts
 const (
 	// AdminUserID
-	AdminUserID = "1jeFtbh6k1HxAPDgHT95ymzWhNa" //"1jeFtUuzcCnHqk5iB3ikzrreLv9" // TODO: Add this after creating an admin user
+	AdminUserID = "1qZ7tjPEqF6MlOMxot2bqVltuxq" // "1jeFtbh6k1HxAPDgHT95ymzWhNa" // TODO: Add this after creating an admin user
 )
