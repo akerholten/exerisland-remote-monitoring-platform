@@ -1,9 +1,15 @@
-import 'package:fl_chart/fl_chart.dart';
+// import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:frontendflutter/src/model_classes/minigame.dart';
 import 'package:frontendflutter/src/model_classes/patient.dart';
 
 class StatCard extends StatelessWidget {
+  @required
+  final double height;
+
+  @required
+  final double width;
+
   @required
   final Patient patient;
 
@@ -27,11 +33,13 @@ class StatCard extends StatelessWidget {
   // final String chosenTimeFrame;
 
   StatCard(
-      {this.patient,
+      {this.height,
+      this.width,
+      this.patient,
       this.metricID,
       this.cardTitle,
       this.statType,
-      this.includeAllMinigames,
+      this.includeAllMinigames: true,
       this.chosenMinigame});
 
   @override
@@ -135,15 +143,20 @@ class StatCard extends StatelessWidget {
       }
     }
 
+    // Calling get data to update value
+    getData();
+
     return Container(
       padding: EdgeInsets.all(4),
+      height: height,
+      width: width,
       child: Card(
         // TODO: potentially think about and consider changing colors of the card to make it pop more
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Text(cardTitle, style: Theme.of(context).textTheme.subtitle1),
-            Text("Insert stat data here",
+            Text(currentValue.toString(),
                 style: Theme.of(context).textTheme.subtitle2)
           ],
         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontendflutter/src/components/alerts.dart';
+import 'package:frontendflutter/src/components/statistics/statCard.dart';
 import 'package:frontendflutter/src/constants/hwsession.dart';
 import 'package:frontendflutter/src/handlers/observerHandler.dart';
 import 'package:frontendflutter/src/handlers/patientHandler.dart';
@@ -97,6 +98,10 @@ class _PatientDashboardState extends State<PatientDashboard> {
     double height = (Constants.pageMaxHeight * 0.57);
     double width = (Constants.pageMaxWidth * 0.6);
 
+    // TODO: can potentially remove this, as I don't think they are being utilized really
+    double statCardWidth = (Constants.pageMaxWidth / 6) * 0.9;
+    double statCardHeight = (height * 0.7) * 0.48;
+
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
@@ -193,8 +198,136 @@ class _PatientDashboardState extends State<PatientDashboard> {
                                       height: height * 0.7,
                                       width: Constants.pageMaxWidth,
                                       child: Card(
-                                        child: SelectableText(
-                                          "Nothing here yet",
+                                        child: GridView.count(
+                                          crossAxisCount: 6,
+                                          children: [
+                                            StatCard(
+                                              height: statCardHeight,
+                                              width: statCardWidth,
+                                              patient: patient,
+                                              metricID: "Calories_Burned",
+                                              cardTitle:
+                                                  "Total calories burned",
+                                              statType: "Total",
+                                            ),
+                                            StatCard(
+                                              height: statCardHeight,
+                                              width: statCardWidth,
+                                              patient: patient,
+                                              metricID: "Duration",
+                                              cardTitle:
+                                                  "Total time played in seconds",
+                                              statType: "Total",
+                                            ),
+                                            StatCard(
+                                              height: statCardHeight,
+                                              width: statCardWidth,
+                                              patient: patient,
+                                              metricID: "Calories_Burned",
+                                              cardTitle:
+                                                  "Total calories burned",
+                                              statType: "Total",
+                                            ),
+                                            StatCard(
+                                              height: statCardHeight,
+                                              width: statCardWidth,
+                                              patient: patient,
+                                              metricID: "Duration",
+                                              cardTitle:
+                                                  "Total time played in seconds",
+                                              statType: "Total",
+                                            ),
+                                            StatCard(
+                                              height: statCardHeight,
+                                              width: statCardWidth,
+                                              patient: patient,
+                                              metricID: "Calories_Burned",
+                                              cardTitle:
+                                                  "Total calories burned",
+                                              statType: "Total",
+                                            ),
+                                            StatCard(
+                                              height: statCardHeight,
+                                              width: statCardWidth,
+                                              patient: patient,
+                                              metricID: "Duration",
+                                              cardTitle:
+                                                  "Total time played in seconds",
+                                              statType: "Total",
+                                            ),
+                                            StatCard(
+                                              height: statCardHeight,
+                                              width: statCardWidth,
+                                              patient: patient,
+                                              metricID: "Calories_Burned",
+                                              cardTitle:
+                                                  "Total calories burned",
+                                              statType: "Total",
+                                            ),
+                                            StatCard(
+                                              height: statCardHeight,
+                                              width: statCardWidth,
+                                              patient: patient,
+                                              metricID: "Duration",
+                                              cardTitle:
+                                                  "Total time played in seconds",
+                                              statType: "Total",
+                                            ),
+                                            StatCard(
+                                              height: statCardHeight,
+                                              width: statCardWidth,
+                                              patient: patient,
+                                              metricID: "Calories_Burned",
+                                              cardTitle:
+                                                  "Total calories burned",
+                                              statType: "Total",
+                                            ),
+                                            StatCard(
+                                              height: statCardHeight,
+                                              width: statCardWidth,
+                                              patient: patient,
+                                              metricID: "Duration",
+                                              cardTitle:
+                                                  "Total time played in seconds",
+                                              statType: "Total",
+                                            ),
+                                            StatCard(
+                                              height: statCardHeight,
+                                              width: statCardWidth,
+                                              patient: patient,
+                                              metricID: "Calories_Burned",
+                                              cardTitle:
+                                                  "Total calories burned",
+                                              statType: "Total",
+                                            ),
+                                            StatCard(
+                                              height: statCardHeight,
+                                              width: statCardWidth,
+                                              patient: patient,
+                                              metricID: "Duration",
+                                              cardTitle:
+                                                  "Total time played in seconds",
+                                              statType: "Total",
+                                            ),
+                                            StatCard(
+                                              height: statCardHeight,
+                                              width: statCardWidth,
+                                              patient: patient,
+                                              metricID: "Calories_Burned",
+                                              cardTitle:
+                                                  "Total calories burned",
+                                              statType: "Total",
+                                            ),
+                                            StatCard(
+                                              height: statCardHeight,
+                                              width: statCardWidth,
+                                              patient: patient,
+                                              metricID: "Duration",
+                                              cardTitle:
+                                                  "Total time played in seconds",
+                                              statType: "Total",
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
