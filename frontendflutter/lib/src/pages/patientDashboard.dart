@@ -325,7 +325,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
                                               statType: "Total",
                                               convertValue: "Time",
                                               chosenMinigameId:
-                                                  "DuckShooter_Minigame",
+                                                  "DroneShooter_Minigame",
                                               includeAllMinigames: false,
                                             ),
                                             StatCard(
@@ -337,7 +337,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
                                                   "Drones hit in Drone Shooter",
                                               statType: "Total",
                                               chosenMinigameId:
-                                                  "DuckShooter_Minigame",
+                                                  "DroneShooter_Minigame",
                                               includeAllMinigames: false,
                                             ),
                                           ],
