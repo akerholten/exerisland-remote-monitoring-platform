@@ -96,8 +96,8 @@ var minigamesList = []Minigame{
 		},
 	},
 	Minigame{
-		Id:          "DuckShooter_Minigame",
-		Name:        "Duck Shooter",
+		Id:          "DroneShooter_Minigame",
+		Name:        "Drone Shooter",
 		Description: "The player is presented with a range of drones flying around, the drones has to be shot down and their bullets must be dodged.",
 		Tags: []string{
 			"Physical", "Cognitive", "Arms", "Hand-eye coordination",
