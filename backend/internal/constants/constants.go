@@ -16,7 +16,7 @@ const (
 	CookieExpiration = time.Hour * 24 * 7
 
 	// WebsiteDomain
-	WebsiteDomain = "rehab-monitoring.com"
+	WebsiteDomain = "exerisland.com"
 )
 
 // ADMIN consts
