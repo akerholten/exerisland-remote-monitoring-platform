@@ -163,7 +163,7 @@ func ManualLoginHandler(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Error unmarshaling: %s, error: %v", string(respBody), err)
 	}
 
-	if len(form.Password) < 3 {
+	if len(form.Password) < 2 {
 		w.WriteHeader(http.StatusUnauthorized)
 		_, err := w.Write([]byte("Wrong email or password"))
 		if err != nil {
@@ -181,7 +181,7 @@ func ManualLoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if len(form.Email) < 4 {
+	if len(form.Email) < 2 {
 		w.WriteHeader(http.StatusUnauthorized)
 		_, err := w.Write([]byte("Wrong email or password"))
 		if err != nil {
