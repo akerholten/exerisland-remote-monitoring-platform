@@ -127,8 +127,7 @@ class _SessionInformationListState extends State<SessionInformationList> {
                                 alignment: Alignment.center,
                                 height: tableItemHeight,
                                 width: tableItemWidth,
-                                child: SelectableText(
-                                    "Session " + session.id.toString()),
+                                child: Text("Session " + session.id.toString()),
                               ),
                               Container(
                                 alignment: Alignment.center,
@@ -136,22 +135,22 @@ class _SessionInformationListState extends State<SessionInformationList> {
                                 width: tableItemWidth,
                                 child: (session.duration == null ||
                                         session.duration == "")
-                                    ? SelectableText("No data")
-                                    : SelectableText(Tools.printDuration(
+                                    ? Text("No data")
+                                    : Text(Tools.printDuration(
                                         Tools.parseDuration(session.duration))),
                               ),
                               Container(
                                 alignment: Alignment.center,
                                 height: tableItemHeight,
                                 width: tableItemWidth,
-                                child: SelectableText(
-                                    session.activities?.length.toString()),
+                                child:
+                                    Text(session.activities?.length.toString()),
                               ),
                               Container(
                                 alignment: Alignment.center,
                                 height: tableItemHeight,
                                 width: tableItemWidth,
-                                child: SelectableText(intl.DateFormat(
+                                child: Text(intl.DateFormat(
                                         Constants.dateFormat)
                                     .format(DateTime.parse(session.createdAt))),
                               ),

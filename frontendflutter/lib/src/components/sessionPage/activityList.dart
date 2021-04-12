@@ -137,7 +137,7 @@ class _ActivityListState extends State<ActivityList> {
                                         padding: EdgeInsets.all(4),
                                         child: _loading
                                             ? CircularProgressIndicator()
-                                            : SelectableText(
+                                            : Text(
                                                 minigame.name,
                                                 style: Theme.of(context)
                                                     .textTheme
@@ -147,7 +147,7 @@ class _ActivityListState extends State<ActivityList> {
                                       // Tags
                                       Container(
                                         padding: EdgeInsets.all(4),
-                                        child: SelectableText(
+                                        child: Text(
                                           "Tags: " +
                                               Tools.listOfStringsToString(
                                                   minigame.tags),
@@ -183,7 +183,7 @@ class _ActivityListState extends State<ActivityList> {
                                         Container(
                                           padding: EdgeInsets.only(
                                               bottom: 18, left: 4),
-                                          child: SelectableText(
+                                          child: Text(
                                             "Minigame",
                                             style: Theme.of(context)
                                                 .textTheme
@@ -194,9 +194,8 @@ class _ActivityListState extends State<ActivityList> {
                                           padding: EdgeInsets.only(
                                               bottom: 4, left: 4, top: 18),
                                           child: durationMetric == null
-                                              ? SelectableText(
-                                                  "Duration: No data")
-                                              : SelectableText("Duration: " +
+                                              ? Text("Duration: No data")
+                                              : Text("Duration: " +
                                                   Tools.secondsToHHMMSS(
                                                       durationMetric.value)),
                                         )
