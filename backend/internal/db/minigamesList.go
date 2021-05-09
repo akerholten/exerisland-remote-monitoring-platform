@@ -52,7 +52,7 @@ var minigamesList = []Minigame{
 	Minigame{
 		Id:          "ReactionTimeTrainer_Minigame",
 		Name:        "Reaction Time Trainer",
-		Description: "Based on BATAK reaction time trainer for football-keepers, the reaction time trainer minigame focuses on providing a series of lightbulbs that the player should hit when they light up and make a noise.",
+		Description: "Based on BATAK reaction time trainer for football-keepers, the reaction time trainer minigame focuses on providing a series of water bubbles that the player should hit when they light up and make a noise.",
 		Tags: []string{
 			"Physical", "Cognitive", "Arms", "Hand-eye coordination", "Hearing", "Sound",
 		},
