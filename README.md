@@ -1,5 +1,7 @@
-# VR Health and Wellness Remote Monitoring
+# ExerIsland Remote User Study Platform
 
-Remote Monitoring System for VR Health and Wellness Hub (VR Game System in Unity)
+Remote User Study Platform integrated with a VR exergame platform.
 
-Deployed web application can be reached at [https://rehab-monitoring.com/](https://rehab-monitoring.com/)
+Practically tested and used in a two-week user study for my master thesis. Investigating gamification with exercise-tracking with the VR exergame application.
+
+Deployed web application can be reached at [https://exerisland.com/](https://exerisland.com/)
